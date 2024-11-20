@@ -1,4 +1,4 @@
-import "./globals.css"
+import "../globals.css"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -17,7 +17,12 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-            {children}
+            <SidebarProvider>
+                <AppSidebar />
+              <SidebarInset className="flex-1">
+                {children}
+              </SidebarInset>
+            </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>

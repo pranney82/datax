@@ -32,20 +32,20 @@ const data = {
   navMain: [
     {
       title: "Library",
-      url: "/library/templates",
+      url: "/x/library/templates",
       icon: BookOpen,
       items: [
         {
           title: "Templates",
-          url: "/library/templates",
+          url: "/x/library/templates",
         },
         {
           title: "API & Scripts",
-          url: "/library/api-scripts",
+          url: "/x/library/api-scripts",
         },
         {
           title: "Resources",
-          url: "/library/resources",
+          url: "/x/library/resources",
         },
       ],
     },
@@ -56,15 +56,15 @@ const data = {
       items: [
         {
           title: "Dashboard",
-          url: "/dashboard",
+          url: "/x/dashboard",
         },
         {
           title: "Cash Flow Calendar",
-          url: "/cash-flow/cal",
+          url: "/x/cash-flow/cal",
         },
         {
           title: "Print Reports",
-          url: "/print-reports",
+          url: "/x/print-reports",
         },
       ],
     }
@@ -72,17 +72,17 @@ const data = {
   navSecondary: [
     {
       title: "Settings",
-      url: "/settings",
+      url: "/x/settings",
       icon: Settings2,
     },
     {
       title: "Support",
-      url: "/support",
+      url: "/x/support",
       icon: LifeBuoy,
     },
     {
       title: "Feedback",
-      url: "/feedback",
+      url: "/x/feedback",
       icon: Send,
     },
   ]
