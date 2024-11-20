@@ -2,8 +2,6 @@ import "./globals.css"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { ThemeProvider } from "@/components/theme-provider"
-import { useCallback } from "react"
-import { Suspense } from "react"
 
 export default function RootLayout({
   children,

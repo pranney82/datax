@@ -2,7 +2,6 @@ import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
@@ -10,7 +9,6 @@ import {
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -18,7 +16,7 @@ import {
   } from "@/components/ui/table"
   
 
-export default function DashCardTall({ title, description, content, footer }: { title: string, description: string, content: string, footer: string }) {
+export default function DashCardTall({ title, description }: { title: string, description: string }) {
   return (
     <Card>
         <CardHeader>

@@ -43,7 +43,7 @@ export default function Page() {
         </div>
         <div className="grid auto-rows-min gap-4 md:grid-cols-6">
           <div className="grid auto-rows-min gap-4 md:col-span-2">
-            <DashCardTall title="November" description="Stats for this month" content="" footer="" />
+            <DashCardTall title="November" description="Stats for this month"/>
           </div>
           <div className="grid auto-rows-min gap-4 md:col-span-4">
             <DashCard title="Card 8" description="Card 8 Description" content="Card 8" footer="" />
@@ -59,7 +59,7 @@ export default function Page() {
         </div>
         <div className="grid auto-rows-min gap-4 md:grid-cols-6">
           <div className="grid auto-rows-min gap-4 md:col-span-2">
-            <DashCardTall title="November" description="Stats for this month" content="" footer="" />
+            <DashCardTall title="November" description="Stats for this month"/>
           </div>
           <div className="grid auto-rows-min gap-4 md:col-span-4">
             <DashCard title="Card 15" description="Card 15 Description" content="Card 15" footer="" />

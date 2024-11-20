@@ -11,12 +11,11 @@ import { Button } from "./ui/button"
 import Link from "next/link"
 import { Download } from "lucide-react"
 
-export default function LibraryCard({ id, title, badge, content, footer, downloadCount }: {
+export default function LibraryCard({ id, title, badge, content, downloadCount }: {
     id: string,
     title: string,
     badge: string,
     content: string,
-    footer: string,
     downloadCount?: number
 }) {
     return (
