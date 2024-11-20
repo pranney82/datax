@@ -1,6 +1,4 @@
 import "./globals.css"
-import { AppSidebar } from "@/components/app-sidebar"
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { ThemeProvider } from "@/components/theme-provider"
 
 export default function RootLayout({

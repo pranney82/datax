@@ -18,7 +18,7 @@ export default function Home() {
               width={20}
               height={20}
             />
-            Let's Go!
+            Let&apos;s Go!
           </a>
         </div>
       </main>
