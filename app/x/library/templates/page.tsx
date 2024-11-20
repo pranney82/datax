@@ -52,7 +52,7 @@ export default function TemplatesPage() {
                 <div className="flex items-start justify-between">
                   <CardTitle className="text-lg">
                     <a
-                      href={`/library/templates/${template.id}`}
+                      href={`/x/library/templates/${template.id}`}
                       className="hover:underline"
                     >
                       {template.title}

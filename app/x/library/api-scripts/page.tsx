@@ -52,7 +52,7 @@ export default function APIScriptsPage() {
                 <div className="flex items-start justify-between">
                   <CardTitle className="text-lg">
                     <a
-                      href={`/library/api-scripts/${item.id}`}
+                      href={`/x/library/api-scripts/${item.id}`}
                       className="hover:underline"
                     >
                       {item.title}

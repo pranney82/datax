@@ -37,11 +37,11 @@ export default function APIScriptPage({ params }: PageProps) {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="/library">Library</BreadcrumbLink>
+                <BreadcrumbLink href="/x/library">Library</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/library/apis">APIs & Scripts</BreadcrumbLink>
+                <BreadcrumbLink href="/x/library/apis">APIs & Scripts</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>

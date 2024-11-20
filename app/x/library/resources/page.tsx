@@ -52,7 +52,7 @@ export default function ResourcesPage() {
                 <div className="flex items-start justify-between">
                   <CardTitle className="text-lg">
                     <a
-                      href={`/library/resources/${resource.id}`}
+                      href={`/x/library/resources/${resource.id}`}
                       className="hover:underline"
                     >
                       {resource.title}
