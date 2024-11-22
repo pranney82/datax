@@ -3,11 +3,12 @@
 import * as React from "react"
 import {
   BookOpen,
+  Home,
   LifeBuoy,
-  Send,
+  LineChart,
   Settings2,
   SquareTerminal,
-  X
+  X,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -31,43 +32,25 @@ const data = {
   },
   navMain: [
     {
+      title: "Home",
+      url: "/x",
+      icon: Home,
+    },
+    {
+      title: "Dashboard",
+      url: "/x/dashboard",
+      icon: LineChart,
+    },
+    {
+      title: "JT Features",
+      url: "/x/features",
+      icon: SquareTerminal,
+    },
+    {
       title: "Library",
       url: "/x/library/templates",
       icon: BookOpen,
-      items: [
-        {
-          title: "Templates",
-          url: "/x/library/templates",
-        },
-        {
-          title: "API & Scripts",
-          url: "/x/library/api-scripts",
-        },
-        {
-          title: "Resources",
-          url: "/x/library/resources",
-        },
-      ],
     },
-    {
-      title: "Features",
-      url: "#",
-      icon: SquareTerminal,
-      items: [
-        {
-          title: "Dashboard",
-          url: "/x/dashboard",
-        },
-        {
-          title: "Cash Flow Calendar",
-          url: "/x/calendar",
-        },
-        {
-          title: "Print Reports",
-          url: "/x/print-reports",
-        },
-      ],
-    }
   ],
   navSecondary: [
     {
@@ -76,15 +59,10 @@ const data = {
       icon: Settings2,
     },
     {
-      title: "Support",
+      title: "Support & Feedback",
       url: "/x/support",
       icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "/x/feedback",
-      icon: Send,
-    },
+    }
   ]
 }
 
@@ -95,7 +73,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <a href="/x">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-yellow-100 text-black">
                   <X className="size-4" />
                 </div>
