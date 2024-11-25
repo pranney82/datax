@@ -1,0 +1,28 @@
+{
+  "hero7": {
+    "title": "Always know how you're performing",
+    "description": "Finely crafted components built with React, Tailwind and Shadcn UI. Developers can copy and paste these blocks directly into their project.",
+    "beforeAfter": {
+      "before": {
+        "title": "Before DATAx",
+        "points": [
+          "!!Manual data entry processes were causing significant delays in reporting and analysis timelines.",
+          "Teams were struggling to maintain data consistency across multiple spreadsheets and platforms.",
+          "Decision-making was hindered by the lack of real-time access to critical business metrics.",
+          "Valuable time was wasted reconciling data discrepancies between different department reports.",
+          "Security concerns arose from sharing sensitive data through unsecured channels and methods."
+        ]
+      },
+      "after": {
+        "title": "After DATAx",
+        "points": [
+          "Automated data entry processes reduced manual errors and increased data accuracy.",
+          "Real-time data synchronization ensures all teams work with the most current information across platforms.",
+          "Interactive dashboards provide instant access to key performance metrics for faster decision-making.",
+          "Centralized data management eliminated reconciliation needs and improved departmental collaboration.",
+          "Enterprise-grade security protocols ensure sensitive data remains protected at all times."
+        ]
+      }
+    }
+  }
+}

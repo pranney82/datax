@@ -1,0 +1,110 @@
+{
+  "footer": {
+    "logo": {
+      "src": "https://www.shadcnblocks.com/images/block/logos/shadcn-ui.svg",
+      "alt": "logo"
+    },
+    "tagline": "Components made easy.",
+    "copyright": "© 2024 Shadcn. All rights reserved.",
+    "sections": [
+      {
+        "title": "Product",
+        "links": [
+          {
+            "name": "Overview",
+            "href": "#"
+          },
+          {
+            "name": "Pricing",
+            "href": "#"
+          },
+          {
+            "name": "Marketplace",
+            "href": "#"
+          },
+          {
+            "name": "Features",
+            "href": "#"
+          },
+          {
+            "name": "Integrations",
+            "href": "#"
+          }
+        ]
+      },
+      {
+        "title": "Company",
+        "links": [
+          {
+            "name": "About",
+            "href": "#"
+          },
+          {
+            "name": "Team",
+            "href": "#"
+          },
+          {
+            "name": "Blog",
+            "href": "#"
+          },
+          {
+            "name": "Careers",
+            "href": "#"
+          },
+          {
+            "name": "Contact",
+            "href": "#"
+          },
+          {
+            "name": "Privacy",
+            "href": "#"
+          }
+        ]
+      },
+      {
+        "title": "Resources",
+        "links": [
+          {
+            "name": "Help",
+            "href": "#"
+          },
+          {
+            "name": "Sales",
+            "href": "#"
+          },
+          {
+            "name": "Advertise",
+            "href": "#"
+          }
+        ]
+      },
+      {
+        "title": "Social",
+        "links": [
+          {
+            "name": "Twitter",
+            "href": "#"
+          },
+          {
+            "name": "Instagram",
+            "href": "#"
+          },
+          {
+            "name": "LinkedIn",
+            "href": "#"
+          }
+        ]
+      }
+    ],
+    "legal": [
+      {
+        "name": "Terms and Conditions",
+        "href": "#"
+      },
+      {
+        "name": "Privacy Policy",
+        "href": "#"
+      }
+    ]
+  }
+}

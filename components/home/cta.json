@@ -1,0 +1,16 @@
+{
+  "cta": {
+    "title": "Call to Action1",
+    "description": "L!!orem ipsum dolor sit amet consectetur adipisicing elit. Elig doloremque mollitia fugiat omnis!",
+    "buttons": {
+      "primary": {
+        "text": "Get Started",
+        "href": "#33"
+      },
+      "secondary": {
+        "text": "Learn More",
+        "href": "#features"
+      }
+    }
+  }
+}
