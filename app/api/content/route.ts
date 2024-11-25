@@ -28,10 +28,7 @@ export async function POST(request: Request) {
       throw new Error('No section specified');
     }
 
-    const cwd = process.cwd();
-    console.log('Current working directory:', cwd);
-    
-    const filePath = path.join(cwd, 'components', 'home', `${section}.json`);
+    const filePath = path.join(process.cwd(), 'components', 'home', `${section}.json`);
     console.log('Attempting to write to:', filePath);
     console.log('Content to write:', JSON.stringify(data, null, 2));
 
