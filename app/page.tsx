@@ -7,11 +7,10 @@ import Hero7 from "@/components/home/hero7";
 import Hero8 from "@/components/home/hero8";
 import Logos3 from "@/components/home/logos3";
 import Navbar1 from "@/components/home/nav";
-import { HomeContentProvider } from '@/providers/HomeContentProvider';
 
 export default function Home() {
   return (
-    <HomeContentProvider>
+    <div className="flex flex-col min-h-screen">
       <Navbar1 />
       <Hero1 />
       <Logos3 />
@@ -21,6 +20,6 @@ export default function Home() {
       <Faq1 />
       <CTA11 />
       <Footer />
-    </HomeContentProvider>
+    </div>
   );
 }

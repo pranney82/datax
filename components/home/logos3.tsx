@@ -1,6 +1,5 @@
 'use client';
 
-import { useHomeContent } from '@/providers/HomeContentProvider';
 import AutoScroll from 'embla-carousel-auto-scroll';
 import {
   Carousel,
@@ -8,17 +7,55 @@ import {
   CarouselItem,
 } from '@/components/ui/carousel';
 
-const Logos3 = () => {
-  const content = useHomeContent();
-  
-  if (!content?.logos3) return null;
-  const { logos3 } = content;
+const logos = [
+  {
+    id: "logo-1",
+    description: "Logo 1",
+    image: "https://www.builtwithlovellc.com/wp-content/uploads/2022/01/cropped-built-with-love-logo-5.png"
+  },
+  {
+    id: "logo-2",
+    description: "Logo 2",
+    image: "https://www.shadcnblocks.com/images/block/logos/figma.svg"
+  },
+  {
+    id: "logo-3",
+    description: "Logo 3",
+    image: "https://www.shadcnblocks.com/images/block/logos/nextjs.svg"
+  },
+  {
+    id: "logo-4",
+    description: "Logo 4",
+    image: "https://www.shadcnblocks.com/images/block/logos/react.png"
+  },
+  {
+    id: "logo-5",
+    description: "Logo 5",
+    image: "https://www.shadcnblocks.com/images/block/logos/shadcn-ui.svg"
+  },
+  {
+    id: "logo-6",
+    description: "Logo 6",
+    image: "https://www.shadcnblocks.com/images/block/logos/supabase.svg"
+  },
+  {
+    id: "logo-7",
+    description: "Logo 7",
+    image: "https://www.shadcnblocks.com/images/block/logos/tailwind.svg"
+  },
+  {
+    id: "logo-8",
+    description: "Logo 8",
+    image: "https://www.shadcnblocks.com/images/block/logos/vercel.svg"
+  }
+];
 
+const Logos3 = () => {
   return (
     <section className="py-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h1 className="my-6 text-pretty text-center text-2xl font-bold lg:text-4xl">
-          {logos3.title}
+          Trusted by these companies
         </h1>
       </div>
       <div className="pt-10 md:pt-16 lg:pt-20">
@@ -28,9 +65,9 @@ const Logos3 = () => {
             plugins={[AutoScroll({ playOnInit: true })]}
           >
             <CarouselContent className="ml-0">
-              {logos3?.logos?.map((logo) => (
+              {logos.map((logo) => (
                 <CarouselItem
-                  key={logo.image}
+                  key={logo.id}
                   className="basis-1/3 pl-0 sm:basis-1/4 md:basis-1/5 lg:basis-1/6"
                 >
                   <div className="mx-10 flex shrink-0 items-center justify-center">

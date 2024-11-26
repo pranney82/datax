@@ -24,11 +24,11 @@ const Navbar1 = () => {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <img
-                src="/logo.png"
+                src="https://www.shadcnblocks.com/images/block/block-1.svg"
                 className="w-8"
-                alt="JTDash Logo"
+                alt="logo"
               />
-              <span className="text-xl font-bold">JTDash</span>
+              <span className="text-xl font-bold">Shadcn Blocks</span>
             </div>
             <div className="flex items-center">
               <a
@@ -50,45 +50,60 @@ const Navbar1 = () => {
                     <NavigationMenuContent>
                       <ul className="w-80 p-3">
                         <NavigationMenuLink>
-                          {[
-                            {
-                              title: "Analytics",
-                              description: "Track your performance metrics",
-                              href: "/analytics",
-                              icon: "LineChart"
-                            },
-                            {
-                              title: "Sustainability",
-                              description: "Monitor environmental impact",
-                              href: "/sustainability",
-                              icon: "Trees"
-                            },
-                            {
-                              title: "Learning",
-                              description: "Access educational resources",
-                              href: "/learning",
-                              icon: "Book"
-                            }
-                          ].map((item, idx) => (
-                            <li key={idx}>
-                              <a
-                                className={cn(
-                                  'flex select-none gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
-                                )}
-                                href={item.href}
-                              >
-                                {iconMap[item.icon as keyof typeof iconMap]}
-                                <div>
-                                  <div className="text-sm font-semibold">
-                                    {item.title}
-                                  </div>
-                                  <p className="text-sm leading-snug text-muted-foreground">
-                                    {item.description}
-                                  </p>
+                          <li>
+                            <a
+                              className={cn(
+                                'flex select-none gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+                              )}
+                              href="#"
+                            >
+                              {iconMap.LineChart}
+                              <div>
+                                <div className="text-sm font-semibold">
+                                  Dashboard
                                 </div>
-                              </a>
-                            </li>
-                          ))}
+                                <p className="text-sm leading-snug text-muted-foreground">
+                                  The latest industry news, updates, and info
+                                </p>
+                              </div>
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              className={cn(
+                                'flex select-none gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+                              )}
+                              href="#"
+                            >
+                              {iconMap.Trees}
+                              <div>
+                                <div className="text-sm font-semibold">
+                                  JT Features
+                                </div>
+                                <p className="text-sm leading-snug text-muted-foreground">
+                                  Our mission is to innovate and empower the world
+                                </p>
+                              </div>
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              className={cn(
+                                'flex select-none gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+                              )}
+                              href="#"
+                            >
+                              {iconMap.Book}
+                              <div>
+                                <div className="text-sm font-semibold">
+                                  Library
+                                </div>
+                                <p className="text-sm leading-snug text-muted-foreground">
+                                  Browse job listing and discover our workspace
+                                </p>
+                              </div>
+                            </a>
+                          </li>
                         </NavigationMenuLink>
                       </ul>
                     </NavigationMenuContent>
@@ -101,7 +116,17 @@ const Navbar1 = () => {
                   navigationMenuTriggerStyle,
                   buttonVariants({ variant: 'ghost' })
                 )}
-                href="/pricing"
+                href="#"
+              >
+                Test Drive
+              </a>
+              <a
+                className={cn(
+                  'text-muted-foreground',
+                  navigationMenuTriggerStyle,
+                  buttonVariants({ variant: 'ghost' })
+                )}
+                href="#"
               >
                 Pricing
               </a>
@@ -111,7 +136,7 @@ const Navbar1 = () => {
                   navigationMenuTriggerStyle,
                   buttonVariants({ variant: 'ghost' })
                 )}
-                href="/about"
+                href="#"
               >
                 About
               </a>
@@ -119,10 +144,10 @@ const Navbar1 = () => {
           </div>
           <div className="flex gap-2">
             <Button variant="outline">
-              Sign In
+              Log in
             </Button>
             <Button>
-              Get Started
+              Sign up
             </Button>
           </div>
         </nav>
@@ -132,11 +157,11 @@ const Navbar1 = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <img
-                src="/logo.png"
+                src="https://www.shadcnblocks.com/images/block/block-1.svg"
                 className="w-8"
-                alt="JTDash Logo"
+                alt="logo"
               />
-              <span className="text-xl font-bold">JTDash</span>
+              <span className="text-xl font-bold">Shadcn Blocks</span>
             </div>
             <Sheet>
               <SheetTrigger asChild>
@@ -149,11 +174,11 @@ const Navbar1 = () => {
                   <SheetTitle>
                     <div className="flex items-center gap-2">
                       <img
-                        src="/logo.png"
+                        src="https://www.shadcnblocks.com/images/block/block-1.svg"
                         className="w-8"
-                        alt="JTDash Logo"
+                        alt="logo"
                       />
-                      <span className="text-xl font-bold">JTDash</span>
+                      <span className="text-xl font-bold">Shadcn Blocks</span>
                     </div>
                   </SheetTitle>
                 </SheetHeader>
@@ -167,51 +192,64 @@ const Navbar1 = () => {
                         Features
                       </AccordionTrigger>
                       <AccordionContent className="font-semibold">
-                        {[
-                          {
-                            title: "Analytics",
-                            description: "Track your performance metrics",
-                            href: "/analytics",
-                            icon: "LineChart"
-                          },
-                          {
-                            title: "Sustainability",
-                            description: "Monitor environmental impact",
-                            href: "/sustainability",
-                            icon: "Trees"
-                          },
-                          {
-                            title: "Learning",
-                            description: "Access educational resources",
-                            href: "/learning",
-                            icon: "Book"
-                          }
-                        ].map((item, idx) => (
-                          <a
-                            key={idx}
-                            className={cn(
-                              'flex select-none gap-4 rounded-md p-3 leading-none outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
-                            )}
-                            href={item.href}
-                          >
-                            {iconMap[item.icon as keyof typeof iconMap]}
-                            <div>
-                              <div className="text-sm font-semibold">
-                                {item.title}
-                              </div>
-                              <p className="text-sm leading-snug text-muted-foreground">
-                                {item.description}
-                              </p>
+                        <a
+                          className={cn(
+                            'flex select-none gap-4 rounded-md p-3 leading-none outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+                          )}
+                          href="#"
+                        >
+                          {iconMap.LineChart}
+                          <div>
+                            <div className="text-sm font-semibold">
+                              Dashboard
                             </div>
-                          </a>
-                        ))}
+                            <p className="text-sm leading-snug text-muted-foreground">
+                              The latest industry news, updates, and info
+                            </p>
+                          </div>
+                        </a>
+                        <a
+                          className={cn(
+                            'flex select-none gap-4 rounded-md p-3 leading-none outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+                          )}
+                          href="#"
+                        >
+                          {iconMap.Trees}
+                          <div>
+                            <div className="text-sm font-semibold">
+                              JT Features
+                            </div>
+                            <p className="text-sm leading-snug text-muted-foreground">
+                              Our mission is to innovate and empower the world
+                            </p>
+                          </div>
+                        </a>
+                        <a
+                          className={cn(
+                            'flex select-none gap-4 rounded-md p-3 leading-none outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+                          )}
+                          href="#"
+                        >
+                          {iconMap.Book}
+                          <div>
+                            <div className="text-sm font-semibold">
+                              Library
+                            </div>
+                            <p className="text-sm leading-snug text-muted-foreground">
+                              Browse job listing and discover our workspace
+                            </p>
+                          </div>
+                        </a>
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
-                  <a href="/pricing" className="font-semibold">
+                  <a href="#" className="font-semibold">
+                    Test Drive
+                  </a>
+                  <a href="#" className="font-semibold">
                     Pricing
                   </a>
-                  <a href="/about" className="font-semibold">
+                  <a href="#" className="font-semibold">
                     About
                   </a>
                 </div>
