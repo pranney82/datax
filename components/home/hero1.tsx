@@ -1,32 +1,20 @@
+'use client';
+
 import { ArrowDownRight } from 'lucide-react';
+import { useHomeContent } from '@/providers/HomeContentProvider';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import content from '@/components/home/hero1.json';
-
-interface Hero1Content {
-  badge?: string;
-  title: string;
-  description: string;
-  buttons?: {
-    primary: { text: string; href: string };
-    secondary: { text: string; href: string };
-  };
-  image: {
-    src: string;
-    alt: string;
-  };
-}
-
-interface Content {
-  hero1: Hero1Content;
-}
 
 const Hero1 = () => {
-  const { hero1 } = content as Content;
+  const content = useHomeContent();
+  
+  if (!content?.hero1) return null;
+
+  const { hero1 } = content;
 
   return (
-    <section className="py-32">
+    <section className="py-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-8 lg:grid-cols-2">
           <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
@@ -55,8 +43,8 @@ const Hero1 = () => {
             </div>
           </div>
           <img
-            src={hero1.image.src}
-            alt={hero1.image.alt}
+            src={hero1?.image?.src}
+            alt={hero1?.image?.alt}
             className="max-h-96 w-full rounded-md object-cover"
           />
         </div>

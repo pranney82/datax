@@ -4,7 +4,7 @@ const Feature74 = () => {
   const { feature74 } = content;
 
   return (
-    <section className="py-32">
+    <section className="py-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-6 md:grid-cols-2 lg:gap-8">
           {feature74.features.map((feature, index) => {

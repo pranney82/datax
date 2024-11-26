@@ -1,59 +1,20 @@
-import { Book, LineChart, Menu, Settings2, Trees, Zap } from 'lucide-react';
+'use client';
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Button, buttonVariants } from '@/components/ui/button';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+import { LineChart, Menu, Settings2, Trees, Book, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
+import { Button, buttonVariants } from '@/components/ui/button';
 
-const subMenuItemsOne = [
-  {
-    title: 'Dashboard',
-    description: 'The latest industry news, updates, and info',
-    icon: <LineChart className="size-5 shrink-0" />,
-  },
-  {
-    title: 'JT Features',
-    description: 'Our mission is to innovate and empower the world',
-    icon: <Trees className="size-5 shrink-0" />,
-  },
-  {
-    title: 'Library',
-    description: 'Browse job listing and discover our workspace',
-    icon: <Book className="size-5 shrink-0" />,
-  },
-  {
-    title: 'Roadmap',
-    description:
-      'Get in touch with our support team or visit our community forums',
-    icon: <Zap className="size-5 shrink-0" />,
-  },
-  {
-    title: 'Changelog',
-    description:
-      'Get in touch with our support team or visit our community forums',
-    icon: <Settings2 className="size-5 shrink-0" />,
-  },
-];
+const iconMap = {
+  LineChart: <LineChart className="size-5 shrink-0" />,
+  Trees: <Trees className="size-5 shrink-0" />,
+  Book: <Book className="size-5 shrink-0" />,
+  Zap: <Zap className="size-5 shrink-0" />,
+  Settings2: <Settings2 className="size-5 shrink-0" />,
+};
 
 const Navbar1 = () => {
   return (
@@ -63,20 +24,18 @@ const Navbar1 = () => {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <img
-                src="https://www.shadcnblocks.com/images/block/block-1.svg"
+                src="/logo.png"
                 className="w-8"
-                alt="logo"
+                alt="JTDash Logo"
               />
-              <span className="text-xl font-bold">Shadcn Blocks</span>
+              <span className="text-xl font-bold">JTDash</span>
             </div>
             <div className="flex items-center">
               <a
                 className={cn(
                   'text-muted-foreground',
                   navigationMenuTriggerStyle,
-                  buttonVariants({
-                    variant: 'ghost',
-                  }),
+                  buttonVariants({ variant: 'ghost' })
                 )}
                 href="/"
               >
@@ -91,15 +50,34 @@ const Navbar1 = () => {
                     <NavigationMenuContent>
                       <ul className="w-80 p-3">
                         <NavigationMenuLink>
-                          {subMenuItemsOne.map((item, idx) => (
+                          {[
+                            {
+                              title: "Analytics",
+                              description: "Track your performance metrics",
+                              href: "/analytics",
+                              icon: "LineChart"
+                            },
+                            {
+                              title: "Sustainability",
+                              description: "Monitor environmental impact",
+                              href: "/sustainability",
+                              icon: "Trees"
+                            },
+                            {
+                              title: "Learning",
+                              description: "Access educational resources",
+                              href: "/learning",
+                              icon: "Book"
+                            }
+                          ].map((item, idx) => (
                             <li key={idx}>
                               <a
                                 className={cn(
                                   'flex select-none gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
                                 )}
-                                href="#"
+                                href={item.href}
                               >
-                                {item.icon}
+                                {iconMap[item.icon as keyof typeof iconMap]}
                                 <div>
                                   <div className="text-sm font-semibold">
                                     {item.title}
@@ -121,23 +99,9 @@ const Navbar1 = () => {
                 className={cn(
                   'text-muted-foreground',
                   navigationMenuTriggerStyle,
-                  buttonVariants({
-                    variant: 'ghost',
-                  }),
+                  buttonVariants({ variant: 'ghost' })
                 )}
-                href="#"
-              >
-                Test Drive
-              </a>
-              <a
-                className={cn(
-                  'text-muted-foreground',
-                  navigationMenuTriggerStyle,
-                  buttonVariants({
-                    variant: 'ghost',
-                  }),
-                )}
-                href="#"
+                href="/pricing"
               >
                 Pricing
               </a>
@@ -145,34 +109,38 @@ const Navbar1 = () => {
                 className={cn(
                   'text-muted-foreground',
                   navigationMenuTriggerStyle,
-                  buttonVariants({
-                    variant: 'ghost',
-                  }),
+                  buttonVariants({ variant: 'ghost' })
                 )}
-                href="#"
+                href="/about"
               >
                 About
               </a>
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant={'outline'}>Log in</Button>
-            <Button>Sign up</Button>
+            <Button variant="outline">
+              Sign In
+            </Button>
+            <Button>
+              Get Started
+            </Button>
           </div>
         </nav>
+
+        {/* Mobile Navigation */}
         <div className="block lg:hidden">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <img
-                src="https://www.shadcnblocks.com/images/block/block-1.svg"
+                src="/logo.png"
                 className="w-8"
-                alt="logo"
+                alt="JTDash Logo"
               />
-              <span className="text-xl font-bold">Shadcn Blocks</span>
+              <span className="text-xl font-bold">JTDash</span>
             </div>
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant={'outline'} size={'icon'}>
+                <Button variant="outline" size="icon">
                   <Menu className="size-4" />
                 </Button>
               </SheetTrigger>
@@ -181,33 +149,52 @@ const Navbar1 = () => {
                   <SheetTitle>
                     <div className="flex items-center gap-2">
                       <img
-                        src="https://www.shadcnblocks.com/images/block/block-1.svg"
+                        src="/logo.png"
                         className="w-8"
-                        alt="logo"
+                        alt="JTDash Logo"
                       />
-                      <span className="text-xl font-bold">Shadcn Blocks</span>
+                      <span className="text-xl font-bold">JTDash</span>
                     </div>
                   </SheetTitle>
                 </SheetHeader>
                 <div className="my-8 flex flex-col gap-4">
-                  <a href="#" className="font-semibold">
+                  <a href="/" className="font-semibold">
                     Home
                   </a>
                   <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="products" className="border-b-0">
+                    <AccordionItem value="features" className="border-b-0">
                       <AccordionTrigger className="mb-4 py-0 font-semibold hover:no-underline">
-                        Products
+                        Features
                       </AccordionTrigger>
-                      <AccordionContent className="mt-2">
-                        {subMenuItemsOne.map((item, idx) => (
+                      <AccordionContent className="font-semibold">
+                        {[
+                          {
+                            title: "Analytics",
+                            description: "Track your performance metrics",
+                            href: "/analytics",
+                            icon: "LineChart"
+                          },
+                          {
+                            title: "Sustainability",
+                            description: "Monitor environmental impact",
+                            href: "/sustainability",
+                            icon: "Trees"
+                          },
+                          {
+                            title: "Learning",
+                            description: "Access educational resources",
+                            href: "/learning",
+                            icon: "Book"
+                          }
+                        ].map((item, idx) => (
                           <a
                             key={idx}
                             className={cn(
                               'flex select-none gap-4 rounded-md p-3 leading-none outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
                             )}
-                            href="#"
+                            href={item.href}
                           >
-                            {item.icon}
+                            {iconMap[item.icon as keyof typeof iconMap]}
                             <div>
                               <div className="text-sm font-semibold">
                                 {item.title}
@@ -221,86 +208,12 @@ const Navbar1 = () => {
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
-                  <a href="#" className="font-semibold">
+                  <a href="/pricing" className="font-semibold">
                     Pricing
                   </a>
-                  <a href="#" className="font-semibold">
-                    Blog
+                  <a href="/about" className="font-semibold">
+                    About
                   </a>
-                </div>
-                <div className="border-t pt-4">
-                  <div className="grid grid-cols-2 justify-start">
-                    <a
-                      className={cn(
-                        buttonVariants({
-                          variant: 'ghost',
-                        }),
-                        'justify-start text-muted-foreground',
-                      )}
-                      href="#"
-                    >
-                      Press
-                    </a>
-                    <a
-                      className={cn(
-                        buttonVariants({
-                          variant: 'ghost',
-                        }),
-                        'justify-start text-muted-foreground',
-                      )}
-                      href="#"
-                    >
-                      Contact
-                    </a>
-                    <a
-                      className={cn(
-                        buttonVariants({
-                          variant: 'ghost',
-                        }),
-                        'justify-start text-muted-foreground',
-                      )}
-                      href="#"
-                    >
-                      Imprint
-                    </a>
-                    <a
-                      className={cn(
-                        buttonVariants({
-                          variant: 'ghost',
-                        }),
-                        'justify-start text-muted-foreground',
-                      )}
-                      href="#"
-                    >
-                      Sitemap
-                    </a>
-                    <a
-                      className={cn(
-                        buttonVariants({
-                          variant: 'ghost',
-                        }),
-                        'justify-start text-muted-foreground',
-                      )}
-                      href="#"
-                    >
-                      Legal
-                    </a>
-                    <a
-                      className={cn(
-                        buttonVariants({
-                          variant: 'ghost',
-                        }),
-                        'justify-start text-muted-foreground',
-                      )}
-                      href="#"
-                    >
-                      Cookie Settings
-                    </a>
-                  </div>
-                  <div className="mt-2 flex flex-col gap-3">
-                    <Button variant={'outline'}>Log in</Button>
-                    <Button>Sign up</Button>
-                  </div>
                 </div>
               </SheetContent>
             </Sheet>

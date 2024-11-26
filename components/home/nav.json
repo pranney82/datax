@@ -1,0 +1,73 @@
+{
+  "logo": {
+    "src": "https://www.shadcnblocks.com/images/block/block-1.svg",
+    "alt": "logo",
+    "text": "Shadcn Blocks"
+  },
+  "mainNav": [
+    {
+      "label": "Home",
+      "href": "/"
+    },
+    {
+      "label": "Features",
+      "type": "dropdown",
+      "items": [
+        {
+          "title": "Dashboard",
+          "description": "The latest industry news, updates, and info",
+          "icon": "LineChart",
+          "href": "#"
+        },
+        {
+          "title": "JT Features",
+          "description": "Our mission is to innovate and empower the world",
+          "icon": "Trees",
+          "href": "#"
+        },
+        {
+          "title": "Library",
+          "description": "Browse job listing and discover our workspace",
+          "icon": "Book",
+          "href": "#"
+        },
+        {
+          "title": "Roadmap",
+          "description": "Get in touch with our support team or visit our community forums",
+          "icon": "Zap",
+          "href": "#"
+        },
+        {
+          "title": "Changelog",
+          "description": "Get in touch with our support team or visit our community forums",
+          "icon": "Settings2",
+          "href": "#"
+        }
+      ]
+    },
+    {
+      "label": "Test Drive",
+      "href": "#"
+    },
+    {
+      "label": "Pricing",
+      "href": "#"
+    },
+    {
+      "label": "About",
+      "href": "#"
+    }
+  ],
+  "auth": {
+    "login": {
+      "label": "Log in",
+      "href": "#",
+      "variant": "outline"
+    },
+    "signup": {
+      "label": "Sign up",
+      "href": "#",
+      "variant": "default"
+    }
+  }
+} 

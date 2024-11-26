@@ -1,20 +1,17 @@
-// This template requires the Embla Auto Scroll plugin to be installed:
-//
-// npm install embla-carousel-auto-scroll
-
 'use client';
 
+import { useHomeContent } from '@/providers/HomeContentProvider';
 import AutoScroll from 'embla-carousel-auto-scroll';
-
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
 
-import content from './logos3.json';
-
 const Logos3 = () => {
+  const content = useHomeContent();
+  
+  if (!content?.logos3) return null;
   const { logos3 } = content;
 
   return (
@@ -31,7 +28,7 @@ const Logos3 = () => {
             plugins={[AutoScroll({ playOnInit: true })]}
           >
             <CarouselContent className="ml-0">
-              {logos3.logos.map((logo) => (
+              {logos3?.logos?.map((logo) => (
                 <CarouselItem
                   key={logo.image}
                   className="basis-1/3 pl-0 sm:basis-1/4 md:basis-1/5 lg:basis-1/6"

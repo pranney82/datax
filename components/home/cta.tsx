@@ -6,7 +6,7 @@ const CTA11 = () => {
   const { cta } = content;
 
   return (
-    <section className="py-32">
+    <section className="py-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center rounded-lg bg-accent p-8 text-center md:rounded-xl lg:p-16">
           <h3 className="mb-3 max-w-3xl text-2xl font-semibold md:mb-4 md:text-4xl lg:mb-6">

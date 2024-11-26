@@ -6,7 +6,7 @@ const Hero7 = () => {
   const { hero7 } = content;
 
   return (
-    <section className="py-32">
+    <section className="py-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-screen-lg flex-col gap-6">
           <h1 className="text-3xl font-extrabold lg:text-6xl text-center">
@@ -17,7 +17,7 @@ const Hero7 = () => {
           </p>
         </div>
         <div className="py-8 flex flex-col items-center justify-center gap-2 w-full">
-          <div className='grid grid-cols-2 gap-4 w-full'>
+          <div className='grid grid-cols-1 gap-4 w-full md:grid-cols-2'>
             <Card>
               <CardHeader>
                 <CardTitle>{hero7.beforeAfter.before.title}</CardTitle>
