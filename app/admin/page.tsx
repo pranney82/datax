@@ -17,22 +17,20 @@ import footerContent from '@/components/home/footer.json';
 
 
 
-// Define proper types for the content structure
-type ContentValue = string | number | boolean | ContentObject | ContentArray | null;
-type ContentArray = ContentValue[];
-type ContentObject = {
-  [key: string]: ContentValue;
+// Define types for the content structure
+type ContentData = {
+  [key: string]: any;
 };
 
 type RenderFieldProps = {
   path: string;
-  value: ContentValue;
-  onChange: (path: string, value: ContentValue) => void;
+  value: any;
+  onChange: (path: string, value: any) => void;
 };
 
 type RenderFieldsProps = {
-  data: ContentObject;
-  onChange: (path: string, value: ContentValue) => void;
+  data: ContentData;
+  onChange: (path: string, value: any) => void;
 };
 
 // RenderFields component for object fields
@@ -61,7 +59,7 @@ const RenderField = ({ path, value, onChange }: RenderFieldProps) => {
         {value.map((item, index) => (
           <div key={index} className="pl-4 border-l">
             <RenderFields
-              data={typeof item === 'object' && item !== null ? item as ContentObject : { value: item }}
+              data={typeof item === 'object' ? item : { value: item }}
               onChange={(subPath, newValue) => 
                 onChange(`${path}.${index}${subPath === 'value' ? '' : '.' + subPath}`, newValue)
               }
@@ -138,13 +136,13 @@ export default function AdminPage() {
     }
   };
 
-  const updateContent = (section: string, path: string, value: ContentValue) => {
+  const updateContent = (section: string, path: string, value: any) => {
     setContents(prev => {
       const newContents = { ...prev };
       const pathArray = path.split('.');
       
-      // Changed 'let' to 'const' since it's never reassigned
-      const current = JSON.parse(JSON.stringify(newContents[section as keyof typeof contents]));
+      // Create a deep clone of the section we're updating
+      let current = JSON.parse(JSON.stringify(newContents[section as keyof typeof contents]));
       newContents[section as keyof typeof contents] = current;
       
       // Navigate through the path
