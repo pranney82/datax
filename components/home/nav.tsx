@@ -1,9 +1,8 @@
 'use client';
 
-import { LineChart, Menu, X, Trees, Book, Zap, ChevronDown } from 'lucide-react';
+import { LineChart, Menu, X, Trees, Book, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
