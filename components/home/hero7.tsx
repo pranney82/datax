@@ -6,7 +6,7 @@ const Hero7 = () => {
   const { hero7 } = content;
 
   return (
-    <section className="py-8">
+    <section className="py-8 w-full">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-screen-lg flex-col gap-6">
           <h1 className="text-3xl font-extrabold lg:text-6xl text-center">

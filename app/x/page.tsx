@@ -1,6 +1,9 @@
 import { Bell, LineChart, Users, Building, Calendar, Clock } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Separator } from "@/components/ui/separator"
+import { Breadcrumb, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage, BreadcrumbItem, BreadcrumbList } from "@/components/ui/breadcrumb"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 
 // Add these interfaces for type safety
 interface CompanyUpdate {
@@ -76,10 +79,24 @@ export default function HomePage() {
   ]
 
   return (
-    <main className="flex flex-col flex-1 p-6">
+    <main className="flex flex-col flex-1 p-0">
+      <header className="flex h-16 shrink-0 items-center gap-2">
+        <div className="flex items-center gap-2 px-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator orientation="vertical" className="mr-2 h-4" />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className="hidden md:block">
+                <BreadcrumbLink href="/x">Home</BreadcrumbLink>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+      </header> 
       {/* Welcome Section */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
+      <div className="flex flex-1 flex-col gap-4 p-4 pt-0 ">
+        <div className="flex justify-between items-center mb-6">
+          <div>
           <h1 className="text-2xl font-bold">Welcome back, John</h1>
           <p className="text-muted-foreground">Here&apos;s what&apos;s happening with your projects</p>
         </div>
@@ -161,6 +178,7 @@ export default function HomePage() {
             </div>
           </CardContent>
         </Card>
+      </div>
       </div>
     </main>
   )

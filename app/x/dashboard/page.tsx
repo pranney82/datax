@@ -80,11 +80,11 @@ export default function Page() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">Features</BreadcrumbLink>
+                <BreadcrumbLink href="#">Dashboard</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
-                <BreadcrumbPage>Dashboard</BreadcrumbPage>
+                <BreadcrumbPage>Summary</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -107,28 +107,27 @@ export default function Page() {
             </div>            
           </div>
         </div>
-        <Tabs defaultValue="one" className="">
-          <TabsList className="grid w-full grid-cols-4 w-[1200px]">
-            <TabsTrigger value="one">Dashboard</TabsTrigger>
-            <TabsTrigger value="two">
-              Live Board
-              <Badge variant="secondary" className="ml-2 px-1.5 py-0.5 text-xs font-medium">Soon</Badge>
+        <Tabs defaultValue="one">
+          <TabsList className="inline-flex h-10 items-center justify-start rounded-md bg-muted p-1 text-muted-foreground">
+            <TabsTrigger value="one" className="whitespace-nowrap">Summary</TabsTrigger>
+            <TabsTrigger value="two" className="whitespace-nowrap">
+              Leads
+              <Badge variant="secondary" className="ml-2 px-1.5 py-0.5 text-xs font-medium">Paid</Badge>
             </TabsTrigger>
-            <TabsTrigger value="three">
+            <TabsTrigger value="three" className="whitespace-nowrap">
               Sales
-              <Badge variant="secondary" className="ml-2 px-1.5 py-0.5 text-xs font-medium">Soon</Badge>
+              <Badge variant="secondary" className="ml-2 px-1.5 py-0.5 text-xs font-medium">Paid</Badge>
             </TabsTrigger>
-            <TabsTrigger value="four">
-              KPI
-              <Badge variant="secondary" className="ml-2 px-1.5 py-0.5 text-xs font-medium">Soon</Badge>
+            <TabsTrigger value="four" className="whitespace-nowrap">
+              Job Finances
+              <Badge variant="secondary" className="ml-2 px-1.5 py-0.5 text-xs font-medium">Paid</Badge>
             </TabsTrigger>
           </TabsList>
         </Tabs>
         
 
-        <div className="grid auto-rows-min gap-4 md:grid-cols-6">
+        <div className="grid auto-rows-min gap-4 md:grid-cols-5">
           <DashCard title="Revenue" description="last 12 months" content="$2,300,566.99" footer="" />
-          <DashCard title="Active Projects" description="as of today" content="10" footer="" />
           <DashCard title="Approved Estimates" description="last 12 months" content="98" footer="" />
           <DashCard title="Pending Estimates" description="as of today" content="4" footer="" />
           <DashCard title="Total Estimates" description="last 12 months" content="255" footer="" />

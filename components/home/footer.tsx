@@ -5,7 +5,7 @@ const Footer = () => {
   const { footer } = content;
 
   return (
-    <section className="py-8">
+    <section className="py-8 w-full">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <footer>
           <div className="grid grid-cols-2 gap-8 lg:grid-cols-6">

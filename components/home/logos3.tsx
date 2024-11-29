@@ -52,7 +52,7 @@ const logos = [
 
 const Logos3 = () => {
   return (
-    <section className="py-8">
+    <section className="py-8 w-full">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h1 className="my-6 text-pretty text-center text-2xl font-bold lg:text-4xl">
           Trusted by these companies

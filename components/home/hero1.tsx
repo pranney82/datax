@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 
 const Hero1 = () => {
   return (
-    <section className="py-8">
+    <section className="py-8 w-full">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-8 lg:grid-cols-2">
           <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
