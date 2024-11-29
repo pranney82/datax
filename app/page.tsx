@@ -10,7 +10,7 @@ import Navbar1 from "@/components/home/nav";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen w-full">
+    <div className="flex flex-col min-h-screen w-full max-w-full overflow-x-hidden">
       <Navbar1 />
       <Hero1 />
       <Logos3 />

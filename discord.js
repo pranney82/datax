@@ -21,7 +21,7 @@ const notify = async () => {
   
   const message = {
     username: 'Server Bot',
-    content: `🚀 Deployment successful! The updates are live.\n\n📝 Latest commit:\n> ${commitInfo.message}\n👤 By: ${commitInfo.author}\n\n🔗 Link to docs: https://github.com/elstruck/datax/commit/${commitInfo.hash} \n\n🔗 Link to website: https://winyourdata.com`,
+    content: `🚀 Deployment successful! The updates are live.\n\n📝 Latest commit:\n> ${commitInfo.message}\n👤 By: ${commitInfo.author}\n\n🔗 Link to docs: https://github.com/elstruck/datax/commit/ \n\n🔗 Link to website: https://winyourdata.com`,
   };
 
   try {
