@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
 
 // Sample job data with coordinates (centered around Dallas-Fort Worth area)
 const activeJobs = [
@@ -49,7 +50,7 @@ export default function ActiveJobsMap() {
             </CardHeader>
             <CardContent>
                 <div className="relative">
-                    <img 
+                    <Image 
                         src={mapUrl} 
                         alt="Map of active jobs"
                         width={MAP_WIDTH}

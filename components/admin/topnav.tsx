@@ -1,4 +1,5 @@
 import { Book, Menu, Sunset, Trees, Zap } from 'lucide-react';
+import Image from 'next/image';
 
 import {
   Accordion,
@@ -79,10 +80,12 @@ const TopNav = () => {
         <nav className="hidden justify-between lg:flex">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
-              <img
+              <Image
                 src="https://www.shadcnblocks.com/images/block/block-1.svg"
-                className="w-8"
+                width={32}
+                height={32}
                 alt="logo"
+                className="w-8"
               />
               <span className="text-xl font-bold">Shadcn Blocks</span>
             </div>
@@ -198,10 +201,12 @@ const TopNav = () => {
         <div className="block lg:hidden">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <img
+              <Image
                 src="https://www.shadcnblocks.com/images/block/block-1.svg"
-                className="w-8"
+                width={32}
+                height={32}
                 alt="logo"
+                className="w-8"
               />
               <span className="text-xl font-bold">Shadcn Blocks</span>
             </div>
@@ -215,10 +220,12 @@ const TopNav = () => {
                 <SheetHeader>
                   <SheetTitle>
                     <div className="flex items-center gap-2">
-                      <img
+                      <Image
                         src="https://www.shadcnblocks.com/images/block/block-1.svg"
-                        className="w-8"
+                        width={32}
+                        height={32}
                         alt="logo"
+                        className="w-8"
                       />
                       <span className="text-xl font-bold">Shadcn Blocks</span>
                     </div>

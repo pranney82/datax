@@ -3,6 +3,7 @@
 import { ArrowDownRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 
 const Hero1 = () => {
   return (
@@ -34,9 +35,11 @@ const Hero1 = () => {
               </a>
             </div>
           </div>
-          <img
+          <Image
             src="https://www.shadcnblocks.com/images/block/placeholder-1.svg"
             alt="placeholder hero"
+            width={1200}
+            height={800}
             className="max-h-96 w-full rounded-md object-cover"
           />
         </div>

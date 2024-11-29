@@ -6,6 +6,7 @@ import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 const iconMap = {
   LineChart: <LineChart className="size-5 shrink-0" />,
@@ -44,10 +45,12 @@ const Navbar1 = () => {
         <nav className="hidden justify-between lg:flex">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
-              <img
+              <Image
                 src="https://www.shadcnblocks.com/images/block/block-1.svg"
-                className="w-8"
+                width={32}
+                height={32}
                 alt="logo"
+                className="w-8"
               />
               <span className="text-xl font-bold">DATAx</span>  
             </div>
@@ -177,10 +180,12 @@ const Navbar1 = () => {
         <div className="block lg:hidden relative">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <img
+              <Image
                 src="https://www.shadcnblocks.com/images/block/block-1.svg"
-                className="w-8"
+                width={32}
+                height={32}
                 alt="logo"
+                className="w-8"
               />
               <span className="text-xl font-bold">DATAx</span>
             </div>

@@ -5,26 +5,9 @@ import { Badge } from "@/components/ui/badge"
 import { 
   ArrowRight, 
   Star,
-  MessageSquare, // Chat
-  BarChart, // Dashboard
   FileText, // Documents
   CheckSquare, // Tasks
   Calendar,
-  Notebook, // Notes
-  HardDrive, // Files
-  Users, // Team Chat
-  Video, // Meetings
-  Mail, // Email
-  Wand2, // AI Writer
-  LineChart, // Data Analysis
-  Workflow, // Automation
-  Webhook, // API
-  Plug, // Integrations
-  Lock, // Access Control
-  History, // Audit
-  Shield, // Compliance
-  FileBarChart, // Reports
-  PieChart, // Visualization
   Download, // Export
   type LucideIcon
 } from "lucide-react"
@@ -51,12 +34,12 @@ function FeatureCard({ title, description, href, icon: Icon, isPopular }: Featur
           <Icon className="h-12 w-12 mb-4 text-muted-foreground" />
           <div className="flex items-center gap-2">
             <h3 className="font-semibold">{title}</h3>
-            {isPopular && (
+          </div>
+          {isPopular && (
               <Badge variant="secondary" className="gap-1">
                 <Star className="h-3 w-3" /> Popular
               </Badge>
             )}
-          </div>
           <p className="mt-2 text-sm text-muted-foreground">{description}</p>
         </div>
         <ArrowRight className="absolute bottom-4 right-4 h-4 w-4 opacity-0 transition-opacity group-hover:opacity-100" />
@@ -69,140 +52,34 @@ export default function FeaturesPage() {
   const [searchQuery, setSearchQuery] = useState("")
 
   const allFeatures = [
+
     {
-      title: "AI Chat",
-      description: "Engage with our advanced AI chatbot for instant assistance and insights.",
-      href: "/x/chat",
-      icon: MessageSquare,
+      title: "Cash Flow Calendar",
+      description: "Track and manage your cash flow based on JobTread's calendar task types.",
+      href: "/x/features/calendar",
+      icon: Calendar,
       isPopular: true,
     },
     {
-      title: "Dashboard Analytics",
-      description: "Comprehensive analytics and visualization tools for your data.",
-      href: "/x/dashboard",
-      icon: BarChart,
+      title: "Zillow Data Import",
+      description: "When a job is created, automatically import property data from Zillow and assign to custom fields.",
+      href: "/x/features/zillow",
+      icon: Download,
       isPopular: true,
     },
     {
-      title: "Document Generation",
-      description: "Automatically generate professional documents and reports.",
-      href: "/x/documents",
+      title: "Google Maps Cover Photos",
+      description: "Automatically fetch Google Maps images and assign to Job Cover Photo.",
+      href: "/x/features/coverphoto",
       icon: FileText,
       isPopular: true,
     },
     {
-      title: "Task Manager",
-      description: "Organize and track your tasks efficiently.",
-      href: "/x/tasks",
+      title: "Print ToDos",
+      description: "Generate printable task lists for offline use.",
+      href: "/x/features/print",
       icon: CheckSquare,
-    },
-    {
-      title: "Calendar",
-      description: "Schedule and manage your appointments.",
-      href: "/x/calendar",
-      icon: Calendar,
-    },
-    {
-      title: "Notes",
-      description: "Take and organize your notes seamlessly.",
-      href: "/x/notes",
-      icon: Notebook,
-    },
-    {
-      title: "File Storage",
-      description: "Secure cloud storage for your files.",
-      href: "/x/files",
-      icon: HardDrive,
-    },
-    {
-      title: "Team Chat",
-      description: "Real-time messaging for team collaboration.",
-      href: "/x/team-chat",
-      icon: Users,
-    },
-    {
-      title: "Video Meetings",
-      description: "HD video conferencing solution.",
-      href: "/x/meetings",
-      icon: Video,
-    },
-    {
-      title: "Email Client",
-      description: "Integrated email management system.",
-      href: "/x/email",
-      icon: Mail,
-    },
-    {
-      title: "AI Writing Assistant",
-      description: "Generate and improve content with AI.",
-      href: "/x/ai-writer",
-      icon: Wand2,
-    },
-    {
-      title: "Data Analysis",
-      description: "Automated data analysis and insights.",
-      href: "/x/analysis",
-      icon: LineChart,
-    },
-    {
-      title: "Workflow Automation",
-      description: "Create custom automation workflows.",
-      href: "/x/automation",
-      icon: Workflow,
-    },
-    {
-      title: "API Management",
-      description: "Manage and monitor your API integrations.",
-      href: "/x/api",
-      icon: Webhook,
-    },
-    {
-      title: "Webhooks",
-      description: "Set up and manage webhook endpoints.",
-      href: "/x/webhooks",
-      icon: Webhook,
-    },
-    {
-      title: "Third-party Integrations",
-      description: "Connect with popular services and tools.",
-      href: "/x/integrations",
-      icon: Plug,
-    },
-    {
-      title: "Access Control",
-      description: "Manage user permissions and access levels.",
-      href: "/x/access",
-      icon: Lock,
-    },
-    {
-      title: "Audit Logs",
-      description: "Track and monitor system activities.",
-      href: "/x/audit",
-      icon: History,
-    },
-    {
-      title: "Compliance Tools",
-      description: "Tools for maintaining regulatory compliance.",
-      href: "/x/compliance",
-      icon: Shield,
-    },
-    {
-      title: "Custom Reports",
-      description: "Create and schedule custom reports.",
-      href: "/x/reports",
-      icon: FileBarChart,
-    },
-    {
-      title: "Data Visualization",
-      description: "Interactive charts and graphs.",
-      href: "/x/visualization",
-      icon: PieChart,
-    },
-    {
-      title: "Export Tools",
-      description: "Export data in multiple formats.",
-      href: "/x/export",
-      icon: Download,
+      isPopular: false,
     },
   ]
 

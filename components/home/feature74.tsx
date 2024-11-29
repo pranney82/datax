@@ -1,4 +1,5 @@
 import content from '@/components/home/feature74.json';
+import Image from 'next/image';
 
 const Feature74 = () => {
   const { feature74 } = content;
@@ -23,9 +24,11 @@ const Feature74 = () => {
 
             const ImageSection = (
               <div className="md:min-h-96 lg:min-h-[28rem] xl:min-h-[32rem]">
-                <img
+                <Image
                   src="https://www.shadcnblocks.com/images/block/placeholder-1.svg"
                   alt={`Feature ${index + 1}`}
+                  width={1200}
+                  height={675}
                   className="aspect-[16/9] size-full object-cover object-center"
                 />
               </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, LayoutGrid, List, Plus } from 'lucide-react'
 import { useState } from 'react'
 import {
     Breadcrumb,
@@ -12,6 +12,8 @@ import {
   } from "@/components/ui/breadcrumb"
   import { Separator } from "@/components/ui/separator"
   import { SidebarTrigger } from "@/components/ui/sidebar"
+  import { Button } from "@/components/ui/button"
+  import { Badge } from "@/components/ui/badge"
 
 interface Invoice {
   id: string
@@ -24,6 +26,7 @@ export default function Calendar() {
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Totals']
   const [currentDate, setCurrentDate] = useState(new Date())
   const today = new Date()
+  const [isCalendarView, setIsCalendarView] = useState(true)
 
   const monthYear = currentDate.toLocaleString('default', { 
     month: 'long',
@@ -88,13 +91,53 @@ export default function Calendar() {
       jobName: 'Garage Door Install',
       amount: 3200,
       dueDate: new Date(2024, 10, 28)
+    },
+    {
+      id: '8',
+      jobName: 'Master Suite Addition',
+      amount: 45000,
+      dueDate: new Date(2024, 11, 5)
+    },
+    {
+      id: '9',
+      jobName: 'Outdoor Kitchen',
+      amount: 18500,
+      dueDate: new Date(2024, 11, 12)
+    },
+    {
+      id: '10',
+      jobName: 'Home Theater',
+      amount: 25000,
+      dueDate: new Date(2024, 11, 20)
+    },
+    {
+      id: '11',
+      jobName: 'Solar Panel Installation',
+      amount: 32000,
+      dueDate: new Date(2025, 0, 8)
+    },
+    {
+      id: '12',
+      jobName: 'Smart Home Integration',
+      amount: 15500,
+      dueDate: new Date(2025, 0, 15)
+    },
+    {
+      id: '13',
+      jobName: 'Pool Construction',
+      amount: 65000,
+      dueDate: new Date(2025, 0, 25)
     }
   ]
 
   const generateCalendarDays = () => {
     const daysInMonth = getDaysInMonth(currentDate)
     const firstDay = getFirstDayOfMonth(currentDate)
-    const totalSlots = 35
+    
+    // Calculate how many weeks we need
+    const totalDays = firstDay + daysInMonth
+    const numberOfWeeks = Math.ceil(totalDays / 7)
+    const totalSlots = numberOfWeeks * 8 // 8 columns (7 days + totals column)
 
     return [...Array(totalSlots)].map((_, index) => {
       const isEighthColumn = (index + 1) % 8 === 0
@@ -189,6 +232,44 @@ export default function Calendar() {
       .reduce((sum, invoice) => sum + invoice.amount, 0)
   }
 
+  const generateListView = () => {
+    const filteredInvoices = invoices.filter(invoice => 
+      invoice.dueDate.getMonth() === currentDate.getMonth() &&
+      invoice.dueDate.getFullYear() === currentDate.getFullYear()
+    )
+
+    if (filteredInvoices.length === 0) {
+      return (
+        <div className="flex items-center justify-center p-8 border rounded-lg">
+          <span className="text-gray-500">No Pay Phases Found</span>
+        </div>
+      )
+    }
+
+    return (
+      <div className="flex flex-col gap-4">
+        {filteredInvoices
+          .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime())
+          .map(invoice => (
+            <div 
+              key={invoice.id}
+              className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+            >
+              <div className="flex flex-col">
+                <span className="font-medium">{invoice.jobName}</span>
+                <span className="text-sm text-gray-500">
+                  {invoice.dueDate.toLocaleDateString()}
+                </span>
+              </div>
+              <span className="font-semibold">
+                ${invoice.amount.toLocaleString()}
+              </span>
+            </div>
+          ))}
+      </div>
+    )
+  }
+
   return (
     <main className="flex flex-col flex-1 p-0">
       <header className="flex h-16 shrink-0 items-center gap-2">
@@ -198,7 +279,7 @@ export default function Calendar() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">Features</BreadcrumbLink>
+                <BreadcrumbLink href="/x/features">Features</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
@@ -209,39 +290,68 @@ export default function Calendar() {
         </div>
       </header>
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-        <div className="flex items-center justify-center gap-4 mb-6">
-          <button 
-            className="p-2 hover:bg-gray-100 rounded-full"
-            onClick={handlePreviousMonth}
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <div className="flex flex-col items-center">
-            <h2 className="text-2xl font-semibold">{monthYear}</h2>
-            <h3 className="text-sm text-gray-500">
-              ${getMonthlyTotal().toLocaleString()}
-            </h3>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex">
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={() => setIsCalendarView(!isCalendarView)}
+              >
+              {isCalendarView ? (
+                <>
+                  <List className="h-4 w-4" />
+                  <span>List View</span>
+                </>
+              ) : (
+                <>
+                  <LayoutGrid className="h-4 w-4" />
+                  <span>Calendar View</span>
+                </>
+              )}
+            </Button>
           </div>
-          <button 
-            className="p-2 hover:bg-gray-100 rounded-full"
-            onClick={handleNextMonth}
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Calendar Grid */}
-        <div className="grid grid-cols-8 gap-2">
-          {/* Week day headers */}
-          {weekDays.map((day) => (
-            <div key={day} className="text-center font-medium text-gray-500 py-2">
-              {day}
+          <div className="flex items-center gap-4">
+            <button 
+              className="p-2 hover:bg-gray-100 rounded-full"
+              onClick={handlePreviousMonth}
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <div className="flex flex-col items-center">
+              <h2 className="text-2xl font-semibold">{monthYear}</h2>
+              <h3 className="text-sm text-gray-500">
+                ${getMonthlyTotal().toLocaleString()}
+              </h3>
             </div>
-          ))}
-          
-          {/* Calendar days and total slots */}
-          {generateCalendarDays()}
+            <button 
+              className="p-2 hover:bg-gray-100 rounded-full"
+              onClick={handleNextMonth}
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" className="gap-2">
+              <Plus className="w-4 h-4" />
+              <span>Add Pay Phase <Badge variant="secondary">Coming Soon</Badge></span>
+            </Button>
+          </div>
         </div>
+        
+
+        {/* Conditional render based on view type */}
+        {isCalendarView ? (
+          <div className="grid grid-cols-8 gap-2">
+            {weekDays.map((day) => (
+              <div key={day} className="text-center font-medium text-gray-500 py-2">
+                {day}
+              </div>
+            ))}
+            {generateCalendarDays()}
+          </div>
+        ) : (
+          generateListView()
+        )}
       </div>
     </main>
   )

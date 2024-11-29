@@ -6,6 +6,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
+import Image from 'next/image';
 
 const logos = [
   {
@@ -72,10 +73,12 @@ const Logos3 = () => {
                 >
                   <div className="mx-10 flex shrink-0 items-center justify-center">
                     <div>
-                      <img
+                      <Image
                         src={logo.image}
                         alt={logo.description}
-                        className="h-7 w-auto"
+                        width={28}
+                        height={28}
+                        className="w-auto h-7"
                       />
                     </div>
                   </div>

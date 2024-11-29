@@ -1,5 +1,6 @@
 import content from '@/components/home/footer.json';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Footer = () => {
   const { footer } = content;
@@ -10,9 +11,11 @@ const Footer = () => {
         <footer>
           <div className="grid grid-cols-2 gap-8 lg:grid-cols-6">
             <div className="col-span-2 mb-8 lg:mb-0">
-              <img
+              <Image
                 src={footer.logo.src}
                 alt={footer.logo.alt}
+                width={28}
+                height={28}
                 className="mb-4 h-7"
               />
               <p className="font-bold">{footer.tagline}</p>
