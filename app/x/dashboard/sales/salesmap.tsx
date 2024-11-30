@@ -28,6 +28,23 @@ const MAP_HEIGHT = 600;
 const GOOGLE_MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 export default function ActiveJobsMap() {
+    // Add error handling for missing API key
+    if (!GOOGLE_MAPS_KEY) {
+        console.error('Google Maps API key is not configured');
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle>Active Jobs Map</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="p-4 text-center text-red-500">
+                        Map configuration error. Please check API key.
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
     // Create the markers string for the Google Static Maps API
     const markers = activeJobs.map(job => (
         `markers=color:red%7Clabel:${job.id}%7C${job.lat},${job.lng}`
@@ -56,6 +73,7 @@ export default function ActiveJobsMap() {
                         width={MAP_WIDTH}
                         height={MAP_HEIGHT}
                         className="rounded-lg w-full h-auto"
+                        unoptimized // Add this to bypass Next.js image optimization for external URLs
                     />
                     <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
                         {activeJobs.map(job => (
