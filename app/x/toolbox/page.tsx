@@ -56,28 +56,28 @@ export default function FeaturesPage() {
     {
       title: "Cash Flow Calendar",
       description: "Track and manage your cash flow based on JobTread's calendar task types.",
-      href: "/x/features/calendar",
+      href: "/x/toolbox/calendar",
       icon: Calendar,
       isPopular: true,
     },
     {
       title: "Zillow Data Import",
       description: "When a job is created, automatically import property data from Zillow and assign to custom fields.",
-      href: "/x/features/zillow",
+      href: "/x/toolbox/zillow",
       icon: Download,
       isPopular: true,
     },
     {
       title: "Google Maps Cover Photos",
       description: "Automatically fetch Google Maps images and assign to Job Cover Photo.",
-      href: "/x/features/coverphoto",
+      href: "/x/toolbox/coverphoto",
       icon: FileText,
       isPopular: true,
     },
     {
       title: "Print ToDos",
       description: "Generate printable task lists for offline use.",
-      href: "/x/features/print",
+      href: "/x/toolbox/print",
       icon: CheckSquare,
       isPopular: false,
     },
@@ -97,7 +97,7 @@ export default function FeaturesPage() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">Features</BreadcrumbLink>
+                <BreadcrumbLink href="#">Toolbox</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
@@ -110,9 +110,9 @@ export default function FeaturesPage() {
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="container py-8">
           <div className="flex flex-col gap-4 mb-8">
-            <h1 className="text-3xl font-bold">JT Features</h1>
+            <h1 className="text-3xl font-bold">Toolbox</h1>
             <Input
-              placeholder="Search features..."
+              placeholder="Search tools..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="max-w-md"

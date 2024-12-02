@@ -42,8 +42,8 @@ const data = {
       icon: LineChart,
     },
     {
-      title: "JT Features",
-      url: "/x/features",
+      title: "Toolbox",
+      url: "/x/toolbox",
       icon: SquareTerminal,
     },
     {

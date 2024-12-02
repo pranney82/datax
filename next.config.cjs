@@ -2,7 +2,6 @@
 const nextConfig = {
   images: {
     domains: ['maps.googleapis.com'],
-    // Or use remotePatterns for more specific control:
     remotePatterns: [
       {
         protocol: 'https',
