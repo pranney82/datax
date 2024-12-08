@@ -1,31 +1,83 @@
-import content from '@/components/home/feature74.json';
 import Image from 'next/image';
+import { Button } from '../ui/button';
 
 const Feature74 = () => {
-  const { feature74 } = content;
+  const features = [
+    {
+      title: "Dashboard",
+      id: "dashboard",
+      description: [
+        "Pre Built",
+        "Set Goals",
+        "Know Your Numbers"
+      ],
+      image: "https://www.shadcnblocks.com/images/block/placeholder-1.svg"
+    },
+    {
+      title: 'Toolbox',
+      id: 'toolbox',
+      description: [
+        'Automations',
+        'Custom Integrations',
+        'AI Workflows and Tools',
+      ],
+      image: "https://www.shadcnblocks.com/images/block/placeholder-1.svg"
+    },
+    {
+      title: 'Library',
+      id: 'library',
+      description: [
+        'Cost Group Templates',
+        'Schedule, Task, ToDo Templates',
+        'API Scripts',
+        'Article & Video Resources',
+      ],
+      image: "https://www.shadcnblocks.com/images/block/placeholder-1.svg"
+    },
+    {
+      title: 'Development Roadmap',
+      id: 'roadmap',
+      description: [
+        'Live Board',
+        "Forecasting",
+        "Benchmarking"
+      ],
+      image: "https://www.shadcnblocks.com/images/block/placeholder-1.svg"
+    }
+  ];
 
   return (
     <section className="py-8 w-full">
       <div id="features" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-6 md:grid-cols-2 lg:gap-8">
-          {feature74.features.map((feature, index) => {
+          {features.map((feature, index) => {
             const isEven = index % 2 === 1;
             
             const ContentSection = (
-              <div className="flex flex-col justify-center px-6 py-8 md:px-8 md:py-10 lg:px-10 lg:py-12">
-                <h3 className="mb-3 text-lg font-semibold md:mb-4 md:text-2xl lg:mb-6">
+              <div
+                id={feature.id}
+                className="flex flex-col justify-center px-6 py-8 md:px-8 md:py-10 lg:px-10 lg:py-12"
+              >
+                <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
                   {feature.title}
-                </h3>
-                <p className="text-muted-foreground lg:text-lg">
-                  {feature.description}
-                </p>
+                </h2>
+                <ul className="list-disc pl-4 space-y-2 text-muted-foreground lg:text-lg">
+                  {feature.description.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+                <div className="flex justify-left mt-4">
+                  <Button variant="yellow" className="w-full sm:w-auto">
+                    Test Drive
+                  </Button>
+                </div>
               </div>
             );
 
             const ImageSection = (
               <div className="md:min-h-96 lg:min-h-[28rem] xl:min-h-[32rem]">
                 <Image
-                  src="https://www.shadcnblocks.com/images/block/placeholder-1.svg"
+                  src={feature.image}
                   alt={`Feature ${index + 1}`}
                   width={1200}
                   height={675}

@@ -1,11 +1,11 @@
 {
   "footer": {
     "logo": {
-      "src": "https://www.shadcnblocks.com/images/block/logos/shadcn-ui.svg",
+      "src": "/assets/logos/5.png",
       "alt": "logo"
     },
-    "tagline": "Components made easy.",
-    "copyright": "© 2024 Shadcn. All rights reserved.",
+    "tagline": "Data made easy.",
+    "copyright": "© 2024 A ContractorCTO Company.",
     "sections": [
       {
         "title": "Product",

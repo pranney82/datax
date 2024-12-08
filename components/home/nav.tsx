@@ -7,6 +7,7 @@ import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMe
 import { Button, buttonVariants } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const iconMap = {
   LineChart: <LineChart className="size-5 shrink-0" />,
@@ -46,16 +47,15 @@ const Navbar1 = () => {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <Image
-                src="https://www.shadcnblocks.com/images/block/block-1.svg"
-                width={32}
-                height={32}
+                src="/assets/logos/5.png"
+                width={96}
+                height={64}
                 alt="logo"
-                className="w-8"
+                className="w-auto"
               />
-              <span className="text-xl font-bold">DATAx</span>  
             </div>
             <div className="flex items-center">
-              <a
+              <Link
                 className={cn(
                   'text-muted-foreground',
                   navigationMenuTriggerStyle,
@@ -64,7 +64,7 @@ const Navbar1 = () => {
                 href="/"
               >
                 Home
-              </a>
+              </Link>
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem className="text-muted-foreground">
@@ -72,14 +72,14 @@ const Navbar1 = () => {
                       <span>Features</span>
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <ul className="w-80 p-3">
-                        <NavigationMenuLink>
-                          <li>
-                            <a
+                      <ul className="grid w-80 gap-3 p-3">
+                        <li>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              href="/#dashboard"
                               className={cn(
                                 'flex select-none gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
                               )}
-                              href="#"
                             >
                               {iconMap.LineChart}
                               <div>
@@ -90,32 +90,38 @@ const Navbar1 = () => {
                                   The latest industry news, updates, and info
                                 </p>
                               </div>
-                            </a>
-                          </li>
-                          <li>
-                            <a
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+
+                        <li>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              href="/#toolbox"
                               className={cn(
                                 'flex select-none gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
                               )}
-                              href="#"
                             >
                               {iconMap.Trees}
                               <div>
                                 <div className="text-sm font-semibold">
-                                  JT Features
+                                  Toolbox
                                 </div>
                                 <p className="text-sm leading-snug text-muted-foreground">
                                   Our mission is to innovate and empower the world
                                 </p>
                               </div>
-                            </a>
-                          </li>
-                          <li>
-                            <a
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+
+                        <li>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              href="/#library"
                               className={cn(
                                 'flex select-none gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
                               )}
-                              href="#"
                             >
                               {iconMap.Book}
                               <div>
@@ -126,15 +132,25 @@ const Navbar1 = () => {
                                   Browse job listing and discover our workspace
                                 </p>
                               </div>
-                            </a>
-                          </li>
-                        </NavigationMenuLink>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
                       </ul>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
                 </NavigationMenuList>
               </NavigationMenu>
-              <a
+              <Link
+                className={cn(
+                  'text-muted-foreground',
+                  navigationMenuTriggerStyle,
+                  buttonVariants({ variant: 'ghost' })
+                )}
+                href="/about"
+              >
+                About
+              </Link>
+              <Link
                 className={cn(
                   'text-muted-foreground',
                   navigationMenuTriggerStyle,
@@ -143,34 +159,24 @@ const Navbar1 = () => {
                 href="#"
               >
                 Test Drive
-              </a>
-              <a
+              </Link>
+              <Link
                 className={cn(
                   'text-muted-foreground',
                   navigationMenuTriggerStyle,
                   buttonVariants({ variant: 'ghost' })
                 )}
-                href="#"
+                href="/pricing"
               >
                 Pricing
-              </a>
-              <a
-                className={cn(
-                  'text-muted-foreground',
-                  navigationMenuTriggerStyle,
-                  buttonVariants({ variant: 'ghost' })
-                )}
-                href="#"
-              >
-                About
-              </a>
+              </Link>
             </div>
           </div>
           <div className="flex gap-2">
             <Button variant="outline">
               Log in
             </Button>
-            <Button>
+            <Button variant="yellow">
               Sign up
             </Button>
           </div>
@@ -181,13 +187,12 @@ const Navbar1 = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Image
-                src="https://www.shadcnblocks.com/images/block/block-1.svg"
-                width={32}
-                height={32}
+                src="/assets/logos/6.png"
+                width={96}
+                height={64}
                 alt="logo"
-                className="w-8"
+                className="w-auto"
               />
-              <span className="text-xl font-bold">DATAx</span>
             </div>
             <Button 
               variant="outline" 
@@ -210,21 +215,21 @@ const Navbar1 = () => {
               className="absolute right-0 left-0 top-[calc(100%+0.5rem)] bg-background border rounded-lg shadow-lg p-4 z-50 max-h-[calc(100vh-4rem)] overflow-y-auto"
             >
               <nav className="flex flex-col gap-4">
-                <a href="/" className="text-base font-medium hover:text-primary">
+                <Link href="/" className="text-base font-medium hover:text-primary">
                   Home
-                </a>
-                <a href="#features" className="text-base font-medium hover:text-primary" onClick={() => setIsOpen(false)}>
+                </Link>
+                <Link href="/#features" className="text-base font-medium hover:text-primary" onClick={() => setIsOpen(false)}>
                   Features
-                </a>
-                <a href="#" className="text-base font-medium hover:text-primary">
-                  Test Drive
-                </a>
-                <a href="#" className="text-base font-medium hover:text-primary">
-                  Pricing
-                </a>
-                <a href="#" className="text-base font-medium hover:text-primary">
+                </Link>
+                <Link href="/about" className="text-base font-medium hover:text-primary">
                   About
-                </a>
+                </Link>
+                <Link href="#" className="text-base font-medium hover:text-primary">
+                  Test Drive
+                </Link>
+                <Link href="/pricing" className="text-base font-medium hover:text-primary">
+                  Pricing
+                </Link>
                 <div className="flex flex-col gap-2 pt-4 border-t">
                   <Button variant="outline" className="w-full">
                     Log in

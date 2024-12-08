@@ -7,6 +7,7 @@ import {
   CarouselItem,
 } from '@/components/ui/carousel';
 import Image from 'next/image';
+import { Heart } from "lucide-react";
 
 const logos = [
   {
@@ -56,7 +57,7 @@ const Logos3 = () => {
     <section className="py-8 w-full">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h1 className="my-6 text-pretty text-center text-2xl font-bold lg:text-4xl">
-          Trusted by these companies
+          <Heart className="inline-block w-12 h-12 text-red-500 fill-red-500" /> by these companies
         </h1>
       </div>
       <div className="pt-10 md:pt-16 lg:pt-20">
@@ -76,9 +77,10 @@ const Logos3 = () => {
                       <Image
                         src={logo.image}
                         alt={logo.description}
-                        width={28}
-                        height={28}
+                        width={0}
+                        height={0}
                         className="w-auto h-7"
+                        sizes="100vw"
                       />
                     </div>
                   </div>

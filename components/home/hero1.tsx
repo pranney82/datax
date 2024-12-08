@@ -16,31 +16,32 @@ const Hero1 = () => {
               <ArrowDownRight className="ml-2 size-4" />
             </Badge>
             <h1 className="my-6 text-pretty text-4xl font-bold lg:text-6xl">
-              Welcome to DATAx
+              It&apos;s Time to <br /> Win Your Data
             </h1>
             <p className="mb-8 max-w-xl text-muted-foreground lg:text-xl">
-              Where all your dreams come true, with data.
+              JobTread companion app for serious contractors. Insights and
+              automation for your JobTread data, no technical ability required.
             </p>
             <div className="flex w-full flex-col justify-center gap-2 sm:flex-row lg:justify-start">
               <a href="#">
-                <Button className="w-full sm:w-auto">
-                  Get Started
+                <Button variant="yellow" className="w-full sm:w-auto">
+                  Try for Free
                 </Button>
               </a>
               <a href="#features">
                 <Button variant="outline" className="w-full sm:w-auto">
-                  Learn More
+                  Features
                   <ArrowDownRight className="ml-2 size-4" />
                 </Button>
               </a>
             </div>
           </div>
           <Image
-            src="https://www.shadcnblocks.com/images/block/placeholder-1.svg"
+            src="/assets/images/hero1.png"
             alt="placeholder hero"
             width={1200}
             height={800}
-            className="max-h-96 w-full rounded-md object-cover"
+            className="max-h-auto w-full rounded-md object-cover border-4 border-gray-200"
           />
         </div>
       </div>
