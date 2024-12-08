@@ -7,6 +7,7 @@ const nextConfig = {
       'maps.googleapis.com',
       'www.shadcnblocks.com',
       'www.shadcn.com',
+      'firebasestorage.googleapis.com'
     ],
   },
   // ... rest of your config

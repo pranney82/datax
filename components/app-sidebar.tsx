@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import {
   BookOpen,
   Home,
@@ -8,7 +9,6 @@ import {
   LineChart,
   Settings2,
   SquareTerminal,
-  X,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -74,8 +74,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <a href="/x">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-yellow-100 text-black">
-                  <X className="size-4" />
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                  <Image src="/assets/icons/1.png" alt="DATAx Logo" width={32} height={32} />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">DATA x</span>

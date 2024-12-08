@@ -1,5 +1,8 @@
 'use client'
 
+import { useEffect, useState } from "react"
+import { doc, getDoc, updateDoc } from "firebase/firestore"
+import { db } from "@/lib/firebase"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,23 +15,70 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { useState } from "react"
+import { Eye, EyeOff } from "lucide-react"
+import { Button } from "@/components/ui/button"
+
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
-    googleMapsApiKey: '',
-    zillowApiKey: '',
+    jtgrantkey: '',
+    jtorgid: '',
     enableNotifications: false,
     enableAutoSync: false,
     enableDarkMode: false,
   })
 
-  const handleInputChange = (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSettings(prev => ({ ...prev, [key]: e.target.value }))
+  const [showGrantKey, setShowGrantKey] = useState(false)
+  const [showOrgId, setShowOrgId] = useState(false)
+
+  const userId = 'user_2lWABBDZrVg3N9IWW6f18kftZvx' // Hardcoded for testing
+
+  // Fetch user settings from Firestore
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const userDoc = await getDoc(doc(db, 'users', userId))
+      if (userDoc.exists()) {
+        const userData = userDoc.data()
+        setSettings(prev => ({
+          ...prev,
+          jtgrantkey: userData.jtgrantkey || '',
+          jtorgid: userData.jtorgid || '',
+          // Keep other settings as is for now
+        }))
+      }
+    }
+
+    fetchSettings()
+  }, [])
+
+  // Update handlers to save to Firestore
+  const handleInputChange = (key: string) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value
+    setSettings(prev => ({ ...prev, [key]: newValue }))
+    
+    // Update Firestore
+    try {
+      await updateDoc(doc(db, 'users', userId), {
+        [key]: newValue
+      })
+    } catch (error) {
+      console.error('Error updating setting:', error)
+      // You might want to add error handling UI here
+    }
   }
 
-  const handleToggleChange = (key: string) => (checked: boolean) => {
+  const handleToggleChange = (key: string) => async (checked: boolean) => {
     setSettings(prev => ({ ...prev, [key]: checked }))
+    
+    // Update Firestore
+    try {
+      await updateDoc(doc(db, 'users', userId), {
+        [key]: checked
+      })
+    } catch (error) {
+      console.error('Error updating setting:', error)
+      // You might want to add error handling UI here
+    }
   }
 
   return (
@@ -55,29 +105,55 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle>API Keys</CardTitle>
               <CardDescription>
-                Configure your API keys for external services
+                Configure your JobTread API credentials
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="google-maps-api">Google Maps API Key</Label>
-                <Input
-                  id="google-maps-api"
-                  type="password"
-                  value={settings.googleMapsApiKey}
-                  onChange={handleInputChange('googleMapsApiKey')}
-                  placeholder="Enter your Google Maps API key"
-                />
+                <Label htmlFor="jobtread-api">JobTread API Grant Key</Label>
+                <div className="relative">
+                  <Input
+                    id="jobtread-api"
+                    type={showGrantKey ? "text" : "password"}
+                    value={settings.jtgrantkey}
+                    onChange={handleInputChange('jtgrantkey')}
+                    placeholder="Enter your JobTread API Grant Key"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowGrantKey(!showGrantKey)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showGrantKey ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="zillow-api">Zillow API Key</Label>
-                <Input
-                  id="zillow-api"
-                  type="password"
-                  value={settings.zillowApiKey}
-                  onChange={handleInputChange('zillowApiKey')}
-                  placeholder="Enter your Zillow API key"
-                />
+                <Label htmlFor="jobtread-org">JobTread Organization ID</Label>
+                <div className="relative">
+                  <Input
+                    id="jobtread-org"
+                    type={showOrgId ? "text" : "password"}
+                    value={settings.jtorgid}
+                    onChange={handleInputChange('jtorgid')}
+                    placeholder="Enter your JobTread Organization ID"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowOrgId(!showOrgId)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showOrgId ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -130,6 +206,7 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
+          <Button>Save Settings</Button>
         </div>
       </div>
     </main>
