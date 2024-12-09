@@ -36,10 +36,18 @@ interface Template {
 async function getTemplates() {
   const templatesRef = collection(db, "library");
   const snapshot = await getDocs(templatesRef);
-  return snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  })) as Template[];
+  return snapshot.docs.map(doc => {
+    const data = doc.data();
+    const createdAt = data.createdAt?.toDate?.() 
+      ? data.createdAt.toDate().toLocaleDateString() 
+      : data.createdAt;
+
+    return {
+      id: doc.id,
+      ...data,
+      createdAt,
+    } as Template;
+  });
 }
 
 import { Button } from "@/components/ui/button"
