@@ -11,7 +11,7 @@ const CTA11 = () => {
           </h3>
           <div className="flex w-full flex-col justify-center gap-2 sm:flex-row">
             <Link href="#">
-              <Button variant="yellow" className="w-full sm:w-auto">
+              <Button className="bg-primary text-primary-foreground w-full sm:w-auto">
                 Try For Free
               </Button>
             </Link>

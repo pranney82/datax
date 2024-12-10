@@ -24,7 +24,7 @@ const Hero1 = () => {
             </p>
             <div className="flex w-full flex-col justify-center gap-2 sm:flex-row lg:justify-start">
               <a href="#">
-                <Button variant="yellow" className="w-full sm:w-auto">
+                <Button className="bg-primary text-primary-foreground w-full sm:w-auto">
                   Try for Free
                 </Button>
               </a>

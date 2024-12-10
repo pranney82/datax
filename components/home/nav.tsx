@@ -176,7 +176,7 @@ const Navbar1 = () => {
             <Button variant="outline">
               Log in
             </Button>
-            <Button variant="yellow">
+            <Button className="bg-primary text-primary-foreground">
               Sign up
             </Button>
           </div>

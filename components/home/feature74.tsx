@@ -67,7 +67,7 @@ const Feature74 = () => {
                   ))}
                 </ul>
                 <div className="flex justify-left mt-4">
-                  <Button variant="yellow" className="w-full sm:w-auto">
+                  <Button className="bg-primary text-primary-foreground w-full sm:w-auto">
                     Test Drive
                   </Button>
                 </div>
