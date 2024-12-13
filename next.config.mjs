@@ -1,16 +1,29 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [
-      // ... other domains if any
-      'www.builtwithlovellc.com',
-      'maps.googleapis.com',
-      'www.shadcnblocks.com',
-      'www.shadcn.com',
-      'firebasestorage.googleapis.com'
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'www.builtwithlovellc.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'maps.googleapis.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.shadcnblocks.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.shadcn.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+      },
     ],
   },
-  // ... rest of your config
 }
 
 export default nextConfig;
