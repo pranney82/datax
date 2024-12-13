@@ -187,7 +187,7 @@ const Navbar1 = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Image
-                src="/assets/logos/6.png"
+                src="/assets/logos/5.png"
                 width={96}
                 height={64}
                 alt="logo"

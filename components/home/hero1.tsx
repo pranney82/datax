@@ -16,7 +16,7 @@ const Hero1 = () => {
               <ArrowDownRight className="ml-2 size-4" />
             </Badge>
             <h1 className="my-6 text-pretty text-4xl font-bold lg:text-6xl">
-              It&apos;s Time to <br /> Win Your Data
+              DATA x <br />Your JobTread
             </h1>
             <p className="mb-8 max-w-xl text-muted-foreground lg:text-xl">
               JobTread companion app for serious contractors. Insights and
@@ -37,11 +37,11 @@ const Hero1 = () => {
             </div>
           </div>
           <Image
-            src="/assets/images/hero1.png"
+            src="/assets/images/hero1-3.png"
             alt="placeholder hero"
             width={1200}
             height={800}
-            className="max-h-auto w-full rounded-md object-cover border-4 border-gray-200"
+            className="max-h-auto w-full"
           />
         </div>
       </div>
