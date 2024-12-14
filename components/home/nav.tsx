@@ -309,6 +309,7 @@ const Navbar1 = () => {
         isOpen={showAuthDialog} 
         onClose={() => setShowAuthDialog(false)}
         defaultView={authType}
+        redirectPath="/x"
       />
     </section>
   );

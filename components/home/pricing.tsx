@@ -9,11 +9,14 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { AuthDialog } from '@/components/home/signup1';
+import { useAuth } from '@/lib/context/auth-context';
+import StripePaymentButton from '@/components/home/stripebutton';
 
 const Pricing = () => {
+  const { user } = useAuth();
   const [isAnnually, setIsAnnually] = useState(false);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
-  const [authType, setAuthType] = useState<'login' | 'signup'>('signup');
+  const [authType, setAuthType] = useState<'login' | 'signup'>(user ? 'login' : 'signup');
   return (
     <section className="py-8 w-full">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -89,15 +92,19 @@ const Pricing = () => {
                   </li>
                 </ul>
               </div>
+              { user ? //this price id for testing
+              <StripePaymentButton priceId="price_1QW3bD2LwdZLeKQfcfRhQ0LZ" />
+              :
               <Button className="w-full mt-8" 
               onClick={() => {
                 setAuthType('signup');
                 setShowAuthDialog(true);
-              }}>Get Started for free</Button>
+              }}>Sign Up</Button>
+            }
             </div>
             <div className="flex w-full flex-col rounded-lg border p-6">
               <div className="flex flex-col flex-1">
-                <Badge className="mb-8 block w-fit">Standard</Badge>
+                <Badge className="mb-8 block w-fit">CORE</Badge>
                 <span className="text-4xl font-medium">{isAnnually ? '$290' : '$29'}</span>
                 <span className="text-muted-foreground">{isAnnually ? <s>$348</s> : ''}</span>
                 <p className="text-muted-foreground">{isAnnually ? 'per year' : 'per month'}</p>
@@ -125,17 +132,24 @@ const Pricing = () => {
                   </li>
                 </ul>
               </div>
+              { user ? 
+              <StripePaymentButton 
+              priceId={isAnnually ? 
+                "price_1QVggE2LwdZLeKQfk2YRCDUV" : 
+                "price_1QVNq42LwdZLeKQfaXHHsMI6"} />
+              :
               <Button className="w-full mt-8" 
               onClick={() => {
                 setAuthType('signup');
                 setShowAuthDialog(true);
-              }}>Upgrade to Standard</Button>
+              }}>Sign Up</Button>
+            }
             </div>
             <div className="flex w-full flex-col rounded-lg border p-6">
               <div className="flex flex-col flex-1">
                 <Badge className="mb-8 block w-fit">PRO</Badge>
-                <span className="text-4xl font-medium">{isAnnually ? '$1290' : '$129'}</span>
-                <span className="text-muted-foreground">{isAnnually ? <s>$1548</s> : ''}</span>
+                <span className="text-4xl font-medium">{isAnnually ? '$1450' : '$145'}</span>
+                <span className="text-muted-foreground">{isAnnually ? <s>$1698</s> : ''}</span>
                 <p className="text-muted-foreground">{isAnnually ? 'per year' : 'per month'}</p>
                 <Separator className="my-6" />
                 <ul className="space-y-4 text-muted-foreground mb-auto">
@@ -175,11 +189,19 @@ const Pricing = () => {
                   </ul>
                 </ul>
               </div>
+              { user ? 
+              <StripePaymentButton 
+              priceId=
+              {isAnnually ? 
+                "price_1QVgfq2LwdZLeKQfIamPtpYN" : 
+                "price_1QVNqu2LwdZLeKQffZfNFRH4"} />
+              :
               <Button className="w-full mt-8" 
               onClick={() => {
                 setAuthType('signup');
                 setShowAuthDialog(true);
-              }}>Upgrade to PRO</Button>
+              }}>Sign Up</Button>
+            }
             </div>
           </div>
         </div>
@@ -188,6 +210,7 @@ const Pricing = () => {
         isOpen={showAuthDialog} 
         onClose={() => setShowAuthDialog(false)}
         defaultView={authType}
+        redirectPath="/pricing"
       />
     </section>
   );

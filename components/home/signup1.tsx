@@ -23,6 +23,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 const formSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
@@ -32,9 +33,10 @@ interface AuthDialogProps {
   isOpen: boolean;
   onClose: () => void;
   defaultView: 'login' | 'signup';
+  redirectPath?: string;
 }
 
-export function AuthDialog({ isOpen, onClose, defaultView }: AuthDialogProps) {
+export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }: AuthDialogProps) {
   const router = useRouter();
   const [isSignUp, setIsSignUp] = useState(defaultView === 'signup');
   const [isLoading, setIsLoading] = useState(false);
@@ -55,12 +57,28 @@ export function AuthDialog({ isOpen, onClose, defaultView }: AuthDialogProps) {
     setIsLoading(true);
     try {
       if (isSignUp) {
-        await createUserWithEmailAndPassword(auth, values.email, values.password);
+        // Create the user in Firebase Auth
+        const userCredential = await createUserWithEmailAndPassword(
+          auth, 
+          values.email, 
+          values.password
+        );
+
+        // Create the user document in Firestore
+        const db = getFirestore();
+        await setDoc(doc(db, 'users', userCredential.user.uid), {
+          email: values.email,
+          createdAt: new Date(),
+          subscriptionStatus: 'inactive',
+          tier: 'free',
+          updatedAt: new Date(),
+        });
       } else {
         await signInWithEmailAndPassword(auth, values.email, values.password);
       }
       onClose();
       form.reset();
+      router.push(redirectPath);
     } catch (error) {
       const authError = error as AuthError;
       switch (authError.code) {
@@ -82,8 +100,7 @@ export function AuthDialog({ isOpen, onClose, defaultView }: AuthDialogProps) {
       }
       console.error(error);
     } finally {
-      setIsLoading(false)
-      router.push('/x');
+      setIsLoading(false);
     }
   }
 
