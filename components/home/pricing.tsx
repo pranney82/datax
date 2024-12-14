@@ -8,9 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
+import { AuthDialog } from '@/components/home/signup1';
 
 const Pricing = () => {
   const [isAnnually, setIsAnnually] = useState(false);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [authType, setAuthType] = useState<'login' | 'signup'>('signup');
   return (
     <section className="py-8 w-full">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -57,13 +60,13 @@ const Pricing = () => {
             </div>
           </div>
           <div className="flex w-full flex-col items-stretch gap-6 md:flex-row">
-            <div className="flex w-full flex-col rounded-lg border p-6 text-left">
-              <Badge className="mb-8 block w-fit">FREE</Badge>
-              <span className="text-4xl font-medium">$0</span>
-              <p className="invisible text-muted-foreground">Per month</p>
-              <Separator className="my-6" />
-              <div className="flex flex-col justify-between gap-20">
-                <ul className="space-y-4 text-muted-foreground">
+            <div className="flex w-full flex-col rounded-lg border p-6">
+              <div className="flex flex-col flex-1">
+                <Badge className="mb-8 block w-fit">FREE</Badge>
+                <span className="text-4xl font-medium">$0</span>
+                <p className="invisible text-muted-foreground">Per month</p>
+                <Separator className="my-6" />
+                <ul className="space-y-4 text-muted-foreground mb-auto">
                   <li className="flex items-center gap-2">
                     <Check className="size-4" />
                     <span>Unlimited Users</span>
@@ -85,21 +88,21 @@ const Pricing = () => {
                     <span>Real-time Data Sync</span>
                   </li>
                 </ul>
-                <Button className="w-full">Get Started for free</Button>
               </div>
+              <Button className="w-full mt-8" 
+              onClick={() => {
+                setAuthType('signup');
+                setShowAuthDialog(true);
+              }}>Get Started for free</Button>
             </div>
-            <div className="flex w-full flex-col rounded-lg border p-6 text-left">
-              <Badge className="mb-8 block w-fit">Standard</Badge>
-              <span className="text-4xl font-medium">
-                {isAnnually ? '$290' : '$29'}
-              </span>
-              <span className="text-muted-foreground">
-                {isAnnually ? <s>$348</s> : ''}
-              </span>
-              <p className="text-muted-foreground">{isAnnually ? 'per year' : 'per month'}</p>
-              <Separator className="my-6" />
-              <div className="flex h-full flex-col justify-between gap-20">
-                <ul className="space-y-4 text-muted-foreground">
+            <div className="flex w-full flex-col rounded-lg border p-6">
+              <div className="flex flex-col flex-1">
+                <Badge className="mb-8 block w-fit">Standard</Badge>
+                <span className="text-4xl font-medium">{isAnnually ? '$290' : '$29'}</span>
+                <span className="text-muted-foreground">{isAnnually ? <s>$348</s> : ''}</span>
+                <p className="text-muted-foreground">{isAnnually ? 'per year' : 'per month'}</p>
+                <Separator className="my-6" />
+                <ul className="space-y-4 text-muted-foreground mb-auto">
                   <li className="flex items-center gap-2">
                     <Check className="size-4" />
                     <span>Everything in FREE</span>
@@ -121,21 +124,21 @@ const Pricing = () => {
                     <span>Support & Feature Requests</span>
                   </li>
                 </ul>
-                <Button className="w-full">Upgrade to Standard</Button>
               </div>
+              <Button className="w-full mt-8" 
+              onClick={() => {
+                setAuthType('signup');
+                setShowAuthDialog(true);
+              }}>Upgrade to Standard</Button>
             </div>
-            <div className="flex w-full flex-col rounded-lg border p-6 text-left">
-              <Badge className="mb-8 block w-fit">PRO</Badge>
-              <span className="text-4xl font-medium">
-                {isAnnually ? '$1290' : '$129'}
-              </span>
-              <span className="text-muted-foreground">
-                {isAnnually ? <s>$1548</s> : ''}
-              </span>
-              <p className="text-muted-foreground">{isAnnually ? 'per year' : 'per month'}</p>
-              <Separator className="my-6" />
-              <div className="flex h-full flex-col justify-between gap-20">
-                <ul className="space-y-4 text-muted-foreground">
+            <div className="flex w-full flex-col rounded-lg border p-6">
+              <div className="flex flex-col flex-1">
+                <Badge className="mb-8 block w-fit">PRO</Badge>
+                <span className="text-4xl font-medium">{isAnnually ? '$1290' : '$129'}</span>
+                <span className="text-muted-foreground">{isAnnually ? <s>$1548</s> : ''}</span>
+                <p className="text-muted-foreground">{isAnnually ? 'per year' : 'per month'}</p>
+                <Separator className="my-6" />
+                <ul className="space-y-4 text-muted-foreground mb-auto">
                   <li className="flex items-center gap-2">
                     <Check className="size-4" />
                     <span>Everything in Standard</span>
@@ -145,7 +148,7 @@ const Pricing = () => {
                     <span>Toolbox Access:</span>
                   </li>
                   <ul className="ml-6 space-y-2">
-                  <li className="flex items-center gap-2">
+                    <li className="flex items-center gap-2">
                       <Check className="size-4" />
                       <span>JT Integrated Inventory</span>
                     </li>
@@ -171,12 +174,21 @@ const Pricing = () => {
                     </li>
                   </ul>
                 </ul>
-                <Button className="w-full">Upgrade to PRO</Button>
               </div>
+              <Button className="w-full mt-8" 
+              onClick={() => {
+                setAuthType('signup');
+                setShowAuthDialog(true);
+              }}>Upgrade to PRO</Button>
             </div>
           </div>
         </div>
       </div>
+      <AuthDialog 
+        isOpen={showAuthDialog} 
+        onClose={() => setShowAuthDialog(false)}
+        defaultView={authType}
+      />
     </section>
   );
 };

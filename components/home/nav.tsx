@@ -8,7 +8,11 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-
+import { AuthDialog } from '@/components/home/signup1';
+import { useAuth } from '@/lib/context/auth-context';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { useRouter } from 'next/navigation';
 const iconMap = {
   LineChart: <LineChart className="size-5 shrink-0" />,
   Trees: <Trees className="size-5 shrink-0" />,
@@ -17,8 +21,11 @@ const iconMap = {
 };
 
 const Navbar1 = () => {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [authType, setAuthType] = useState<'login' | 'signup'>('signup');
+  const router = useRouter();
   // Add click outside handler
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -38,6 +45,14 @@ const Navbar1 = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen]);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   return (
     <section className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -173,12 +188,44 @@ const Navbar1 = () => {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline">
-              Log in
-            </Button>
-            <Button className="bg-primary text-primary-foreground">
-              Sign up
-            </Button>
+            {user ? (
+              <>
+                <Button variant="outline" onClick={handleSignOut}>
+                  Sign out
+                </Button>
+                <Button 
+                  className="bg-primary text-primary-foreground"
+                  onClick={() => {
+                    router.push('/x');
+                  }}
+                >
+                  Dashboard
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setAuthType('login');
+                    setShowAuthDialog(true);
+                    console.log('login');
+                  }}
+                >
+                  Log in
+                </Button>
+                <Button 
+                  className="bg-primary text-primary-foreground"
+                  onClick={() => {
+                    setAuthType('signup');
+                    setShowAuthDialog(true);
+                    console.log('signup');
+                  }}
+                >
+                  Sign up
+                </Button>
+              </>
+            )}
           </div>
         </nav>
 
@@ -231,10 +278,25 @@ const Navbar1 = () => {
                   Pricing
                 </Link>
                 <div className="flex flex-col gap-2 pt-4 border-t">
-                  <Button variant="outline" className="w-full">
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => {
+                      setAuthType('login');
+                      setShowAuthDialog(true);
+                      console.log('login');
+                    }}
+                  >
                     Log in
                   </Button>
-                  <Button className="w-full">
+                  <Button 
+                    className="w-full"
+                    onClick={() => {
+                      setAuthType('signup');
+                      setShowAuthDialog(true);
+                      console.log('signup');
+                    }}
+                  >
                     Sign up
                   </Button>
                 </div>
@@ -243,6 +305,11 @@ const Navbar1 = () => {
           )}
         </div>
       </div>
+      <AuthDialog 
+        isOpen={showAuthDialog} 
+        onClose={() => setShowAuthDialog(false)}
+        defaultView={authType}
+      />
     </section>
   );
 };
