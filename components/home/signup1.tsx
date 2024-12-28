@@ -63,7 +63,7 @@ export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('Submit started with values:', values);
+    
     setIsLoading(true);
     try {
       if (isSignUp) {
@@ -98,9 +98,7 @@ export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }
           org: orgRef.id  // Reference to the org document
         });
       } else {
-        console.log('Starting signin process...');
         await signInWithEmailAndPassword(auth, values.email, values.password);
-        console.log('Sign in successful');
       }
       onClose();
       form.reset();
@@ -133,13 +131,6 @@ export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }
     }
   }
 
-  console.log('Form state:', {
-    isDirty: form.formState.isDirty,
-    isValid: form.formState.isValid,
-    errors: form.formState.errors,
-    values: form.getValues()
-  });
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -150,10 +141,8 @@ export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }
           <form 
             onSubmit={async (e) => {
               e.preventDefault();
-              console.log('Form submitted');
               try {
-                const result = await form.handleSubmit(onSubmit)(e);
-                console.log('Form handling result:', result);
+                await form.handleSubmit(onSubmit)(e);
               } catch (error) {
                 console.error('Error in form submission:', error);
               }
