@@ -21,7 +21,7 @@ const iconMap = {
 };
 
 const Navbar1 = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [authType, setAuthType] = useState<'login' | 'signup'>('signup');
@@ -188,7 +188,12 @@ const Navbar1 = () => {
             </div>
           </div>
           <div className="flex gap-2">
-            {user ? (
+            {loading ? (
+              <div className="flex gap-2">
+                <div className="w-20 h-9 bg-muted animate-pulse rounded-md"></div>
+                <div className="w-24 h-9 bg-muted animate-pulse rounded-md"></div>
+              </div>
+            ) : user ? (
               <>
                 <Button variant="outline" onClick={handleSignOut}>
                   Sign out
@@ -209,7 +214,6 @@ const Navbar1 = () => {
                   onClick={() => {
                     setAuthType('login');
                     setShowAuthDialog(true);
-                    console.log('login');
                   }}
                 >
                   Log in
@@ -219,7 +223,6 @@ const Navbar1 = () => {
                   onClick={() => {
                     setAuthType('signup');
                     setShowAuthDialog(true);
-                    console.log('signup');
                   }}
                 >
                   Sign up
@@ -284,7 +287,6 @@ const Navbar1 = () => {
                     onClick={() => {
                       setAuthType('login');
                       setShowAuthDialog(true);
-                      console.log('login');
                     }}
                   >
                     Log in
@@ -294,7 +296,6 @@ const Navbar1 = () => {
                     onClick={() => {
                       setAuthType('signup');
                       setShowAuthDialog(true);
-                      console.log('signup');
                     }}
                   >
                     Sign up

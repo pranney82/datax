@@ -23,10 +23,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, collection } from 'firebase/firestore';
 const formSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
+  name: z.string().min(3, 'Name must be at least 3 characters').optional()
 });
 
 interface AuthDialogProps {
@@ -46,17 +47,27 @@ export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }
   }, [defaultView]);
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(
+      isSignUp 
+        ? formSchema.refine((data) => !!data.name, {
+            message: "Name is required for signup",
+            path: ["name"],
+          })
+        : formSchema.omit({ name: true })
+    ),
     defaultValues: {
       email: '',
       password: '',
+      name: '',
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log('Submit started with values:', values);
     setIsLoading(true);
     try {
       if (isSignUp) {
+        console.log('Starting signup process...');
         // Create the user in Firebase Auth
         const userCredential = await createUserWithEmailAndPassword(
           auth, 
@@ -64,23 +75,41 @@ export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }
           values.password
         );
 
-        // Create the user document in Firestore
         const db = getFirestore();
+        
+        // First create a new org document
+        const orgRef = doc(collection(db, 'orgs'));
+        await setDoc(orgRef, {
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          grantKey: '',
+          orgID: '',
+          owner: userCredential.user.uid
+        });
+
+        // Then create the user document with the org reference
         await setDoc(doc(db, 'users', userCredential.user.uid), {
           email: values.email,
+          name: values.name,
           createdAt: new Date(),
           subscriptionStatus: 'inactive',
           tier: 'free',
           updatedAt: new Date(),
+          org: orgRef.id  // Reference to the org document
         });
       } else {
+        console.log('Starting signin process...');
         await signInWithEmailAndPassword(auth, values.email, values.password);
+        console.log('Sign in successful');
       }
       onClose();
       form.reset();
+      console.log('Redirecting to:', redirectPath);
       router.push(redirectPath);
     } catch (error) {
+      console.error('Auth error details:', error);
       const authError = error as AuthError;
+      console.log('Auth error code:', authError.code);
       switch (authError.code) {
         case 'auth/email-already-in-use':
           form.setError('email', { message: 'Email already in use' });
@@ -104,6 +133,13 @@ export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }
     }
   }
 
+  console.log('Form state:', {
+    isDirty: form.formState.isDirty,
+    isValid: form.formState.isValid,
+    errors: form.formState.errors,
+    values: form.getValues()
+  });
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -111,11 +147,38 @@ export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }
           <DialogTitle>{isSignUp ? 'Create an account' : 'Sign in'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form 
+            onSubmit={async (e) => {
+              e.preventDefault();
+              console.log('Form submitted');
+              try {
+                const result = await form.handleSubmit(onSubmit)(e);
+                console.log('Form handling result:', result);
+              } catch (error) {
+                console.error('Error in form submission:', error);
+              }
+            }} 
+            className="space-y-4"
+          >
             {form.formState.errors.root && (
               <div className="text-sm font-medium text-destructive">
                 {form.formState.errors.root.message}
               </div>
+            )}
+            {isSignUp && (
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             )}
             <FormField
               control={form.control}

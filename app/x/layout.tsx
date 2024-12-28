@@ -81,8 +81,7 @@ export default function RootLayout({
   }
 
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body>
+    
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -96,7 +95,6 @@ export default function RootLayout({
               </SidebarInset>
             </SidebarProvider>
         </ThemeProvider>
-      </body>
-    </html>
+      
   )
 }

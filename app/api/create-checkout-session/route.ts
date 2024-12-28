@@ -5,6 +5,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST!, {
   apiVersion: '2024-11-20.acacia',
 });
 
+export const runtime = 'nodejs'
+
 export async function POST(req: Request) {
   try {
     const { priceId, uid, email } = await req.json();
@@ -32,8 +34,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ url: session.url });
-  } catch (error: any) {
+  } catch (error: Error | unknown) {
     console.error('Error creating checkout session:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
   }
 }

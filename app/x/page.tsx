@@ -1,9 +1,14 @@
+"use client";
+
+import { useEffect, useState } from 'react';
 import { Bell, LineChart, Users, Building, Calendar, Clock } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { Breadcrumb, BreadcrumbLink, BreadcrumbItem, BreadcrumbList } from "@/components/ui/breadcrumb"
 import { SidebarTrigger } from "@/components/ui/sidebar"
+import { useAuth } from "@/lib/context/auth-context"
+import { getFirestore, doc, getDoc } from "firebase/firestore"
 
 // Add these interfaces for type safety
 interface CompanyUpdate {
@@ -26,7 +31,33 @@ interface QuickStat {
   trend: 'up' | 'down'
 }
 
+// Add this interface above the HomePage component
+interface UserData {
+  name?: string;
+  // Add other potential user data fields here
+}
+
 export default function HomePage() {
+  const { user } = useAuth();
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!user?.uid) return;
+      
+      const db = getFirestore();
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        setUserData(userDoc.data());
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
+
+  const name = userData?.name || user?.displayName;
+  console.log("userdata", userData);
+
   // Sample company updates
   const companyUpdates: CompanyUpdate[] = [
     {
@@ -97,7 +128,7 @@ export default function HomePage() {
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0 ">
         <div className="flex justify-between items-center mb-6">
           <div>
-          <h1 className="text-2xl font-bold">Welcome back, John</h1>
+          <h1 className="text-2xl font-bold">Welcome back, {name}</h1>
           <p className="text-muted-foreground">Here&apos;s what&apos;s happening with your projects</p>
         </div>
         <button className="p-2 hover:bg-gray-100 rounded-full relative">

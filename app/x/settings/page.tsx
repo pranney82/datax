@@ -17,9 +17,25 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useAuth } from "@/lib/context/auth-context"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
+type Organization = {
+  id: string;
+  name: string;
+}
+
+type JTMembership = {
+  organization: {
+    id: string;
+    name: string;
+  };
+};
 
 export default function SettingsPage() {
+  const { user } = useAuth()
+  const userId = user?.uid || ''
+
   const [settings, setSettings] = useState({
     jtgrantkey: '',
     jtorgid: '',
@@ -27,59 +43,150 @@ export default function SettingsPage() {
     enableAutoSync: false,
     enableDarkMode: false,
   })
+  const [unsavedChanges, setUnsavedChanges] = useState(false)
 
   const [showGrantKey, setShowGrantKey] = useState(false)
-  const [showOrgId, setShowOrgId] = useState(false)
 
-  const userId = 'user_2lWABBDZrVg3N9IWW6f18kftZvx' // Hardcoded for testing
+  // Add state for organizations
+  const [organizations, setOrganizations] = useState<Organization[]>([])
+  const [isLoadingOrgs, setIsLoadingOrgs] = useState(false)
 
   // Fetch user settings from Firestore
   useEffect(() => {
     const fetchSettings = async () => {
+      if (!userId) return
+
+      // First get the user document
       const userDoc = await getDoc(doc(db, 'users', userId))
-      if (userDoc.exists()) {
-        const userData = userDoc.data()
-        setSettings(prev => ({
-          ...prev,
-          jtgrantkey: userData.jtgrantkey || '',
-          jtorgid: userData.jtorgid || '',
-          // Keep other settings as is for now
-        }))
-      }
+      if (!userDoc.exists()) return
+
+      const userData = userDoc.data()
+      
+      // Get the organization document
+      const orgDoc = await getDoc(doc(db, 'orgs', userData.org))
+      if (!orgDoc.exists()) return
+
+      const orgData = orgDoc.data()
+      
+      setSettings(prev => ({
+        ...prev,
+        jtgrantkey: orgData.grantKey || '',
+        jtorgid: orgData.orgID || '',
+        // Keep other settings as is
+      }))
+
     }
 
     fetchSettings()
-  }, [])
+  }, [userId])
 
-  // Update handlers to save to Firestore
-  const handleInputChange = (key: string) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Modify input handler to only update local state
+  const handleInputChange = (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value
     setSettings(prev => ({ ...prev, [key]: newValue }))
-    
-    // Update Firestore
+    setUnsavedChanges(true)
+  }
+
+  // Modify toggle handler to only update local state
+  const handleToggleChange = (key: string) => (checked: boolean) => {
+    setSettings(prev => ({ ...prev, [key]: checked }))
+    setUnsavedChanges(true)
+  }
+
+  // New save handler
+  const handleSave = async () => {
+    if (!userId) {
+      alert('User not authenticated')
+      return
+    }
+
     try {
-      await updateDoc(doc(db, 'users', userId), {
-        [key]: newValue
+      // Get user's org ID first
+      const userDoc = await getDoc(doc(db, 'users', userId))
+      if (!userDoc.exists()) return
+      
+      // Update org document with API keys
+      await updateDoc(doc(db, 'orgs', userDoc.data().org), {
+        grantKey: settings.jtgrantkey,
+        orgID: settings.jtorgid
       })
+
+      // Update user document with toggle settings
+      await updateDoc(doc(db, 'users', userId), {
+        enableNotifications: settings.enableNotifications,
+        enableAutoSync: settings.enableAutoSync,
+        enableDarkMode: settings.enableDarkMode
+      })
+
+      setUnsavedChanges(false)
+      alert('Settings saved successfully')
     } catch (error) {
-      console.error('Error updating setting:', error)
-      // You might want to add error handling UI here
+      console.error('Error saving settings:', error)
+      alert('Error saving settings')
     }
   }
 
-  const handleToggleChange = (key: string) => async (checked: boolean) => {
-    setSettings(prev => ({ ...prev, [key]: checked }))
-    
-    // Update Firestore
+  // Modify orgLookUp to parse and set organizations
+  const orgLookUp = async (grantKey: string) => {
+    if (!grantKey) {
+      console.error('Missing grantKey')
+      return null
+    }
+
+    setIsLoadingOrgs(true)
     try {
-      await updateDoc(doc(db, 'users', userId), {
-        [key]: checked
+      const response = await fetch('/api/jtfetch', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: {
+            "$": { "grantKey": grantKey },
+            "currentGrant": {
+              "user": {
+                "memberships": {
+                  "nodes": {
+                    "organization": {
+                      "id": {},
+                      "name": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        })
       })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      const orgs = data?.currentGrant?.user?.memberships?.nodes?.map(
+        (node: JTMembership | undefined) => ({
+          id: node?.organization?.id || '',
+          name: node?.organization?.name || ''
+        })
+      ) || []
+      
+      setOrganizations(orgs)
+      return data
     } catch (error) {
-      console.error('Error updating setting:', error)
-      // You might want to add error handling UI here
+      console.error('Error fetching query:', error)
+      return null
+    } finally {
+      setIsLoadingOrgs(false)
     }
   }
+
+  // Add this effect to fetch organizations when grant key changes
+  useEffect(() => {
+    if (settings.jtgrantkey) {
+      orgLookUp(settings.jtgrantkey)
+    }
+  }, [settings.jtgrantkey])
 
   return (
     <main className="flex flex-col flex-1 p-0">
@@ -98,7 +205,15 @@ export default function SettingsPage() {
       </header>
 
       <div className="flex flex-col gap-8 p-6">
-        <h1 className="text-2xl font-semibold">Settings</h1>
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-semibold">Settings</h1>
+          <Button 
+            onClick={handleSave}
+            disabled={!unsavedChanges}
+          >
+            Save Changes
+          </Button>
+        </div>
 
         <div className="grid gap-6 max-w-2xl">
           <Card>
@@ -133,27 +248,35 @@ export default function SettingsPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="jobtread-org">JobTread Organization ID</Label>
-                <div className="relative">
-                  <Input
-                    id="jobtread-org"
-                    type={showOrgId ? "text" : "password"}
-                    value={settings.jtorgid}
-                    onChange={handleInputChange('jtorgid')}
-                    placeholder="Enter your JobTread Organization ID"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowOrgId(!showOrgId)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    {showOrgId ? (
-                      <EyeOff className="h-4 w-4" />
+                <Label htmlFor="jobtread-org">JobTread Organization</Label>
+                <Select
+                  value={settings.jtorgid}
+                  onValueChange={(value) => {
+                    setSettings(prev => ({ ...prev, jtorgid: value }))
+                    setUnsavedChanges(true)
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select an organization" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {isLoadingOrgs ? (
+                      <SelectItem value="loading" disabled>
+                        Loading organizations...
+                      </SelectItem>
+                    ) : organizations.length > 0 ? (
+                      organizations.map((org) => (
+                        <SelectItem key={org.id} value={org.id}>
+                          {org.name}
+                        </SelectItem>
+                      ))
                     ) : (
-                      <Eye className="h-4 w-4" />
+                      <SelectItem value="none" disabled>
+                        No organizations found
+                      </SelectItem>
                     )}
-                  </button>
-                </div>
+                  </SelectContent>
+                </Select>
               </div>
             </CardContent>
           </Card>
@@ -206,7 +329,6 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
-          <Button>Save Settings</Button>
         </div>
       </div>
     </main>

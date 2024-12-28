@@ -14,11 +14,9 @@ if (!getApps().length) {
   });
 }
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const maxDuration = 60
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST!, {
   apiVersion: "2024-11-20.acacia",
@@ -53,10 +51,10 @@ export async function POST(req: NextRequest) {
     
     const body = Buffer.concat(chunks).toString('utf8');
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
-  } catch (err: any) {
-    console.error("Webhook signature verification failed:", err.message);
+  } catch (err: Error | unknown) {
+    console.error("Webhook signature verification failed:", (err as Error).message);
     return NextResponse.json(
-      { error: `Webhook Error: ${err.message}` },
+      { error: `Webhook Error: ${(err as Error).message}` },
       { status: 400 }
     );
   }
@@ -115,10 +113,10 @@ export async function POST(req: NextRequest) {
       console.log(`Unhandled event type: ${event.type}`);
       return NextResponse.json({ message: "Unhandled event type" }, { status: 200 });
     }
-  } catch (err: any) {
-    console.error("Error processing webhook:", err.message);
+  } catch (err: Error | unknown) {
+    console.error("Error processing webhook:", (err as Error).message);
     return NextResponse.json(
-      { error: `Webhook Error: ${err.message}` },
+      { error: `Webhook Error: ${(err as Error).message}` },
       { status: 500 }
     );
   }
