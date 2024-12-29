@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback } from "react"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { useAuth } from "@/lib/context/auth-context"
+import { useLeadsCount } from "@/lib/hooks/use-leads-count"
 
 type QueryResponse = {
   scope?: {
@@ -22,11 +23,10 @@ export function Block1() {
   const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState<QueryResponse | null>(null)
+  const { setMonthlyRevenue, dateRange } = useLeadsCount()
+  const [hasFetched, setHasFetched] = useState(false)
 
-  const endDate = new Date().toISOString().split('T')[0]
-  const startDate = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-
-  const fetchRevenue = useCallback(async (orgID: string, grantKey: string) => {
+  const fetchRevenue = useCallback(async (orgID: string, grantKey: string, startDate: string, endDate: string) => {
     if (!grantKey || !orgID) {
       console.error('Missing grantKey or orgID')
       return null
@@ -200,11 +200,11 @@ export function Block1() {
       console.error('Error fetching revenue:', error)
       return null
     }
-  }, [endDate, startDate])
+  }, [])
 
   useEffect(() => {
     async function fetchData() {
-      if (!user?.uid) return
+      if (!user?.uid || hasFetched) return
 
       try {
         setLoading(true)
@@ -218,11 +218,35 @@ export function Block1() {
           const orgData = orgDoc.data()
           
           if (orgData?.orgID && orgData?.grantKey) {
-            // Fetch revenue data with the values directly
-            const revenueData = await fetchRevenue(orgData.orgID, orgData.grantKey)
+            // Fetch revenue for each month
+            const monthlyData = await Promise.all(dateRange.monthDates.map(async (startDate) => {
+              const endDate = dateRange.getLastDayOfMonth(startDate)
+              const revenueData = await fetchRevenue(
+                orgData.orgID, 
+                orgData.grantKey,
+                startDate,
+                endDate
+              )
+              return {
+                start: startDate,
+                end: endDate,
+                data: revenueData
+              }
+            }))
+            setMonthlyRevenue(monthlyData)
+            
+            // For the total, use first and last dates from monthDates array
+            const revenueData = await fetchRevenue(
+              orgData.orgID, 
+              orgData.grantKey,
+              dateRange.monthDates[0],  // First month
+              dateRange.getLastDayOfMonth(dateRange.monthDates[dateRange.monthDates.length - 1])  // Last day of most recent month
+            )
             setQuery(revenueData)
           }
         }
+        
+        setHasFetched(true)
       } catch (error) {
         console.error("Error fetching data:", error)
       } finally {
@@ -231,7 +255,7 @@ export function Block1() {
     }
 
     fetchData()
-  }, [user, fetchRevenue])
+  }, [user, hasFetched, dateRange, fetchRevenue, setMonthlyRevenue])
 
   if (loading) {
     return <DashCard title="Revenue" description="Loading..." content="..." />
@@ -244,6 +268,8 @@ export function Block1() {
   const revenueValue = query?.scope?.connection?.["Amount:sum"]
     ? `$${Math.ceil(query.scope.connection["Amount:sum"]).toLocaleString()}`
     : '$0'
+  
+  //console.log('monthlyRevenue:', monthlyRevenue)
   
   return (
     <DashCard 

@@ -45,7 +45,7 @@ export function Block5() {
                   "_type": {},
                   "_": "organization",
                   "$": {
-                    "id": "22NLTQwjkKmc"
+                    "id": orgID
                   },
                   "id": {},
                   "connection": {

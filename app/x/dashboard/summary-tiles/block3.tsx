@@ -19,13 +19,15 @@ export function Block3() {
   const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState<QueryResponse | null>(null)
+  const { setLeadsCount, dateRange, block3MonthlyLeads, setBlock3MonthlyLeads } = useLeadsCount()
+  const [hasFetched, setHasFetched] = useState(false)
 
-  const endDate = new Date().toISOString().split('T')[0]
-  const startDate = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-
-  const { setLeadsCount } = useLeadsCount()
-
-  const fetchQuery = useCallback(async (orgID: string, grantKey: string) => {
+  const fetchQuery = useCallback(async (
+    orgID: string, 
+    grantKey: string, 
+    startDate: string, 
+    endDate: string
+  ): Promise<QueryResponse | null> => {
     if (!grantKey || !orgID) {
       console.error('Missing grantKey or orgID')
       return null
@@ -85,29 +87,53 @@ export function Block3() {
       console.error('Error fetching query:', error)
       return null
     }
-  }, [endDate, startDate])
+  }, [])
 
   useEffect(() => {
     async function fetchData() {
-      if (!user?.uid) return
+      if (!user?.uid || hasFetched) return
 
       try {
         setLoading(true)
-        // First get the user's org reference
         const userDoc = await getDoc(doc(db, "users", user.uid))
         const userOrg = userDoc.data()?.org
 
         if (userOrg) {
-          // Then fetch the org document
           const orgDoc = await getDoc(doc(db, "orgs", userOrg))
           const orgData = orgDoc.data()
           
           if (orgData?.orgID && orgData?.grantKey) {
-            const queryData = await fetchQuery(orgData.orgID, orgData.grantKey)
+            // Fetch leads for each month
+            const monthlyData = await Promise.all(dateRange.monthDates.map(async (startDate) => {
+              const endDate = dateRange.getLastDayOfMonth(startDate)
+              const queryData = await fetchQuery(
+                orgData.orgID, 
+                orgData.grantKey,
+                startDate,
+                endDate
+              )
+              return {
+                start: startDate,
+                end: endDate,
+                count: queryData?.organization?.accounts?.count || 0
+              }
+            }))
+            
+            setBlock3MonthlyLeads(monthlyData)
+            
+            // For the total, use first and last dates
+            const queryData = await fetchQuery(
+              orgData.orgID, 
+              orgData.grantKey,
+              dateRange.monthDates[0],
+              dateRange.getLastDayOfMonth(dateRange.monthDates[dateRange.monthDates.length - 1])
+            )
             setQuery(queryData)
             setLeadsCount(queryData?.organization?.accounts?.count || 0)
           }
         }
+        
+        setHasFetched(true)
       } catch (error) {
         console.error("Error fetching data:", error)
       } finally {
@@ -116,17 +142,19 @@ export function Block3() {
     }
 
     fetchData()
-  }, [user, setLeadsCount, fetchQuery])
+  }, [user, hasFetched, dateRange, setLeadsCount, setBlock3MonthlyLeads, fetchQuery])
 
   if (loading) {
-    return <DashCard title="Revenue" description="Loading..." content="..." />
+    return <DashCard title="" description="Loading..." content="..." />
   }
 
   if (!query) {
-    return <DashCard title="Revenue" description="JT Grant Key or Org ID missing" content="" />
+    return <DashCard title="" description="JT Grant Key or Org ID missing" content="" />
   }
 
   const queryValue = query?.organization?.accounts?.count;
+
+  console.log(block3MonthlyLeads);
   
   return (
     <DashCard 

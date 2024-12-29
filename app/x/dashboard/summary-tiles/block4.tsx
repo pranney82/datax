@@ -23,12 +23,10 @@ export function Block4() {
   const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState<QueryResponse | null>(null)
-  const { leadsCount, setBlock4Metrics } = useLeadsCount()
+  const { leadsCount, setBlock4Metrics, dateRange, setBlock4MonthlyMetrics } = useLeadsCount()
+  const [hasFetched, setHasFetched] = useState(false)
 
-  const endDate = new Date().toISOString().split('T')[0]
-  const startDate = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-
-  const fetchQuery = useCallback(async (orgID: string, grantKey: string) => {
+  const fetchQuery = useCallback(async (orgID: string, grantKey: string, startDate: string, endDate: string) => {
     if (!grantKey || !orgID) {
       console.error('Missing grantKey or orgID')
       return null
@@ -212,30 +210,55 @@ export function Block4() {
       console.error('Error fetching query:', error)
       return null
     }
-  }, [endDate, startDate])
+  }, [])
 
   useEffect(() => {
     async function fetchData() {
-      if (!user?.uid) return
+      if (!user?.uid || hasFetched) return
 
       try {
         setLoading(true)
-        // First get the user's org reference
         const userDoc = await getDoc(doc(db, "users", user.uid))
         const userOrg = userDoc.data()?.org
 
         if (userOrg) {
-          // Then fetch the org document
           const orgDoc = await getDoc(doc(db, "orgs", userOrg))
           const orgData = orgDoc.data()
           
           if (orgData?.orgID && orgData?.grantKey) {
+            // Fetch metrics for each month
+            const monthlyData = await Promise.all(dateRange.monthDates.map(async (startDate) => {
+              const endDate = dateRange.getLastDayOfMonth(startDate)
+              const queryData = await fetchQuery(
+                orgData.orgID, 
+                orgData.grantKey,
+                startDate,
+                endDate
+              )
+              return {
+                start: startDate,
+                end: endDate,
+                metrics: {
+                  amountSum: queryData?.scope?.connection?.["Amount:sum"] || 0,
+                  amountAvg: queryData?.scope?.connection?.["Amount:avg"] || 0,
+                  amountMin: queryData?.scope?.connection?.["Amount:min"] || 0,
+                  amountMax: queryData?.scope?.connection?.["Amount:max"] || 0,
+                  count: queryData?.scope?.connection?.count || 0
+                }
+              }
+            }))
             
-            // Fetch revenue data with the values directly
-            const queryData = await fetchQuery(orgData.orgID, orgData.grantKey)
+            setBlock4MonthlyMetrics(monthlyData)
+            
+            // For the total, use first and last dates
+            const queryData = await fetchQuery(
+              orgData.orgID, 
+              orgData.grantKey,
+              dateRange.monthDates[0],
+              dateRange.getLastDayOfMonth(dateRange.monthDates[dateRange.monthDates.length - 1])
+            )
             setQuery(queryData)
-
-            // Store all metrics
+            
             setBlock4Metrics({
               amountSum: queryData?.scope?.connection?.["Amount:sum"] || 0,
               amountAvg: queryData?.scope?.connection?.["Amount:avg"] || 0,
@@ -245,6 +268,8 @@ export function Block4() {
             })
           }
         }
+        
+        setHasFetched(true)
       } catch (error) {
         console.error("Error fetching data:", error)
       } finally {
@@ -253,7 +278,7 @@ export function Block4() {
     }
 
     fetchData()
-  }, [user, setBlock4Metrics, fetchQuery])
+  }, [user, hasFetched, dateRange, setBlock4Metrics, setBlock4MonthlyMetrics, fetchQuery])
 
   if (loading) {
     return <DashCard title="Revenue" description="Loading..." content="..." />
@@ -265,7 +290,7 @@ export function Block4() {
 
   const docCount = query?.scope?.connection?.count || 0;
   const conversionRate = leadsCount ? ((docCount / leadsCount) * 100).toFixed(1) : '0';
-  
+  //console.log(block4MonthlyMetrics);
   return (
     <DashCard 
       title="Conversion Rate" 

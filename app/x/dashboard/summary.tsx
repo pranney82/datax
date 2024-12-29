@@ -1,25 +1,11 @@
-import DashCard from "@/components/dash-card";
-import ReactECharts from "echarts-for-react";
 import { Block1 } from "./summary-tiles/block1";
 import { Block2 } from "./summary-tiles/block2";
 import { Block3 } from "./summary-tiles/block3";
 import { Block4 } from "./summary-tiles/block4";
 import { Block5 } from "./summary-tiles/block5";
 import { Block6 } from "./summary-tiles/block6";
-
-const lineChartOption = {
-    xAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    },
-    yAxis: {
-        type: 'value'
-    },
-    series: [{
-        data: [150, 230, 224, 218, 135, 147, 260],
-        type: 'line'
-    }]
-}
+import { Block7 } from "./summary-tiles/block7";
+import { Block8 } from "./summary-tiles/block8";
 
 export default function Summary() {
   return (
@@ -34,28 +20,14 @@ export default function Summary() {
       </div>
 
       {/* Monthly stats and chart */}
-      <div className="grid gap-4 md:grid-cols-6">
+      <div className="grid gap-4 md:grid-cols-6 items-start">
         <div className="md:col-span-3">
           <Block6 />
         </div>
-        <div className="md:col-span-3">
-          <DashCard 
-              title="Monthly Trends" 
-              description="Revenue performance over time"
-          >
-              <ReactECharts 
-                option={lineChartOption} 
-                style={{ height: '300px', width: '100%' }}
-                theme="light"
-              />
-          </DashCard>
+        <div className="md:col-span-3 grid gap-4">
+          <Block7 />
+          <Block8 />
         </div>
-      </div>
-
-      {/* Bottom metrics */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <DashCard title="Performance" description="Current period metrics" content="Details here" />
-        <DashCard title="Forecasts" description="Upcoming projections" content="Forecast data" />
       </div>
     </div>
   );
