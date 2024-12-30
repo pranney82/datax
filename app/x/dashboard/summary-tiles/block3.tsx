@@ -19,7 +19,7 @@ export function Block3() {
   const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState<QueryResponse | null>(null)
-  const { setLeadsCount, dateRange, block3MonthlyLeads, setBlock3MonthlyLeads } = useLeadsCount()
+  const { setLeadsCount, dateRange, setBlock3MonthlyLeads } = useLeadsCount()
   const [hasFetched, setHasFetched] = useState(false)
 
   const fetchQuery = useCallback(async (

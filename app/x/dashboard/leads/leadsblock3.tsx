@@ -1,7 +1,7 @@
 import DashCard from "@/components/dash-card";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -12,7 +12,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useLeadsCount } from "@/lib/hooks/use-leads-count";
-import { docsDataQuery } from "./query";
 
 export function LeadsBlock3() {
     const [marketingBudget, setMarketingBudget] = useState(0);

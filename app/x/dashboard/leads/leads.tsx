@@ -11,7 +11,7 @@ import { LeadsBlock4 } from "./leadsblock4";
 import { useLeadsCount } from "@/lib/hooks/use-leads-count"
 
 export default function Leads() {
-    const { block3MonthlyLeads, block4Metrics, leadsCount } = useLeadsCount()
+    const { block3MonthlyLeads, block4Metrics } = useLeadsCount()
     
     // Get current month's leads count (last item in array)
     const currentMonthLeads = block3MonthlyLeads.length > 0 

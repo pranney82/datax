@@ -5,6 +5,26 @@ import { useEffect, useState, useCallback } from "react";
 import { docsDataQuery } from "./query";
 import { useLeadsCount } from "@/lib/hooks/use-leads-count";
 
+interface DocumentNode {
+    id: string;
+    createdAt: string;
+    closedAt: string | null;
+    data: {
+        next?: {
+            status: string;
+        };
+    };
+    status: string;
+}
+
+interface DocumentsResponse {
+    organization?: {
+        documents?: {
+            nodes?: DocumentNode[];
+            nextPage?: string;
+        };
+    };
+}
 
 export function LeadsBlock4() {
     
@@ -12,17 +32,13 @@ export function LeadsBlock4() {
     const startDate = dateRange.monthDates[0];
     const endDate = dateRange.monthDates[dateRange.monthDates.length - 1];
 
-    const getPendingLeads = useCallback((leadsData: any) => {
-        if (!leadsData || !Array.isArray(leadsData)) {
-            return [];
-        }
-
-        return leadsData.filter(item => 
-            item?.data?.next?.status === "pending"
-        );
-    }, []);
-
-    const fetchAllLeadsData = useCallback(async (orgID: string, grantKey: string, startDate: string, endDate: string, page?: string): Promise<any> => {
+    const fetchAllLeadsData = useCallback(async (
+        orgID: string, 
+        grantKey: string, 
+        startDate: string, 
+        endDate: string, 
+        page?: string
+    ): Promise<DocumentsResponse> => {
         try {
             const response = await fetch('/api/jtfetch', {
                 method: 'POST',
@@ -63,29 +79,65 @@ export function LeadsBlock4() {
             return data;
         } catch (error) {
             console.error('Error fetching leads data:', error);
-            return null;
+            return {};
         }
     }, []);
 
-    const calculateAverageDays = useCallback((leadsData: any[]) => {
-        if (!leadsData?.length) return 0;
+    const calculateAverageDays = useCallback((leadsData: DocumentNode[]) => {
+        console.log('Calculating average days with leads:', leadsData?.length);
+        if (!leadsData?.length) {
+            console.log('No leads data available');
+            return 0;
+        }
 
-        const totalDays = leadsData.reduce((sum, lead) => {
-            const createdAt = new Date(lead?.createdAt);
-            const closedAt = new Date(lead?.closedAt);
+        const closedLeads = leadsData.filter(lead => {
+            console.log('Lead status:', lead.status, 'closedAt:', lead.closedAt);
+            return lead.closedAt !== null;
+        });
+        console.log('Number of closed leads:', closedLeads.length);
+        
+        if (closedLeads.length === 0) {
+            console.log('No closed leads found');
+            return 0;
+        }
 
-            // Skip invalid dates or unclosed leads
-            if (!createdAt || !closedAt || isNaN(createdAt.getTime()) || isNaN(closedAt.getTime())) {
-                return sum;
-            }
+        const totalDays = closedLeads.reduce((sum, lead, index) => {
+            console.log(`\nProcessing lead ${index + 1}:`, lead);
+            
+            // Log the raw date strings
+            console.log('Raw dates:', {
+                createdAt: lead.createdAt,
+                closedAt: lead.closedAt
+            });
 
-            const diffTime = Math.abs(closedAt.getTime() - createdAt.getTime());
+            const createdAt = new Date(lead.createdAt);
+            const closedAt = new Date(lead.closedAt!);
+            
+            console.log('Parsed dates:', {
+                createdAt: createdAt.toISOString(),
+                closedAt: closedAt.toISOString()
+            });
+
+            const diffTime = closedAt.getTime() - createdAt.getTime();
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            console.log('Time calculations:', {
+                diffTime,
+                diffDays,
+                currentSum: sum,
+                newSum: sum + diffDays
+            });
+            
             return sum + diffDays;
         }, 0);
 
-        // Calculate average and round to 1 decimal place
-        const averageDays = (totalDays / leadsData.length).toFixed(1);
+        console.log('\nFinal calculations:', {
+            totalDays,
+            numberOfLeads: closedLeads.length,
+            average: totalDays / closedLeads.length
+        });
+
+        const averageDays = (totalDays / closedLeads.length).toFixed(1);
         return parseFloat(averageDays);
     }, []);
 
@@ -93,34 +145,44 @@ export function LeadsBlock4() {
         const fetchLeadsToClose = async () => {
             try {
                 const currentUser = auth.currentUser;
-                if (!currentUser) return;
+                if (!currentUser) {
+                    console.log('No current user');
+                    return;
+                }
 
                 const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-                if (!userDoc.exists()) return;
+                if (!userDoc.exists()) {
+                    console.log('User doc does not exist');
+                    return;
+                }
 
                 const org = userDoc.data().org;
-                if (!org) return;
+                if (!org) {
+                    console.log('No org found in user data');
+                    return;
+                }
 
                 // Get org document using the orgID
                 const orgDoc = await getDoc(doc(db, 'orgs', org));
-                                
                 const orgID = orgDoc.data()?.orgID;
                 const grantKey = orgDoc.data()?.grantKey;
 
+                console.log('Fetching with dates:', { startDate, endDate });
+                
                 if (orgID && grantKey) {
                     const leadsData = await fetchAllLeadsData(orgID, grantKey, startDate, endDate);
                     const nodes = leadsData?.organization?.documents?.nodes || [];
+                    console.log('Received nodes:', nodes.length);
                     const averageDays = calculateAverageDays(nodes);
                     setLeadToClose(averageDays);
-                    console.log('Average days to close:', averageDays);
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error in fetchLeadsToClose:', error);
             }
         };
 
         fetchLeadsToClose();
-    }, [fetchAllLeadsData, calculateAverageDays]);
+    }, [fetchAllLeadsData, calculateAverageDays, startDate, endDate]);
 
     // Add state for storing the result
     const [leadToClose, setLeadToClose] = useState(0);
