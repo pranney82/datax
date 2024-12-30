@@ -10,7 +10,8 @@ export function Block7() {
             type: 'category',
             data: monthlyRevenue.map(m => {
                 const date = new Date(m.start)
-                return date.toLocaleString('default', { month: 'short' })
+                return new Date(date.getTime() + date.getTimezoneOffset() * 60000)
+                    .toLocaleString('default', { month: 'short' })
             })
         },
         yAxis: [

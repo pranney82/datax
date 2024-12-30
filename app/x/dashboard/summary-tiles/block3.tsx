@@ -153,8 +153,6 @@ export function Block3() {
   }
 
   const queryValue = query?.organization?.accounts?.count;
-
-  console.log(block3MonthlyLeads);
   
   return (
     <DashCard 

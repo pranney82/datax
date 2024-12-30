@@ -204,6 +204,12 @@ export function Block1() {
 
   useEffect(() => {
     async function fetchData() {
+      // If we already have the data stored, use it
+      if (query) {
+        setLoading(false)
+        return
+      }
+
       if (!user?.uid || hasFetched) return
 
       try {
@@ -242,7 +248,7 @@ export function Block1() {
               dateRange.monthDates[0],  // First month
               dateRange.getLastDayOfMonth(dateRange.monthDates[dateRange.monthDates.length - 1])  // Last day of most recent month
             )
-            setQuery(revenueData)
+            setQuery(revenueData) // Store the total revenue data
           }
         }
         
@@ -255,7 +261,7 @@ export function Block1() {
     }
 
     fetchData()
-  }, [user, hasFetched, dateRange, fetchRevenue, setMonthlyRevenue])
+  }, [user, hasFetched, dateRange, fetchRevenue, setMonthlyRevenue, setQuery, query])
 
   if (loading) {
     return <DashCard title="Revenue" description="Loading..." content="..." />
@@ -268,8 +274,6 @@ export function Block1() {
   const revenueValue = query?.scope?.connection?.["Amount:sum"]
     ? `$${Math.ceil(query.scope.connection["Amount:sum"]).toLocaleString()}`
     : '$0'
-  
-  //console.log('monthlyRevenue:', monthlyRevenue)
   
   return (
     <DashCard 

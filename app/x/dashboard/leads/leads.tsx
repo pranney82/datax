@@ -6,17 +6,44 @@ import LeadsLineTwo from "./leadslinetwo";
 import LeadsTable from "./leadstable";
 import LeadsLost from "./leadslost";
 import LeadsPie from "./leadspie";
-        
+import { LeadsBlock3 } from "./leadsblock3";
+import { LeadsBlock4 } from "./leadsblock4";
+import { useLeadsCount } from "@/lib/hooks/use-leads-count"
+
 export default function Leads() {
+    const { block3MonthlyLeads, block4Metrics, leadsCount } = useLeadsCount()
+    
+    // Get current month's leads count (last item in array)
+    const currentMonthLeads = block3MonthlyLeads.length > 0 
+        ? block3MonthlyLeads[block3MonthlyLeads.length - 1].count
+        : 0
+
+    // Calculate conversion rate using the same logic as block4
+    const conversionRate = currentMonthLeads 
+        ? ((block4Metrics.count / currentMonthLeads) * 100).toFixed(1) 
+        : '0'
+
+    // Calculate revenue per lead
+    const revenuePerLead = block4Metrics.count > 0
+        ? `$${(block4Metrics.amountSum / block4Metrics.count).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          })}`
+        : '$0.00'
+
     return (
     <div className="flex flex-col gap-4">
         {/* Top row */}
         <div className="grid auto-rows-min gap-4 md:grid-cols-5">
-        <DashCard title="Raw Leads" description="past 30 days" content="1,234" />
-        <DashCard title="Conversion Rate" description="current month" content="23%" />
-        <DashCard title="Lead Acquisition Cost" description="30-day average" content="$45.50" />
-        <DashCard title="Average Days to Close" description="this quarter" content="32" />
-        <DashCard title="Revenue Per Lead" description="30-day average" content="$2,850.00" />
+        <DashCard title="Raw Leads" description="this month" content={currentMonthLeads.toLocaleString()} />
+        <DashCard title="Conversion Rate" description="this month" content={`${conversionRate}%`} />
+        <LeadsBlock3 />
+        <LeadsBlock4 />
+        <DashCard 
+            title="Revenue Per Lead" 
+            description="last 12 months" 
+            content={revenuePerLead} 
+        />
         </div>
 
         {/* Second row */}

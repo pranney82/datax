@@ -10,6 +10,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { useState } from "react"
 
 import Summary from "./summary";
 import Leads from "./leads/leads";
@@ -17,6 +18,8 @@ import Sales from "./sales/sales";
 import Jobs from "./jobs/jobs";
 
 export default function Page() {
+  const [currentTab, setCurrentTab] = useState("summary")
+
   return (
     <main className="flex flex-col flex-1 p-0 w-full max-w-full overflow-x-hidden">
       <header className="flex h-16 shrink-0 items-center gap-2">
@@ -30,7 +33,7 @@ export default function Page() {
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
-                <BreadcrumbPage>Summary</BreadcrumbPage>
+                <BreadcrumbPage>{currentTab.charAt(0).toUpperCase() + currentTab.slice(1)}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -40,7 +43,7 @@ export default function Page() {
         <div className="flex items-center gap-2 justify-between">
           <h1 className="text-2xl font-bold">Dashboard</h1>    
         </div>
-        <Tabs defaultValue="summary">
+        <Tabs defaultValue="summary" onValueChange={setCurrentTab}>
           <TabsList className="inline-flex h-10 items-center justify-start rounded-md bg-muted p-1 text-muted-foreground">
             <TabsTrigger value="summary" className="whitespace-nowrap">
               Summary

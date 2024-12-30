@@ -10,7 +10,9 @@ export function Block8() {
             type: 'category',
             data: block4MonthlyMetrics.map(m => {
                 const date = new Date(m.start)
-                return date.toLocaleString('default', { month: 'short' })
+                // Add UTC to prevent timezone issues
+                return new Date(date.getTime() + date.getTimezoneOffset() * 60000)
+                    .toLocaleString('default', { month: 'short' })
             })
         },
         yAxis: [
