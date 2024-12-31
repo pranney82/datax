@@ -2,7 +2,20 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+First, clone the repository:
+
+```bash
+# Clone the repository
+git clone https://github.com/elstruck/datax.git
+
+# Navigate to the project directory
+cd datax
+
+# Install dependencies
+npm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
@@ -16,21 +29,76 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Contributing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To contribute to this project, follow these steps:
 
-## Learn More
+1. Fork the repository by clicking the 'Fork' button on GitHub
+2. Clone your forked repository:
+```bash
+git clone https://github.com/elstruck/datax.git
+```
 
-To learn more about Next.js, take a look at the following resources:
+3. Create a new branch for your feature:
+```bash
+git checkout -b feature/your-feature-name
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Make your changes and commit them:
+```bash
+git add .
+git commit -m "Add your descriptive commit message"
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. Push to your forked repository:
+```bash
+git push origin feature/your-feature-name
+```
 
-## Deploy on Vercel
+6. Go to GitHub and create a Pull Request:
+   - Navigate to your forked repository
+   - Click the "Pull Request" button
+   - Click "New Pull Request"
+   - Select your feature branch
+   - Add a title and description for your changes
+   - Click "Create Pull Request"
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## App Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+├── app/                    # Next.js app directory
+│   ├── layout.tsx         # Root layout component
+│   ├── page.tsx           # Main page component
+│   ├── globals.css        # Global styles
+│   └── fonts/             # Custom font files
+│
+├── components/            # React components
+│   ├── ui/               # Reusable UI components
+│   │   └── sidebar.tsx   # Sidebar UI component
+│   ├── app-sidebar.tsx   # Main sidebar implementation
+│   └── theme-provider.tsx # Theme context provider
+│
+├── public/               # Static assets
+│
+└── config files
+    ├── next.config.mjs   # Next.js configuration
+    ├── tailwind.config.ts # Tailwind CSS configuration
+    ├── postcss.config.mjs # PostCSS configuration
+    ├── tsconfig.json     # TypeScript configuration
+    └── .eslintrc.json    # ESLint configuration
+```
+
+### Key Directories and Files
+
+- **`app/`**: Contains the main application code following Next.js 13+ app directory structure
+  - `layout.tsx`: Defines the common layout wrapper for all pages
+  - `page.tsx`: The main landing page component
+  - `globals.css`: Global styles and Tailwind CSS utilities
+
+- **`components/`**: Houses all React components
+  - `ui/`: Contains reusable UI components
+  - `app-sidebar.tsx`: Main sidebar component implementation
+  - `theme-provider.tsx`: Manages theme state and context
+
+- **Configuration Files**: Various configuration files for the development environment
+  - TypeScript, ESLint, Tailwind CSS, and Next.js configurations
