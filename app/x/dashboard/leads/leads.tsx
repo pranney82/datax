@@ -2,8 +2,6 @@ import DashCard from "@/components/dash-card";
 import LeadFunnel from "./leadfunnel";
 import LeadsLineOne from "./leadslineone";
 import LeadsBarOne from "./leadsbarone";
-import LeadsLineTwo from "./leadslinetwo";
-import LeadsTable from "./leadstable";
 import LeadsLost from "./leadslost";
 import LeadsPie from "./leadspie";
 import { LeadsBlock3 } from "./leadsblock3";
@@ -46,26 +44,16 @@ export default function Leads() {
         />
         </div>
 
-        {/* Second row */}
+        {/* second row */}
         <div className="grid gap-4 md:grid-cols-6">
+            <div className="md:col-span-6">
+                <LeadsLineOne />
+            </div>
             <div className="md:col-span-2">
                 <LeadFunnel />
             </div>
-            <div className="md:col-span-4">
-                <LeadsLineOne />
-            </div>
-        </div>
-
-        {/* Third row */}
-        <div className="grid gap-4 md:grid-cols-6">
-            <div className="md:col-span-3"> 
+            <div className="md:col-span-4"> 
                 <LeadsBarOne />
-            </div>
-            <div className="md:col-span-3">
-                <LeadsLineTwo />
-            </div>
-            <div className="md:col-span-6">
-                <LeadsTable />
             </div>
             <div className="md:col-span-3">
                 <LeadsLost />

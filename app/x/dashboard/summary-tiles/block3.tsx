@@ -6,6 +6,7 @@ import { doc, getDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { useAuth } from "@/lib/context/auth-context"
 import { useLeadsCount } from '@/lib/hooks/use-leads-count'
+import { queryDocsStatus } from '@/app/x/dashboard/leads/query'
 
 type QueryResponse = {
     organization?: {
@@ -15,11 +16,24 @@ type QueryResponse = {
     }
 }
 
+type StatusQueryResponse = {
+  organization?: {
+    documents?: {
+      withValues?: {
+        [key: string]: {
+          count: number
+          status: string
+        }
+      }
+    }
+  }
+}
+
 export function Block3() {
   const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState<QueryResponse | null>(null)
-  const { setLeadsCount, dateRange, setBlock3MonthlyLeads } = useLeadsCount()
+  const { setLeadsCount, dateRange, setBlock3MonthlyLeads, setBlock3StatusCounts } = useLeadsCount()
   const [hasFetched, setHasFetched] = useState(false)
 
   const fetchQuery = useCallback(async (
@@ -89,6 +103,43 @@ export function Block3() {
     }
   }, [])
 
+  const fetchStatusQuery = useCallback(async (
+    orgID: string,
+    grantKey: string,
+    startDate: string,
+    endDate: string
+  ): Promise<StatusQueryResponse | null> => {
+    if (!grantKey || !orgID) {
+      console.error('Missing grantKey or orgID')
+      return null
+    }
+
+    try {
+      const response = await fetch('/api/jtfetch', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: {
+            "$": { "grantKey": grantKey },
+            ...queryDocsStatus({ orgID, startDate, endDate })
+          }
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error fetching status query:', error)
+      return null
+    }
+  }, [])
+
   useEffect(() => {
     async function fetchData() {
       if (!user?.uid || hasFetched) return
@@ -103,27 +154,42 @@ export function Block3() {
           const orgData = orgDoc.data()
           
           if (orgData?.orgID && orgData?.grantKey) {
-            // Fetch leads for each month
+            // Fetch leads and status for each month
             const monthlyData = await Promise.all(dateRange.monthDates.map(async (startDate) => {
               const endDate = dateRange.getLastDayOfMonth(startDate)
-              const queryData = await fetchQuery(
-                orgData.orgID, 
-                orgData.grantKey,
-                startDate,
-                endDate
-              )
+              const [queryData, statusData] = await Promise.all([
+                fetchQuery(orgData.orgID, orgData.grantKey, startDate, endDate),
+                fetchStatusQuery(orgData.orgID, orgData.grantKey, startDate, endDate)
+              ])
+
+              // Transform status data using the status name from the response
+              const statusCounts = statusData?.organization?.documents?.withValues
+                ? Object.entries(statusData.organization.documents.withValues).map(([key, data]) => ({
+                    status: key,
+                    count: data.count
+                  }))
+                : []
+
               return {
-                start: startDate,
-                end: endDate,
-                count: queryData?.organization?.accounts?.count || 0
+                leadsData: {
+                  start: startDate,
+                  end: endDate,
+                  count: queryData?.organization?.accounts?.count || 0
+                },
+                statusData: {
+                  start: startDate,
+                  end: endDate,
+                  statusCounts
+                }
               }
             }))
             
-            setBlock3MonthlyLeads(monthlyData)
+            setBlock3MonthlyLeads(monthlyData.map(d => d.leadsData))
+            setBlock3StatusCounts(monthlyData.map(d => d.statusData))
             
             // For the total, use first and last dates
             const queryData = await fetchQuery(
-              orgData.orgID, 
+              orgData.orgID,
               orgData.grantKey,
               dateRange.monthDates[0],
               dateRange.getLastDayOfMonth(dateRange.monthDates[dateRange.monthDates.length - 1])
@@ -142,7 +208,7 @@ export function Block3() {
     }
 
     fetchData()
-  }, [user, hasFetched, dateRange, setLeadsCount, setBlock3MonthlyLeads, fetchQuery])
+  }, [user, hasFetched, dateRange, setLeadsCount, setBlock3MonthlyLeads, setBlock3StatusCounts, fetchQuery, fetchStatusQuery])
 
   if (loading) {
     return <DashCard title="" description="Loading..." content="..." />

@@ -75,7 +75,6 @@ export function LeadsBlock4() {
                     ];
                 }
             }
-            console.log('all data:', data);
             return data;
         } catch (error) {
             console.error('Error fetching leads data:', error);
@@ -84,58 +83,29 @@ export function LeadsBlock4() {
     }, []);
 
     const calculateAverageDays = useCallback((leadsData: DocumentNode[]) => {
-        console.log('Calculating average days with leads:', leadsData?.length);
         if (!leadsData?.length) {
-            console.log('No leads data available');
             return 0;
         }
 
         const closedLeads = leadsData.filter(lead => {
-            console.log('Lead status:', lead.status, 'closedAt:', lead.closedAt);
             return lead.closedAt !== null;
         });
-        console.log('Number of closed leads:', closedLeads.length);
         
         if (closedLeads.length === 0) {
-            console.log('No closed leads found');
             return 0;
         }
 
-        const totalDays = closedLeads.reduce((sum, lead, index) => {
-            console.log(`\nProcessing lead ${index + 1}:`, lead);
-            
-            // Log the raw date strings
-            console.log('Raw dates:', {
-                createdAt: lead.createdAt,
-                closedAt: lead.closedAt
-            });
+        const totalDays = closedLeads.reduce((sum, lead) => {
 
             const createdAt = new Date(lead.createdAt);
             const closedAt = new Date(lead.closedAt!);
             
-            console.log('Parsed dates:', {
-                createdAt: createdAt.toISOString(),
-                closedAt: closedAt.toISOString()
-            });
-
             const diffTime = closedAt.getTime() - createdAt.getTime();
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             
-            console.log('Time calculations:', {
-                diffTime,
-                diffDays,
-                currentSum: sum,
-                newSum: sum + diffDays
-            });
-            
             return sum + diffDays;
         }, 0);
-
-        console.log('\nFinal calculations:', {
-            totalDays,
-            numberOfLeads: closedLeads.length,
-            average: totalDays / closedLeads.length
-        });
+        
 
         const averageDays = (totalDays / closedLeads.length).toFixed(1);
         return parseFloat(averageDays);
@@ -146,19 +116,19 @@ export function LeadsBlock4() {
             try {
                 const currentUser = auth.currentUser;
                 if (!currentUser) {
-                    console.log('No current user');
+                    //console.log('No current user');
                     return;
                 }
 
                 const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
                 if (!userDoc.exists()) {
-                    console.log('User doc does not exist');
+                    //console.log('User doc does not exist');
                     return;
                 }
 
                 const org = userDoc.data().org;
                 if (!org) {
-                    console.log('No org found in user data');
+                    //console.log('No org found in user data');
                     return;
                 }
 
@@ -167,12 +137,12 @@ export function LeadsBlock4() {
                 const orgID = orgDoc.data()?.orgID;
                 const grantKey = orgDoc.data()?.grantKey;
 
-                console.log('Fetching with dates:', { startDate, endDate });
+                //console.log('Fetching with dates:', { startDate, endDate });
                 
                 if (orgID && grantKey) {
                     const leadsData = await fetchAllLeadsData(orgID, grantKey, startDate, endDate);
                     const nodes = leadsData?.organization?.documents?.nodes || [];
-                    console.log('Received nodes:', nodes.length);
+                    //console.log('Received nodes:', nodes.length);
                     const averageDays = calculateAverageDays(nodes);
                     setLeadToClose(averageDays);
                 }

@@ -281,11 +281,11 @@ export function Block4() {
   }, [user, hasFetched, dateRange, setBlock4Metrics, setBlock4MonthlyMetrics, fetchQuery])
 
   if (loading) {
-    return <DashCard title="Revenue" description="Loading..." content="..." />
+    return <DashCard title="" description="Loading..." content="..." />
   }
 
   if (!query) {
-    return <DashCard title="Revenue" description="JT Grant Key or Org ID missing" content="" />
+    return <DashCard title="" description="JT Grant Key or Org ID missing" content="" />
   }
 
   const docCount = query?.scope?.connection?.count || 0;

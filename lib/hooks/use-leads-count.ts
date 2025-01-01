@@ -43,6 +43,17 @@ interface Block3MonthlyLeads {
   count: number
 }
 
+interface StatusCount {
+  status: string
+  count: number
+}
+
+interface Block3StatusCounts {
+  start: string
+  end: string
+  statusCounts: StatusCount[]
+}
+
 interface LeadsState {
   leadsCount: number
   setLeadsCount: (count: number) => void
@@ -55,6 +66,8 @@ interface LeadsState {
   setBlock4MonthlyMetrics: (metrics: Block4MonthlyMetrics[]) => void
   block3MonthlyLeads: Block3MonthlyLeads[]
   setBlock3MonthlyLeads: (leads: Block3MonthlyLeads[]) => void
+  block3StatusCounts: Block3StatusCounts[]
+  setBlock3StatusCounts: (counts: Block3StatusCounts[]) => void
 }
 
 export const useLeadsCount = create<LeadsState>((set) => ({
@@ -87,4 +100,6 @@ export const useLeadsCount = create<LeadsState>((set) => ({
   setBlock4MonthlyMetrics: (metrics: Block4MonthlyMetrics[]) => set({ block4MonthlyMetrics: metrics }),
   block3MonthlyLeads: [],
   setBlock3MonthlyLeads: (leads: Block3MonthlyLeads[]) => set({ block3MonthlyLeads: leads }),
+  block3StatusCounts: [],
+  setBlock3StatusCounts: (counts: Block3StatusCounts[]) => set({ block3StatusCounts: counts }),
 })) 
