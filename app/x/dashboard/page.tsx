@@ -55,7 +55,7 @@ export default function Page() {
               Sales
             </TabsTrigger>
             <TabsTrigger value="jobs" className="whitespace-nowrap">
-              Job Finances
+              Jobs
             </TabsTrigger>
           </TabsList>
           
