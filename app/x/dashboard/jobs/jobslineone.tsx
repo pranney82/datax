@@ -1,5 +1,15 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+'use client'
+
+import * as React from 'react'
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartConfig,
+} from "@/components/ui/chart"
 
 const data = [
     { month: "Jan", cashIn: 125000, cashOut: 98000, netCash: 27000 },
@@ -14,51 +24,95 @@ const data = [
     { month: "Oct", cashIn: 182000, cashOut: 148000, netCash: 34000 },
     { month: "Nov", cashIn: 179000, cashOut: 145000, netCash: 34000 },
     { month: "Dec", cashIn: 192000, cashOut: 152000, netCash: 40000 },
-];
+]
 
-type TooltipProps = {
-    active?: boolean;
-    payload?: Array<{
-        value: number;
-        dataKey: string;
-    }>;
-    label?: string;
-};
+const chartConfig: ChartConfig = {
+  cashIn: {
+    label: "Cash In",
+    color: "hsl(var(--chart-1))",
+  },
+  cashOut: {
+    label: "Cash Out",
+    color: "hsl(var(--chart-2))",
+  },
+  netCash: {
+    label: "Net Cash",
+    color: "hsl(var(--chart-3))",
+  },
+}
 
 export default function CashFlowTrendChart() {
-    const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
-        if (active && payload && payload.length) {
-            return (
-                <div className="bg-white p-4 border rounded-lg shadow-sm">
-                    <p className="font-medium mb-2">{label}</p>
-                    <p className="text-blue-500">Cash In: ${payload[0].value.toLocaleString()}</p>
-                    <p className="text-red-500">Cash Out: ${payload[1].value.toLocaleString()}</p>
-                    <p className="text-green-500">Net Cash: ${payload[2].value.toLocaleString()}</p>
-                </div>
-            );
-        }
-        return null;
-    };
-
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Monthly Cash Flow Trend</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
-                    <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis tickFormatter={(value) => `$${value / 1000}k`} />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Legend />
-                        <Line type="monotone" dataKey="cashIn" stroke="#3b82f6" name="Cash In" />
-                        <Line type="monotone" dataKey="cashOut" stroke="#ef4444" name="Cash Out" />
-                        <Line type="monotone" dataKey="netCash" stroke="#22c55e" name="Net Cash" />
-                    </LineChart>
-                </ResponsiveContainer>
-            </CardContent>
-        </Card>
-    );
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Monthly Cash Flow Trend</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig} className="h-[400px] w-full">
+          <AreaChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis 
+              dataKey="month" 
+              tickLine={false}
+              axisLine={false}
+            />
+            <YAxis 
+              tickFormatter={(value) => `$${value / 1000}k`}
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+            />
+            <ChartTooltip
+              content={({ payload, label }) => {
+                if (payload && payload.length) {
+                  return (
+                    <ChartTooltipContent
+                      title={label}
+                      content={
+                        <div className="flex flex-col gap-1">
+                          {payload.map((item) => (
+                            <div key={item.name} className="flex items-center justify-between gap-2">
+                              <span className="font-medium">{item.name}:</span>
+                              <span>${item.value?.toLocaleString()}</span>
+                            </div>
+                          ))}
+                        </div>
+                      }
+                    />
+                  )
+                }
+                return null
+              }}
+            />
+            <ChartLegend />
+            <Area 
+              type="monotone" 
+              dataKey="cashIn" 
+              stackId="1"
+              stroke="var(--color-cashIn)" 
+              fill="var(--color-cashIn)"
+              fillOpacity={0.5}
+            />
+            <Area 
+              type="monotone" 
+              dataKey="cashOut" 
+              stackId="1"
+              stroke="var(--color-cashOut)" 
+              fill="var(--color-cashOut)"
+              fillOpacity={0.5}
+            />
+            <Area 
+              type="monotone" 
+              dataKey="netCash" 
+              stackId="1"
+              stroke="var(--color-netCash)" 
+              fill="var(--color-netCash)"
+              fillOpacity={0.5}
+            />
+          </AreaChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
+  )
 }
+

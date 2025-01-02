@@ -14,8 +14,6 @@ import { useState } from "react"
 
 import Summary from "./summary";
 import Leads from "./leads/leads";
-import Sales from "./sales/sales";
-import Jobs from "./jobs/jobs";
 
 export default function Page() {
   const [currentTab, setCurrentTab] = useState("summary")
@@ -64,12 +62,6 @@ export default function Page() {
           </TabsContent>
           <TabsContent value="leads">
             <Leads />
-          </TabsContent>
-          <TabsContent value="sales">
-            <Sales />
-          </TabsContent>
-          <TabsContent value="jobs">
-            <Jobs />
           </TabsContent>
         </Tabs>
       </div>
