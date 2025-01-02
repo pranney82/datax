@@ -31,6 +31,7 @@ export default function SalesMap({
         );
 
         if (validLocations.length === 0) {
+            // Default to Dallas-Fort Worth area if no valid coordinates
             return { 
                 north: 32.7767, south: 32.7767, 
                 east: -96.7970, west: -96.7970,
@@ -77,16 +78,8 @@ export default function SalesMap({
         );
     }
 
-    // Custom marker icon
-    const markerIcon = encodeURIComponent(`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-            <circle cx="12" cy="12" r="10" fill="white" />
-            <circle cx="12" cy="12" r="8" fill="red" />
-        </svg>
-    `);
-
     const markers = jobs.map(job => (
-        `markers=icon:data:image/svg+xml,${markerIcon}%7C${job.lat},${job.lng}`
+        `markers=color:red%7Clabel:${job.id}%7C${job.lat},${job.lng}`
     )).join('&');
 
     const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?`
@@ -116,7 +109,7 @@ export default function SalesMap({
                     <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
                         {jobs.map(job => (
                             <div key={job.id} className="flex items-center space-x-2 p-2 bg-gray-50 rounded">
-                                <div className="flex-shrink-0 w-6 h-6 bg-red-500 border-2 border-white rounded-full flex items-center justify-center text-white text-xs font-bold">
+                                <div className="flex-shrink-0 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
                                     {job.id}
                                 </div>
                                 <div>
@@ -131,3 +124,4 @@ export default function SalesMap({
         </Card>
     );
 }
+
