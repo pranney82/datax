@@ -38,7 +38,7 @@ export default function LeadsLostQuery({ selectedField }: { selectedField?: stri
 
   const fetchLeadsData = async (orgID: string, grantKey: string, cfName: string, page?: string) => {
     try {
-      console.log('Fetching page:', page || 'initial');
+      //console.log('Fetching page:', page || 'initial');
       const response = await fetch('/api/jtfetch', {
         method: 'POST',
         headers: {
@@ -63,7 +63,7 @@ export default function LeadsLostQuery({ selectedField }: { selectedField?: stri
       }
 
       const data = await response.json();
-      console.log('Page data:', data);
+      //console.log('Page data:', data);
       return data;
     } catch (error) {
       console.error('Error:', error);
@@ -72,32 +72,32 @@ export default function LeadsLostQuery({ selectedField }: { selectedField?: stri
   };
 
   const fetchAllPages = async (orgID: string, grantKey: string, leadslostcfv: string, leadslostcfvName: string) => {
-    console.log('Starting fetchAllPages with:', { orgID, leadslostcfv, leadslostcfvName });
+    //console.log('Starting fetchAllPages with:', { orgID, leadslostcfv, leadslostcfvName });
     let currentPage = "";
     let allResults: CustomFieldValue[] = [];
     let hasNextPage = true;
-    let pageCount = 0;
+    //let pageCount = 0;
 
     while (hasNextPage) {
-      pageCount++;
-      console.log(`Fetching page ${pageCount}, currentPage:`, currentPage);
+      //pageCount++;
+      //console.log(`Fetching page ${pageCount}, currentPage:`, currentPage);
       const result = await fetchLeadsData(orgID, grantKey, leadslostcfv, currentPage);
       
       const nodes = result?.organization?.customFields?.nodes?.[0]?.customFieldValues?.nodes;
-      console.log(`Page ${pageCount} results:`, nodes?.length || 0, 'items');
+      //console.log(`Page ${pageCount} results:`, nodes?.length || 0, 'items');
       
       if (!nodes) break;
       
       allResults = [...allResults, ...nodes];
-      console.log('Total results so far:', allResults.length);
+      //console.log('Total results so far:', allResults.length);
 
       const nextPage = result?.organization?.customFields?.nodes?.[0]?.customFieldValues?.nextPage;
       if (nextPage) {
         currentPage = nextPage;
-        console.log('Next page token:', nextPage);
+        //console.log('Next page token:', nextPage);
       } else {
         hasNextPage = false;
-        console.log('No more pages');
+        //console.log('No more pages');
       }
     }
 
@@ -116,7 +116,7 @@ export default function LeadsLostQuery({ selectedField }: { selectedField?: stri
       }))
       .sort((a, b) => b.count - a.count);
     
-    console.log('Final processed data:', processedData);
+    //console.log('Final processed data:', processedData);
 
     return {
       organization: {
@@ -136,7 +136,7 @@ export default function LeadsLostQuery({ selectedField }: { selectedField?: stri
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log('Starting data fetch with selectedField:', selectedField);
+      //console.log('Starting data fetch with selectedField:', selectedField);
       setIsLoading(true);
       try {
         const currentUser = auth.currentUser;
@@ -158,11 +158,11 @@ export default function LeadsLostQuery({ selectedField }: { selectedField?: stri
         }
 
         const orgDoc = await getDoc(doc(db, 'orgs', org));
-        console.log('Org data:', {
-          orgID: orgDoc.data()?.orgID,
-          leadslostcfv: orgDoc.data()?.leadslostcfv,
-          leadslostcfvName: orgDoc.data()?.leadslostcfvName
-        });
+        //console.log('Org data:', {
+        //  orgID: orgDoc.data()?.orgID,
+        //  leadslostcfv: orgDoc.data()?.leadslostcfv,
+        //  leadslostcfvName: orgDoc.data()?.leadslostcfvName
+        //});
 
         const orgID = orgDoc.data()?.orgID;
         const grantKey = orgDoc.data()?.grantKey;
@@ -170,9 +170,9 @@ export default function LeadsLostQuery({ selectedField }: { selectedField?: stri
         const leadslostcfvName = orgDoc.data()?.leadslostcfvName;
 
         if (orgID && grantKey && leadslostcfv) {
-          console.log('Fetching with params:', { orgID, leadslostcfv, leadslostcfvName });
+          //console.log('Fetching with params:', { orgID, leadslostcfv, leadslostcfvName });
           const allResults = await fetchAllPages(orgID, grantKey, leadslostcfv, leadslostcfvName);
-          console.log('Setting query result:', allResults);
+          //console.log('Setting query result:', allResults);
           setQueryResult(allResults as QueryResult);
         } else {
           console.log('Missing required params:', { orgID, grantKey, leadslostcfv });
@@ -186,7 +186,7 @@ export default function LeadsLostQuery({ selectedField }: { selectedField?: stri
     };
 
     fetchData();
-  }, [dateRange, selectedField, fetchAllPages]);
+  }, [dateRange, selectedField]);
 
   return { queryResult, isLoading };
 }

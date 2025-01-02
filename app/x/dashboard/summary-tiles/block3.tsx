@@ -133,6 +133,7 @@ export function Block3() {
       }
 
       const data = await response.json()
+      console.log('data:', data);
       return data
     } catch (error) {
       console.error('Error fetching status query:', error)
@@ -164,8 +165,8 @@ export function Block3() {
 
               // Transform status data using the status name from the response
               const statusCounts = statusData?.organization?.documents?.withValues
-                ? Object.entries(statusData.organization.documents.withValues).map(([key, data]) => ({
-                    status: key,
+                ? Object.entries(statusData.organization.documents.withValues).map(([, data]) => ({
+                    status: data.status,
                     count: data.count
                   }))
                 : []
@@ -183,7 +184,7 @@ export function Block3() {
                 }
               }
             }))
-            
+            console.log('monthlyData:', monthlyData);
             setBlock3MonthlyLeads(monthlyData.map(d => d.leadsData))
             setBlock3StatusCounts(monthlyData.map(d => d.statusData))
             

@@ -72,7 +72,7 @@ export default function LeadsLost() {
                 leadslostcfvName: selectedFieldName
             };
 
-            console.log('Updating with data:', updateData);
+            //console.log('Updating with data:', updateData);
             
             await updateDoc(doc(db, 'orgs', org), updateData);
             setIsCustomFieldOpen(false);

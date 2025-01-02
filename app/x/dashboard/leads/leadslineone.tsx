@@ -21,7 +21,7 @@ interface StatusObject {
 
 export default function LeadsLineOne() {
     const {block3StatusCounts} = useLeadsCount();
-    
+    console.log('block3StatusCounts:', block3StatusCounts);
     // Transform the data to work with multiple status lines
     const transformedData = block3StatusCounts.map((item: Block3Item) => {
         const statusObj: StatusObject = item.statusCounts.reduce((acc: StatusObject, curr: StatusCount) => {
@@ -54,7 +54,7 @@ export default function LeadsLineOne() {
             [data.dataKey as string]: !prev[data.dataKey as string]
         }));
     };
-
+console.log('transformedData:', transformedData);
     return (
         <Card>
             <CardHeader>

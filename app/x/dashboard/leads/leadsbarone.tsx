@@ -50,7 +50,7 @@ export default function LeadsSourceChart() {
     useEffect(() => {
         if (!isLoading && queryResult?.organization?.customFields?.nodes?.[0]?.customFieldValues?.processedData) {
             const processedData: ChartDataType[] = queryResult.organization.customFields.nodes[0].customFieldValues.processedData;
-            console.log('Setting chart data:', processedData);
+            //console.log('Setting chart data:', processedData);
             setChartData(processedData);
         }
     }, [queryResult, isLoading]);
@@ -115,7 +115,7 @@ export default function LeadsSourceChart() {
                 leadsbarcfvName: selectedFieldName
             };
 
-            console.log('Updating with data:', updateData);
+            //console.log('Updating with data:', updateData);
             
             await updateDoc(doc(db, 'orgs', org), updateData);
             setIsCustomFieldOpen(false);
