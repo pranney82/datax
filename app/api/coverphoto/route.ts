@@ -21,7 +21,8 @@ interface UploadUrlResult {
 
 // Step 1: Fetch the Google Street View image
 const getStreetViewImage = async ( address: string ): Promise<Uint8Array | null> => {
-  const streetViewUrl = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${address}&fov=70&key=AIzaSyDRk00BdC8fUrGw03oL5v5RXo-YWO8OvZs`;
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const streetViewUrl = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${address}&key=${apiKey}&fov=70`;
 
   try {
     const response = await fetch(streetViewUrl);
