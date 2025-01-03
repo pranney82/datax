@@ -1,7 +1,17 @@
 import { NextResponse } from 'next/server'
 
-export async function GET() {
-  await main();
+export async function POST(request: Request) {
+  const body = await request.json();
+  const { address, jobId, orgId, grantKey } = body;
+
+  if (!address || !jobId || !orgId || !grantKey) {
+    return NextResponse.json(
+      { error: 'Missing required parameters' },
+      { status: 400 }
+    );
+  }
+
+  await main(address, jobId, orgId, grantKey);
   return NextResponse.json({ status: 'ok' });
 }
 
@@ -205,12 +215,12 @@ const updateJobTread = async (
 };
 
 // Main function to run both steps
-const main = async (): Promise<void> => {
-    const address = "1972 Rock Springs Rd, Columbia, TN 38401, USA";
-    const jobId = "22Nytpgp66sG";
-    const orgId = "22NdyFNMKcSs";
-    const grantKey = "22SkyeHmsRL2C4BDXvukVCT7FUynyf75wC";
-
+const main = async (
+  address: string,
+  jobId: string,
+  orgId: string,
+  grantKey: string
+): Promise<void> => {
     const imageBuffer = await getStreetViewImage(address);
     if (!imageBuffer) return;
   
@@ -218,10 +228,7 @@ const main = async (): Promise<void> => {
     if (!uploadUrlResult) return;
   
     const uploadSuccess = await uploadToJobTread(imageBuffer, uploadUrlResult.uploadUrl);
-    if (!uploadSuccess) return;  // Don't proceed if upload failed
+    if (!uploadSuccess) return;
     
     await updateJobTread(jobId, uploadUrlResult.uploadId, orgId, grantKey);
 };
-  
-// Run the main function
-main();
