@@ -150,6 +150,27 @@ const Navbar1 = () => {
                             </Link>
                           </NavigationMenuLink>
                         </li>
+
+                        <li>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              href="/coverphoto"
+                              className={cn(
+                                'flex select-none gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+                              )}
+                            >
+                              {iconMap.Book}
+                              <div>
+                                <div className="text-sm font-semibold">
+                                  Cover Photo Automation
+                                </div>
+                                <p className="text-sm leading-snug text-muted-foreground">
+                                  Automatically generate cover photos for your jobs
+                                </p>
+                              </div>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
                       </ul>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
