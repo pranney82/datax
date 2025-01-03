@@ -12,7 +12,6 @@ export interface JobLocation {
 interface SalesMapProps {
     jobs: JobLocation[];
     title?: string;
-    zoomLevel?: number;
     mapWidth?: number;
     mapHeight?: number;
 }
@@ -20,15 +19,12 @@ interface SalesMapProps {
 export default function SalesMap({ 
     jobs,
     title = "Active Jobs Map",
-    zoomLevel = 10,
     mapWidth = 800,
     mapHeight = 600
 }: SalesMapProps) {
     const GOOGLE_MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
-    // Calculate center point from all coordinates
-    const calculateCenter = (locations: JobLocation[]) => {
-        // Filter out invalid coordinates (0,0 or null/undefined)
+    const calculateBounds = (locations: JobLocation[]) => {
         const validLocations = locations.filter(loc => 
             loc.lat !== 0 && loc.lng !== 0 && 
             loc.lat !== undefined && loc.lng !== undefined
@@ -36,21 +32,35 @@ export default function SalesMap({
 
         if (validLocations.length === 0) {
             // Default to Dallas-Fort Worth area if no valid coordinates
-            return { lat: 32.7767, lng: -96.7970 };
+            return { 
+                north: 32.7767, south: 32.7767, 
+                east: -96.7970, west: -96.7970,
+                center: { lat: 32.7767, lng: -96.7970 }
+            };
         }
-        
-        const sum = validLocations.reduce((acc, loc) => ({
-            lat: acc.lat + loc.lat,
-            lng: acc.lng + loc.lng
-        }), { lat: 0, lng: 0 });
+
+        let north = -90, south = 90, east = -180, west = 180;
+        let sumLat = 0, sumLng = 0;
+
+        validLocations.forEach(loc => {
+            north = Math.max(north, loc.lat);
+            south = Math.min(south, loc.lat);
+            east = Math.max(east, loc.lng);
+            west = Math.min(west, loc.lng);
+            sumLat += loc.lat;
+            sumLng += loc.lng;
+        });
 
         return {
-            lat: sum.lat / validLocations.length,
-            lng: sum.lng / validLocations.length
+            north, south, east, west,
+            center: {
+                lat: sumLat / validLocations.length,
+                lng: sumLng / validLocations.length
+            }
         };
     };
 
-    const center = calculateCenter(jobs);
+    const bounds = calculateBounds(jobs);
 
     if (!GOOGLE_MAPS_KEY) {
         console.error('Google Maps API key is not configured');
@@ -73,13 +83,13 @@ export default function SalesMap({
     )).join('&');
 
     const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?`
-        + `center=${center.lat},${center.lng}`
-        + `&zoom=${zoomLevel}`
+        + `center=${bounds.center.lat},${bounds.center.lng}`
         + `&size=${mapWidth}x${mapHeight}`
         + `&scale=2`
         + `&maptype=roadmap`
         + `&${markers}`
-        + `&key=${GOOGLE_MAPS_KEY}`;
+        + `&key=${GOOGLE_MAPS_KEY}`
+        + `&visible=${bounds.south},${bounds.west}|${bounds.north},${bounds.east}`;
 
     return (
         <Card>
@@ -113,4 +123,5 @@ export default function SalesMap({
             </CardContent>
         </Card>
     );
-} 
+}
+
