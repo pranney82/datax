@@ -47,6 +47,10 @@ const CoverPhoto = () => {
               it!! <br /> <br /> We&apos;re collecting email addresses to
               monitor usage.
             </p>
+            <p className="mb-8 max-w-xl text-muted-foreground lg:text-xl">
+              Variables needed (case sensitive):
+              <br />grantKey, address, jobId, orgId, email
+            </p>
 
             {!showApiUrl ? (
               <form onSubmit={handleSubmit} className="mb-8 max-w-xl w-full">
