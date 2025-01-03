@@ -52,8 +52,9 @@ const Footer = () => {
                   <li className="font-medium hover:text-primary">
                     <Link href="#">Test Drive</Link>
                   </li>
+                  {/* TODO: link to pricing page when ready */}
                   <li className="font-medium hover:text-primary">
-                    <Link href="/pricing">Pricing</Link>
+                    <Link href="/#">Pricing</Link>
                   </li>
                 </ul>
               </div>

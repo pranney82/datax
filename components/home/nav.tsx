@@ -9,10 +9,10 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AuthDialog } from '@/components/home/signup1';
-import { useAuth } from '@/lib/context/auth-context';
-import { signOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { useRouter } from 'next/navigation';
+//import { useAuth } from '@/lib/context/auth-context';
+//import { signOut } from 'firebase/auth';
+//import { auth } from '@/lib/firebase';
+//import { useRouter } from 'next/navigation';
 const iconMap = {
   LineChart: <LineChart className="size-5 shrink-0" />,
   Trees: <Trees className="size-5 shrink-0" />,
@@ -21,11 +21,11 @@ const iconMap = {
 };
 
 const Navbar1 = () => {
-  const { user, loading } = useAuth();
+  //const { user, loading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [authType, setAuthType] = useState<'login' | 'signup'>('signup');
-  const router = useRouter();
+  //const router = useRouter();
   // Add click outside handler
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -46,13 +46,13 @@ const Navbar1 = () => {
     };
   }, [isOpen]);
 
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
+    // const handleSignOut = async () => {
+    //   try {
+    //     await signOut(auth);
+    //   } catch (error) {
+    //     console.error('Error signing out:', error);
+    //   }
+    // };
 
   return (
     <section className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -196,18 +196,23 @@ const Navbar1 = () => {
               >
                 Test Drive
               </Link>
+
+              {/* TODO: link to pricing page when ready */}
               <Link
                 className={cn(
                   'text-muted-foreground',
                   navigationMenuTriggerStyle,
                   buttonVariants({ variant: 'ghost' })
                 )}
-                href="/pricing"
+                href="/#"
               >
+              
                 Pricing
               </Link>
             </div>
           </div>
+          {/* 
+            UNCOMMMENT WHEN READY TO ALLOW LOGGING IN
           <div className="flex gap-2">
             {loading ? (
               <div className="flex gap-2">
@@ -250,7 +255,7 @@ const Navbar1 = () => {
                 </Button>
               </>
             )}
-          </div>
+          </div> */}
         </nav>
 
         {/* Mobile Navigation */}
