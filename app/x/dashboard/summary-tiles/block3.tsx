@@ -133,7 +133,7 @@ export function Block3() {
       }
 
       const data = await response.json()
-      console.log('data:', data);
+      //console.log('data:', data);
       return data
     } catch (error) {
       console.error('Error fetching status query:', error)
@@ -184,7 +184,7 @@ export function Block3() {
                 }
               }
             }))
-            console.log('monthlyData:', monthlyData);
+            //console.log('monthlyData:', monthlyData);
             setBlock3MonthlyLeads(monthlyData.map(d => d.leadsData))
             setBlock3StatusCounts(monthlyData.map(d => d.statusData))
             

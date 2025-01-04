@@ -54,7 +54,7 @@ export default function LeadsLineOne() {
             [data.dataKey as string]: !prev[data.dataKey as string]
         }));
     };
-console.log('transformedData:', transformedData);
+
     return (
         <Card>
             <CardHeader>

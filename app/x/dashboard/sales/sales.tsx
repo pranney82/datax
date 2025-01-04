@@ -1,46 +1,42 @@
-import DashCard from "@/components/dash-card";
-import SalesMap from "./salesmap";
+"use client"
+
 import SalesLineOne from "./saleslineone";
 import SalesLineTwo from "./saleslinetwo";
-import SalesPie from "./salespie";
 import SalesTable from "./salestable";
-          
+import { SalesBlock1 } from "./salesblock1";
+import { SalesBlock2 } from "./salesblock2";
+import { SalesBlock3 } from "./salesblock3";
+import { SalesBlock4 } from "./salesblock4";
+import { SalesBlock5 } from "./salesblock5";
+
 export default function Sales() {
     return (
-    <div className="flex flex-col gap-4">
-        {/* Top row */}
-        <div className="grid auto-rows-min gap-4 md:grid-cols-5">
-        <DashCard title="Total Sales" description="past 30 days" content="$1,234,567" />
-        <DashCard title="Won Deals" description="past 30 days" content="23" />
-        <DashCard title="Average Deal Value" description="past 30 days" content="$32,123" />
-        <DashCard title="Sales Target %" description="this quarter" content="32%" />
-        <DashCard title="Pipeline Value" description="past 30 days" content="$2,850.00" />
-        </div>
+        <div className="flex flex-col gap-4">
+            {/* Top row */}
+            <div className="grid auto-rows-min gap-4 md:grid-cols-5">
+                <SalesBlock1 />
+                <SalesBlock2 />
+                <SalesBlock3 />
+                <SalesBlock4 />
+                <SalesBlock5 />
+            </div>
 
-        {/* Second row */}
-        <div className="grid gap-4 md:grid-cols-6">
-        <div className="md:col-span-2">
-            <SalesMap />
-        </div>
-        <div className="grid gap-4 md:col-span-4">
-            <div className="md:col-span-4">
-                <SalesLineOne />
+            {/* Second row */}
+            <div className="grid gap-4 md:grid-cols-5">
+                    <div className="md:col-span-2">
+                        <SalesLineOne />
+                    </div>
+                    <div className="md:col-span-3">
+                        <SalesLineTwo />
+                    </div>
             </div>
-            <div className="md:col-span-4">
-                <SalesLineTwo />
-            </div>
-        </div>
-        </div>
 
-        {/* Third row */}
-        <div className="grid gap-4 md:grid-cols-6">
-            <div className="md:col-span-3">
-                <SalesPie />
-            </div>
-            <div className="md:col-span-3">
-                <SalesTable />
+            {/* Third row */}
+            <div className="grid gap-4 md:grid-cols-6">
+                <div className="md:col-span-6">
+                    <SalesTable />
+                </div>
             </div>
         </div>
-    </div>
     );
 }
