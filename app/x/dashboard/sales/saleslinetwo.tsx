@@ -1,5 +1,5 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLeadsCount } from "@/lib/hooks/use-leads-count";
 import { querySales, queryCustomFieldOptions } from "./salesquery";
 import { db, auth } from "@/lib/firebase";
@@ -18,30 +18,33 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { Payload } from 'recharts/types/component/DefaultLegendContent';
 
+interface OrgData {
+    orgID: string;
+    grantKey: string;
+    salescfv?: string;
+    salescfvName?: string;
+}
+
 // Define consistent colors for the chart
 const COLORS: { [key: string]: string } = {
-    // Primary colors from leadsbarone.tsx
-    color1: '#8884d8',
-    color2: '#82ca9d',
-    color3: '#ffc658',
-    color4: '#ff7300',
-    color5: '#0088fe',
-    color6: '#00C49F',
-    color7: '#ff84d8',
-    color8: '#82ceff',
-    color9: '#ffc000',
-    color10: '#ff0000',
-    color11: '#0000fe',
-    color12: '#00FF9F'
+    // Primary colors with more contrast
+    color1: '#2563eb',  // Bright blue
+    color2: '#16a34a',  // Green
+    color3: '#dc2626',  // Red
+    color4: '#9333ea',  // Purple
+    color5: '#ea580c',  // Orange
+    color6: '#0891b2',  // Cyan
+    color7: '#4f46e5',  // Indigo
+    color8: '#ca8a04',  // Yellow
+    color9: '#be185d',  // Pink
+    color10: '#059669', // Emerald
+    color11: '#7c3aed', // Violet
+    color12: '#0284c7'  // Sky blue
 };
 
 interface MonthlyData {
     month: string;
     [key: string]: number | string;
-}
-
-interface DateRange {
-    monthDates: string[];
 }
 
 const fetchCustomFieldOptions = async (orgID: string, grantKey: string, cfID: string) => {
@@ -67,11 +70,11 @@ const fetchCustomFieldOptions = async (orgID: string, grantKey: string, cfID: st
         }
 
         const result = await response.json();
-        console.log('Custom field options result:', result);
+        //console.log('Custom field options result:', result);
         
         // Extract options from the result
         const options = result?.organization?.customFields?.nodes?.[0]?.options || [];
-        console.log('Extracted options:', options);
+        //console.log('Extracted options:', options);
         return options;
     } catch (error) {
         console.error('Error fetching custom field options:', error);
@@ -91,14 +94,7 @@ const fetchSalesData = async (orgID: string, grantKey: string, cfName3: string, 
                 endDate
             })
         };
-        
-        console.log('Sending query for:', {
-            cfName3,
-            startDate,
-            endDate,
-            fullQuery: JSON.stringify(query, null, 2)
-        });
-        
+           
         const response = await fetch('/api/jtfetch', {
             method: 'POST',
             headers: {
@@ -112,7 +108,7 @@ const fetchSalesData = async (orgID: string, grantKey: string, cfName3: string, 
         }
 
         const result = await response.json();
-        console.log('Sales data result:', result);
+        //console.log('Sales data result:', result);
         return result;
     } catch (error) {
         console.error('Error fetching sales data:', error);
@@ -128,12 +124,17 @@ const getLastDayOfMonth = (dateString: string) => {
 };
 
 const processQueryResultForChart = (results: Array<{
-    result: any,
+    result: {
+        scope?: {
+            connection?: {
+                "Amount:sum": number;
+            };
+        };
+    },
     option: string,
     startDate: string
 }>): MonthlyData[] => {
-    console.log('Processing query results:', results);
-    
+        
     const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const monthlyTotals: { [key: string]: { [value: string]: number } } = {};
     
@@ -151,7 +152,7 @@ const processQueryResultForChart = (results: Array<{
         const month = new Date(startDate).toLocaleString('default', { month: 'short' });
         const amount = result?.scope?.connection?.["Amount:sum"] || 0;
 
-        console.log(`Processing result for ${option} in ${month}:`, { amount });
+        //console.log(`Processing result for ${option} in ${month}:`, { amount });
 
         if (monthlyTotals[month]) {
             monthlyTotals[month][option] = amount;
@@ -169,15 +170,13 @@ const processQueryResultForChart = (results: Array<{
 
 export default function RevenueBySourceChart() {
     const { dateRange } = useLeadsCount();
-    console.log('Date range:', dateRange);
     const { user } = useAuth();
-    const [queryResult, setQueryResult] = useState<any>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [, setIsLoading] = useState(true);
     const [isCustomFieldOpen, setIsCustomFieldOpen] = useState(false);
     const [selectedField, setSelectedField] = useState("");
     const [selectedFieldName, setSelectedFieldName] = useState("");
     const [hiddenSeries, setHiddenSeries] = useState<{ [key: string]: boolean }>({});
-    const [chartData, setChartData] = useState<any[]>([]);
+    const [chartData, setChartData] = useState<MonthlyData[]>([]);
 
     // Handle saving custom field selection
     const handleSaveCustomField = async () => {
@@ -257,34 +256,34 @@ export default function RevenueBySourceChart() {
                 }
 
                 const orgDoc = await getDoc(doc(db, 'orgs', org));
-                const orgID = orgDoc.data()?.orgID;
-                const grantKey = orgDoc.data()?.grantKey;
+                const orgID = (orgDoc.data() as OrgData)?.orgID;
+                const grantKey = (orgDoc.data() as OrgData)?.grantKey;
 
-                console.log('Fetching with:', { orgID, grantKey, selectedField, dateRange });
+                //console.log('Fetching with:', { orgID, grantKey, selectedField, dateRange });
 
                 if (orgID && grantKey) {
                     const options = await fetchCustomFieldOptions(orgID, grantKey, selectedField);
-                    console.log('Got options:', options);
+                    //console.log('Got options:', options);
 
                     // Create an array of all month queries we need to make
-                    const allQueries = options.flatMap((option: any) => {
+                    const allQueries = options.flatMap((option: string) => {
                         const monthQueries = dateRange.monthDates.map(startDate => {
                             const query = {
                                 option,
                                 startDate,
                                 endDate: getLastDayOfMonth(startDate)
                             };
-                            console.log('Prepared query:', query);
+                            //console.log('Prepared query:', query);
                             return query;
                         });
                         return monthQueries;
                     });
 
-                    console.log('All prepared queries:', allQueries);
+                    //console.log('All prepared queries:', allQueries);
 
                     // Fetch data for each option and month combination
                     const allResults = await Promise.all(
-                        allQueries.map((query: any) => 
+                        allQueries.map((query: { option: string; startDate: string; endDate: string }) => 
                             fetchSalesData(
                                 orgID,
                                 grantKey,
@@ -305,7 +304,7 @@ export default function RevenueBySourceChart() {
                         }))
                     );
 
-                    console.log('Setting chart data:', processedData);
+                    //console.log('Setting chart data:', processedData);
                     setChartData(processedData);
                 }
             } catch (error) {
@@ -318,7 +317,7 @@ export default function RevenueBySourceChart() {
         fetchData();
     }, [selectedField, dateRange]);
 
-    console.log('Rendering with chartData:', chartData);
+    //console.log('Rendering with chartData:', chartData);
 
     // Add type-safe legend click handler
     const handleLegendClick = (data: Payload) => {
@@ -364,6 +363,10 @@ export default function RevenueBySourceChart() {
                                     `$${value.toLocaleString()}`, // Value formatting
                                     name as string // Name of the series
                                 ]}
+                                itemSorter={(item) => {
+                                    // Sort by value in descending order (largest first)
+                                    return -(item.value as number);
+                                }}
                             />
                             <Legend 
                                 onClick={handleLegendClick}
@@ -371,7 +374,7 @@ export default function RevenueBySourceChart() {
                             {Object.entries(chartData[0] || {})
                                 .filter(([key]) => {
                                     if (key === 'month') return false;
-                                    return chartData.some(data => data[key] > 0);
+                                    return chartData.some(data => data[key] as number > 0);
                                 })
                                 .map(([key], index) => (
                                     <Area
@@ -387,6 +390,9 @@ export default function RevenueBySourceChart() {
                         </AreaChart>
                     </ResponsiveContainer>
                 )}
+                <CardDescription className="text-muted-foreground text-center">
+                    Click on a source name to hide it
+                </CardDescription>
             </CardContent>
 
             <Dialog open={isCustomFieldOpen} onOpenChange={setIsCustomFieldOpen}>
