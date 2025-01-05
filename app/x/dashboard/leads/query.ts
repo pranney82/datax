@@ -187,7 +187,8 @@ export const queryCFFields = ({orgID, page}: QueryParams1) => ({
         "id": {},
         "name": {},
         "type": {},
-        "targetType": {}
+        "targetType": {},
+        "options": {}
       },
       "nextPage": {},
       "previousPage": {}

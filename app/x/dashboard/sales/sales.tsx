@@ -27,15 +27,11 @@ export default function Sales() {
                         <SalesLineOne />
                     </div>
                     <div className="md:col-span-3">
+                        <SalesTable />
+                    </div>
+                    <div className="md:col-span-5">
                         <SalesLineTwo />
                     </div>
-            </div>
-
-            {/* Third row */}
-            <div className="grid gap-4 md:grid-cols-6">
-                <div className="md:col-span-6">
-                    <SalesTable />
-                </div>
             </div>
         </div>
     );
