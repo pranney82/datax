@@ -1,6 +1,6 @@
 'use client';
 
-import { LineChart, Menu, X, Trees, Book, Zap, Home, Info, Car, DollarSign, BarChart3, Wrench, BookOpen, Map } from 'lucide-react';
+import { Menu, X, Zap, Home, Info, Car, DollarSign, BarChart3, Wrench, BookOpen, Map } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
@@ -193,7 +193,7 @@ const Navbar1 = () => {
                                   Roadmap
                                 </div>
                                 <p className="text-sm leading-snug text-gray-600 group-hover:text-black transition-colors duration-200 mt-1">
-                                  See what's coming next
+                                  See what&apos;s coming next
                                 </p>
                               </div>
                             </Link>

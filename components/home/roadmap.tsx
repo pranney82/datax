@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Brain, Users, Puzzle, BarChart3, Lock, HeadsetIcon, Sparkles, ChevronRight, Clock, Zap, Rocket, CheckCircle2, ChevronDown, ChevronUp, Mail, Globe, Cloud, Shield, Cpu, Database, Smartphone, Wifi, Layers, Maximize2, Minimize2, Sliders, Repeat, Compass, Hexagon, Aperture, Key } from 'lucide-react'
+import { Sparkles, Clock, Zap, Rocket, CheckCircle2, ChevronDown, ChevronUp, Mail } from 'lucide-react'
 
 const roadmapData = [
   {
@@ -269,7 +269,7 @@ function FeatureCard({ feature, color }: {
   )
 }
 
-function KanbanColumn({ section }: { section: any }) {
+function KanbanColumn({ section }: { section: string }) {
   const [expanded, setExpanded] = useState(false)
   const visibleFeatures = expanded ? section.features : section.features.slice(0, 3)
 
@@ -291,7 +291,7 @@ function KanbanColumn({ section }: { section: any }) {
             scrollbarColor: '#ffffff40 transparent'
           }}
         >
-          {visibleFeatures.map((feature: any) => (
+          {visibleFeatures.map((feature: string) => (
             <FeatureCard key={feature.title} feature={feature} color={section.color} />
           ))}
         </motion.div>
@@ -370,7 +370,7 @@ export default function RoadmapPage() {
             Product Roadmap
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            Discover the exciting features we're working on and what's coming next!
+            Discover the exciting features we&apos;re working on and what&apos;s coming next!
           </p>
           <div className="relative max-w-md mx-auto">
             <input

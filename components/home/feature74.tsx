@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Zap, BarChart3, Wrench, BookOpen } from 'lucide-react';
+import { BarChart3, Wrench, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const features = [
@@ -53,7 +53,7 @@ const features = [
 
 const FeatureCard = ({ feature }) => {
   const IconComponent = feature.icon;
-  const [isHovering, setIsHovering] = useState(false);
+  const [, setIsHovering] = useState(false);
 
   return (
     <div className="bg-gradient-to-br from-black via-black to-[#111] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#ffd400] h-full flex flex-col">
@@ -114,8 +114,6 @@ const FeatureCard = ({ feature }) => {
 };
 
 const EpicFeatures = () => {
-  const [isHoveringTry, setIsHoveringTry] = useState(false);
-
   return (
     <section className="py-16 md:py-24 bg-gradient-to-b from-black to-[#111] text-white overflow-hidden">
       <div className="container mx-auto px-4">
