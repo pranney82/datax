@@ -17,5 +17,5 @@ const activeJobs: JobLocation[] = [
 ];
 
 export default function ActiveJobsMap() {
-    return <SalesMap jobs={activeJobs} />;
+    return <SalesMap jobs={activeJobs} title="Active Jobs" />;
 }

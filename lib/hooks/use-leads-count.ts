@@ -68,6 +68,10 @@ interface LeadsState {
   setBlock3MonthlyLeads: (leads: Block3MonthlyLeads[]) => void
   block3StatusCounts: Block3StatusCounts[]
   setBlock3StatusCounts: (counts: Block3StatusCounts[]) => void
+  pendingQuery: QueryResponse | null
+  setPendingQuery: (query: QueryResponse | null) => void
+  salesTarget: number
+  setSalesTarget: (target: number) => void
 }
 
 export const useLeadsCount = create<LeadsState>((set) => ({
@@ -102,4 +106,8 @@ export const useLeadsCount = create<LeadsState>((set) => ({
   setBlock3MonthlyLeads: (leads: Block3MonthlyLeads[]) => set({ block3MonthlyLeads: leads }),
   block3StatusCounts: [],
   setBlock3StatusCounts: (counts: Block3StatusCounts[]) => set({ block3StatusCounts: counts }),
+  pendingQuery: null,
+  setPendingQuery: (query: QueryResponse | null) => set({ pendingQuery: query }),
+  salesTarget: 0,
+  setSalesTarget: (target: number) => set({ salesTarget: target }),
 })) 

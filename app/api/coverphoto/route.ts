@@ -1,8 +1,59 @@
 import { NextResponse } from 'next/server'
+import { db } from '@/lib/firebase'
+import { collection, addDoc } from 'firebase/firestore'
 
-export async function GET() {
-  await main();
-  return NextResponse.json({ status: 'ok' });
+export async function POST(request: Request) {
+  try {
+    const body = await request.json()
+    const { address, jobId, orgId, grantKey, email } = body
+
+    if (!address || !jobId || !orgId || !grantKey || !email) {
+      await addDoc(collection(db, 'coverphotoLogs'), {
+        date: new Date().toISOString(),
+        email,
+        status: 'error',
+        error: 'Missing required parameters'
+      })
+
+      return NextResponse.json(
+        { error: 'Missing required parameters' },
+        { status: 400 }
+      )
+    }
+
+    try {
+      await main(address, jobId, orgId, grantKey, email)
+      
+      // Log successful execution
+      await addDoc(collection(db, 'coverphotoLogs'), {
+        date: new Date().toISOString(),
+        email,
+        status: 'success',
+        address,
+        jobId
+      })
+
+      return NextResponse.json({ status: 'ok' })
+    } catch (error) {
+      // Log error
+      await addDoc(collection(db, 'coverphotoLogs'), {
+        date: new Date().toISOString(),
+        email,
+        status: 'error',
+        error: (error as Error).message,
+        address,
+        jobId
+      })
+
+      throw error
+    }
+  } catch (error) {
+    console.error('Error processing request:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
 }
 
 interface JobTreadResponse {
@@ -134,7 +185,8 @@ const updateJobTread = async (
   jobId: string, 
   uploadId: string, 
   orgId: string, 
-  grantKey: string
+  grantKey: string,
+  email: string
 ): Promise<JobTreadResponse | null> => {
     const query = {
         query: {
@@ -168,7 +220,8 @@ const updateJobTread = async (
             jobId,
             uploadId,
             orgId,
-            grantKey: grantKey ? "present" : "missing"
+            grantKey: grantKey ? "present" : "missing",
+            email
         });
 
         const response = await fetch('https://api.jobtread.com/pave', {
@@ -198,30 +251,35 @@ const updateJobTread = async (
             error: (error as Error).message,
             stack: (error as Error).stack,
             jobId,
-            uploadId
+            uploadId,
+            email
         });
         return null;
     }
 };
 
 // Main function to run both steps
-const main = async (): Promise<void> => {
-    const address = "1972 Rock Springs Rd, Columbia, TN 38401, USA";
-    const jobId = "22Nytpgp66sG";
-    const orgId = "22NdyFNMKcSs";
-    const grantKey = "22SkyeHmsRL2C4BDXvukVCT7FUynyf75wC";
-
+const main = async (
+  address: string,
+  jobId: string,
+  orgId: string,
+  grantKey: string,
+  email: string
+): Promise<void> => {
     const imageBuffer = await getStreetViewImage(address);
-    if (!imageBuffer) return;
+    if (!imageBuffer) {
+      throw new Error('Failed to fetch Street View image');
+    }
   
     const uploadUrlResult = await getJobTreadQueryUrl(imageBuffer.length, orgId, grantKey);
-    if (!uploadUrlResult) return;
+    if (!uploadUrlResult) {
+      throw new Error('Failed to get upload URL');
+    }
   
     const uploadSuccess = await uploadToJobTread(imageBuffer, uploadUrlResult.uploadUrl);
-    if (!uploadSuccess) return;  // Don't proceed if upload failed
+    if (!uploadSuccess) {
+      throw new Error('Failed to upload image');
+    }
     
-    await updateJobTread(jobId, uploadUrlResult.uploadId, orgId, grantKey);
+    await updateJobTread(jobId, uploadUrlResult.uploadId, orgId, grantKey, email);
 };
-  
-// Run the main function
-main();

@@ -1,70 +1,62 @@
+"use client"
+
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLeadsCount } from "@/lib/hooks/use-leads-count";
+import { useEffect } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { useAuth } from "@/lib/context/auth-context";
 
-const data = [
-    {
-        month: 'Jan',
-        actual: 45000,
-        target: 42000
-    },
-    {
-        month: 'Feb',
-        actual: 48000,
-        target: 44000
-    },
-    {
-        month: 'Mar',
-        actual: 52000,
-        target: 46000
-    },
-    {
-        month: 'Apr',
-        actual: 49000,
-        target: 48000
-    },
-    {
-        month: 'May',
-        actual: 53000,
-        target: 50000
-    },
-    {
-        month: 'Jun',
-        actual: 58000,
-        target: 52000
-    },
-    {
-        month: 'Jul',
-        actual: 56000,
-        target: 54000
-    },
-    {
-        month: 'Aug',
-        actual: 61000,
-        target: 56000
-    },
-    {
-        month: 'Sep',
-        actual: 65000,
-        target: 58000
-    },
-    {
-        month: 'Oct',
-        actual: 67000,
-        target: 60000
-    },
-    {
-        month: 'Nov',
-        actual: 69000,
-        target: 62000
-    },
-    {
-        month: 'Dec',
-        actual: 72000,
-        target: 64000
-    }
-];
+interface ChartData {
+    month: string;
+    actual: number;
+    target: number;
+}
 
 export default function RevenueChart() {
+    const { block4MonthlyMetrics, salesTarget, setSalesTarget } = useLeadsCount();
+    const { user } = useAuth();
+
+    // Keep the useEffect to fetch initial value
+    useEffect(() => {
+        async function fetchSalesTarget() {
+            if (!user?.uid) return;
+
+            try {
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                const userOrg = userDoc.data()?.org;
+
+                if (userOrg) {
+                    const orgDoc = await getDoc(doc(db, "orgs", userOrg));
+                    const target = orgDoc.data()?.salesTarget || 0;
+                    setSalesTarget(target); // Use store's setSalesTarget
+                }
+            } catch (error) {
+                console.error("Error fetching sales target:", error);
+            }
+        }
+
+        fetchSalesTarget();
+    }, [user]);
+
+    // Transform data for the chart
+    const data: ChartData[] = block4MonthlyMetrics.map((metric, index) => {
+        // Calculate cumulative target
+        const cumulativeTarget = salesTarget * (index + 1);
+        
+        // Calculate cumulative actual revenue by summing all months up to current index
+        const cumulativeActual = block4MonthlyMetrics
+            .slice(0, index + 1)
+            .reduce((sum, m) => sum + (m.metrics.amountSum || 0), 0);
+        
+        return {
+            month: new Date(metric.start).toLocaleString('default', { month: 'short' }),
+            actual: Math.round(cumulativeActual),
+            target: cumulativeTarget
+        };
+    });
+
     return (
         <Card>
             <CardHeader>

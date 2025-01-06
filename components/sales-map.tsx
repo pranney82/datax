@@ -11,7 +11,8 @@ export interface JobLocation {
 
 interface SalesMapProps {
     jobs: JobLocation[];
-    title?: string;
+    title: string;
+    zoomLevel?: number;
     mapWidth?: number;
     mapHeight?: number;
 }

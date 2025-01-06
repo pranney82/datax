@@ -128,7 +128,7 @@ export default function LeadsSourceChart() {
         <>
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>{selectedFieldName || "select custom field"}</CardTitle>
+                    <CardTitle>{selectedFieldName || "select custom field, preferrably Lead Source"}</CardTitle>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="h-8 w-8 p-0">

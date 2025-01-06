@@ -117,7 +117,9 @@ export function LeadsBlock3() {
                 description="this month" 
                 content={`$${averageLeadCost.toFixed(2)}`}
                 menuItems={menuItems}
-                footer={`Marketing Budget: $${marketingBudget}/mo`}
+                footer={{
+                    text: `Marketing Budget: $${marketingBudget}/mo`
+                }}
             />
 
             <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>

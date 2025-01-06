@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AuthDialog } from '@/components/home/signup1';
+
 import { useAuth } from '@/lib/context/auth-context';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
@@ -44,7 +45,7 @@ const iconMap = {
 };
 
 const Navbar1 = () => {
-  const { user, loading } = useAuth();
+  //const { user, loading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [authType, setAuthType] = useState<'login' | 'signup'>('signup');
@@ -71,13 +72,13 @@ const Navbar1 = () => {
     };
   }, [isOpen]);
 
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
+    // const handleSignOut = async () => {
+    //   try {
+    //     await signOut(auth);
+    //   } catch (error) {
+    //     console.error('Error signing out:', error);
+    //   }
+    // };
 
   return (
     <section className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -199,6 +200,27 @@ const Navbar1 = () => {
                             </Link>
                           </NavigationMenuLink>
                         </li>
+
+                        <li>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              href="/coverphoto"
+                              className={cn(
+                                'flex select-none gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+                              )}
+                            >
+                              {iconMap.Book}
+                              <div>
+                                <div className="text-sm font-semibold">
+                                  Cover Photo Automation
+                                </div>
+                                <p className="text-sm leading-snug text-muted-foreground">
+                                  Automatically generate cover photos for your jobs
+                                </p>
+                              </div>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
                       </ul>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
@@ -224,18 +246,24 @@ const Navbar1 = () => {
               >
                 <span>Test Drive</span>
               </Link>
+
+              {/* TODO: link to pricing page when ready */}
               <Link
                 className={cn(
                   'text-gray-800 hover:text-ffd400 transition-colors duration-200',
                   navigationMenuTriggerStyle,
                   buttonVariants({ variant: 'ghost' })
                 )}
-                href="/pricing"
+                href="/#"
               >
+
                 <span>Pricing</span>
+
               </Link>
             </div>
           </div>
+          {/* 
+            UNCOMMMENT WHEN READY TO ALLOW LOGGING IN
           <div className="flex gap-2">
             {loading ? (
               <div className="flex gap-2">
@@ -287,7 +315,7 @@ const Navbar1 = () => {
                 </Button>
               </>
             )}
-          </div>
+          </div> */}
         </nav>
 
         {/* Mobile Navigation */}

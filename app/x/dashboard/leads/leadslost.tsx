@@ -85,7 +85,7 @@ export default function LeadsLost() {
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                    <CardTitle>{selectedFieldName || "select custom field"}</CardTitle>
+                    <CardTitle>{selectedFieldName || "select custom field, preferrably Lead Lost Reason"}</CardTitle>
                 </div>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
