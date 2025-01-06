@@ -1,74 +1,113 @@
-import {
-BarChartHorizontal,
-BatteryCharging,
-CircleHelp,
-Layers,
-WandSparkles,
-ZoomIn,
-} from 'lucide-react';
+'use client'
+
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Users, Zap, Target, Clock, Rocket, TrendingUp } from 'lucide-react';
 
 const reasons = [
-{
-    title: 'Built by JT Users',
+  {
+    title: 'Built by JOBTREAD Users',
     description:
-    'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe est aliquid exercitationem, quos explicabo repellat?',
-    icon: <ZoomIn className="size-6" />,
-},
-{
+      'With our experience as remodelers and JOBTREAD users, DATAx streamlines your operations with better data management and automation.',
+    icon: Users,
+    color: '#8B5CF6',
+  },
+  {
     title: 'Easy to Use',
     description:
-    'Just add your JobTread API key and let us do the rest.',
-    icon: <BarChartHorizontal className="size-6" />,
-},
-{
+      'Simply enter your JOBTREAD login, and we’ll handle the rest—no coding required. We’ve managed the complexities so you can enjoy the benefits effortlessly.',
+    icon: Zap,
+    color: '#FBBF24',
+  },
+  {
     title: 'Prebuilt Templates',
     description:
-    "We're creating the industry's best dashboards, automations, and library of resources ready for you to use.",
-    icon: <CircleHelp className="size-6" />,
-},
-{
+      "Access a growing library of industry-leading dashboards, automations, and resources designed to supercharge your JOBTREAD experience.",
+    icon: Target,
+    color: '#10B981',
+  },
+  {
     title: 'Real Time Data',
     description:
-    'We pull your data from JobTread in real time, so you always have the latest information.',
-    icon: <WandSparkles className="size-6" />,
-},
-{
-    title: 'JT Companion',
+      'Your data syncs real time with every change that happens in JOBTREAD, ensuring you always have the most up-to-date information at your fingertips.',
+    icon: Clock,
+    color: '#3B82F6',
+  },
+  {
+    title: 'JOBTREAD Companion',
     description:
-    'Built specifically for JT users, alongside the JT team, to bring you the best companion app possible.',
-    icon: <Layers className="size-6" />,
-},
-{
+      'Experience the power of a purpose-built companion app, developed in collaboration with the JOBTREAD team to perfectly complement your existing workflow.',
+    icon: Rocket,
+    color: '#EF4444',
+  },
+  {
     title: 'Less Time Wrestling with Data',
     description:
-    'Spend more time on your business, less time on spreadsheets and Zapier.',
-    icon: <BatteryCharging className="size-6" />,
-},
+      'Bid farewell to endless spreadsheets and complex Zapier setups. Reclaim your time and focus on what truly matters - growing your business.',
+    icon: TrendingUp,
+    color: '#6366F1',
+  },
 ];
 
-const Feature43 = () => {
-return (
-    <section className="py-8 w-full">
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 md:mb-20">
-        <h2 className="mb-2 text-center text-3xl font-semibold lg:text-5xl">
-            Why Work With Us?
-        </h2>
+const FeatureCard = ({ reason, index }) => {
+  const IconComponent = reason.icon;
+
+  return (
+    <motion.div
+      className="bg-white rounded-lg shadow-md border border-gray-200 h-full flex flex-col"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+    >
+      <div className="p-6 flex-grow flex flex-col">
+        <div className="mb-6 flex items-center justify-center">
+          <div className="rounded-full p-3" style={{ backgroundColor: `${reason.color}20` }}>
+            <IconComponent className="w-8 h-8" style={{ color: reason.color }} />
+          </div>
         </div>
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-        {reasons.map((reason, i) => (
-            <div key={i} className="flex flex-col">
-            <div className="mb-5 flex size-16 items-center justify-center rounded-full bg-accent">
-                {reason.icon}
-            </div>
-            <h3 className="mb-2 text-xl font-semibold">{reason.title}</h3>
-            <p className="text-muted-foreground">{reason.description}</p>
-            </div>
-        ))}
-        </div>
-    </div>
-    </section>
-);
+        <h3 className="text-xl font-bold mb-4 text-center text-gray-800">{reason.title}</h3>
+        <p className="text-gray-600 text-center flex-grow">{reason.description}</p>
+      </div>
+    </motion.div>
+  );
 };
 
-export default Feature43;
+const EpicFeatureSection = () => {
+  return (
+    <section className="py-20 w-full bg-gray-50">
+      <div className="container mx-auto px-4">
+        <motion.div 
+          className="mb-16 md:mb-24 text-center"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+<h2 className="mb-6 text-4xl font-bold lg:text-5xl text-gray-900">
+  What is{" "}
+  <span
+    className="bg-clip-text text-transparent"
+    style={{
+      backgroundImage: "linear-gradient(to right, #000, #FFD400)",
+    }}
+  >
+    DATAx
+  </span>
+  ?
+</h2>
+          <div className="w-32 h-1 mx-auto bg-gray-300"></div>  
+          <p className="mt-6 text-xl text-gray-600 max-w-3xl mx-auto">
+          A custom built application made specifically for JOBTREAD users. <br></br><br></br>We build custom features, dashboards, just add your JOBTREAD login and go.
+          </p>
+        </motion.div>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {reasons.map((reason, i) => (
+            <FeatureCard key={i} reason={reason} index={i} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default EpicFeatureSection;
+

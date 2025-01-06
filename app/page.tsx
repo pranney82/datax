@@ -6,7 +6,6 @@ import Footer from "@/components/home/footer";
 import Hero1 from "@/components/home/hero1";
 import Logos3 from "@/components/home/logos3";
 import Navbar1 from "@/components/home/nav";
-import YourData from "@/components/home/yourdata";
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen w-full max-w-full overflow-x-hidden">
@@ -14,7 +13,6 @@ export default function Home() {
       <Hero1 />
       <Logos3 />
       <Feature43 />
-      <YourData />
       <Feature74 />
       <Faq1 />
       <CTA11 />

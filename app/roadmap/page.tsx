@@ -1,13 +1,13 @@
 import CTA11 from "@/components/home/cta";
-import About from "@/components/home/about";
+import Roadmap from "@/components/home/roadmap";
 import Footer from '@/components/home/footer';
 import Navbar1 from '@/components/home/nav';
 
-export default function AboutPage() {
+export default function RoadmapPage() {
   return (
-    <div className="flex flex-col min-h-screen w-full max-w-full overflow-x-hidden">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden">
       <Navbar1 />
-      <About />
+      <Roadmap />
       <CTA11 />
       <Footer />
     </div>

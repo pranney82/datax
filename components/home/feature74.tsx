@@ -1,143 +1,149 @@
-import Image from 'next/image';
-import { Button } from '../ui/button';
+'use client'
 
-const Feature74 = () => {
-  const features = [
-    {
-      title: "Dashboard",
-      subtitle: "VISUALIZE YOUR JOBTREAD DATA",
-      id: "dashboard",
-      description: "Track your leads, sales, and job performance in one place",
-      list: [
-        "Pre-built metrics, visuals",
-        "Set Goals",
-        "Know Your Numbers"
-      ],
-      image: "/assets/images/feature1.png",
-      icon: "/assets/images/icon1.png"
-    },
-    {
-      title: 'Toolbox',
-      subtitle: "CUSTOM SOLUTIONS FOR YOUR BUSINESS",
-      id: 'toolbox',
-      description: "Supercharge your JobTread with custom built automations and integrations",
-      list: [
-        'Automations',
-        'Custom Integrations',
-        'AI Workflows and Tools',
-      ],
-      image: "/assets/images/feature2.png",
-      icon: "/assets/images/icon2.png"
-    },
-    {
-      title: 'Library',
-      subtitle: "MAXIMIZE YOUR JOBTREAD EXPERIENCE",
-      id: 'library',
-      description: "Your centralized hub for templates, API Scripts, Articles & Video Resources",
-      list: [
-        'JobTread Templates',
-        'API Scripts',
-        'Article & Video Resources',
-      ],
-      image: "/assets/images/feature3.png",
-      icon: "/assets/images/icon3.png"
-    }
-  ];
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
+import { Zap, BarChart3, Wrench, BookOpen } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+const features = [
+  {
+    title: "Dashboard",
+    subtitle: "VISUALIZE YOUR JOBTREAD DATA",
+    id: "dashboard",
+    description: "Unlock your business's full potential with our powerful Dashboard—offering a bird's-eye view, key metrics tracking, and data-driven insights.",
+    list: [
+      "Your JOBTREAD data",
+      "Real-time data",
+      "Set goals",
+    ],
+    image: "/assets/images/feature1.png",
+    color: "#ffd400",
+    icon: BarChart3
+  },
+  {
+    title: 'Toolbox',
+    subtitle: "CUSTOM FEATURES FOR YOUR JOBTREAD",
+    id: 'toolbox',
+    description: "Supercharge your workflow with our cutting-edge Toolbox—designed for JOBTREAD users, delivering custom, code-free solutions to boost productivity.",
+    list: [
+      'Pre-built custom features',
+      'Automations & Integrations',
+      'Code free, just turn on'
+    ],
+    image: "/assets/images/feature2.png",
+    color: "#ffd400",
+    icon: Wrench
+  },
+  {
+    title: 'Library',
+    subtitle: "MAXIMIZE YOUR JOBTREAD EXPERIENCE",
+    id: 'library',
+    description: "Access a wealth of resources in our comprehensive Library—featuring ready-to-use templates and expert guides to help your team excel effortlessly.",
+    list: [
+      'Extensive template collection',
+      'Pre-built templates',
+      'Cost Groups, Schedules, Todos'
+    ],
+    image: "/assets/images/feature3.png",
+    color: "#ffd400",
+    icon: BookOpen
+  }
+];
+
+const FeatureCard = ({ feature }) => {
+  const IconComponent = feature.icon;
+  const [isHovering, setIsHovering] = useState(false);
 
   return (
-    <section className="py-8 w-full">
-      <div id="features" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-0 md:grid-cols-6 lg:gap-0">
-          {features.map((feature, index) => {
-            
-            const ContentSection = (
-              <div
-                id={feature.id}
-                className="flex flex-col grid-cols-3 justify-center px-6 py-8 md:px-8 md:py-12 lg:px-16 lg:py-16"
-              >
-                <h4 className="text-muted-foreground text-sm">{feature.subtitle}</h4>
-                <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-                  {feature.title}
-                </h1>
-                <p className="text-muted-foreground lg:text-lg col-span-2 max-w-[66%]">
-                  {feature.description}
-                </p>
-                <ul className="list-disc pl-4 space-y-2 text-muted-foreground lg:text-lg mt-4">
-                  {feature.list.map((item, i) => (
-                    <li key={i}>{item}</li>
-                  ))}
-                </ul>
-                
-                <div className="flex justify-left items-center gap-4 mt-4">
-                <Image
-                  src={feature.icon}
-                    alt={`Feature ${index + 1}`}
-                    width={150}
-                    height={150}
-                    className="relative w-20 h-20"
-                  />
-                  <Button className="bg-primary text-primary-foreground w-full sm:w-auto">
-                    Test Drive
-                  </Button>
-                </div>
-              </div>
-            );
+    <div className="bg-gradient-to-br from-black via-black to-[#111] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#ffd400] h-full flex flex-col">
+      <div className="relative z-10">
+        <div className="p-6 pb-3">
+          <h2 className="text-4xl font-extrabold mb-2 text-[#ffd400] leading-tight">
+            {feature.title}
+          </h2>
+          <h3 className="text-sm font-bold text-white">{feature.subtitle}</h3>
+        </div>
+        <div className="relative w-full overflow-hidden" style={{ paddingBottom: '85%' }}>
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-[#FFEB80] to-black filter blur-[50px] opacity-40"></div>
+          </div>
+          <div className="absolute inset-0 z-10 p-8">
+            <div className="relative w-full h-full">
+              <Image
+                src={feature.image}
+                alt={`${feature.title} preview`}
+                layout="fill"
+                objectFit="contain"
+                className="relative z-10 w-full rounded-lg"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="p-6 pt-3 flex-grow flex flex-col justify-between">
+          <div>
+            <p className="text-gray-300 mb-6 text-lg">{feature.description}</p>
+            <ul className="space-y-4">
+              {feature.list.map((item, i) => (
+                <li
+                  key={i}
+                  className="flex items-center bg-gradient-to-r from-[#222] to-[#333] rounded-lg p-3 shadow-lg"
+                >
+                  <div className="mr-4 flex-shrink-0 bg-[#ffd400] rounded-full p-2">
+                    <IconComponent className="text-black w-6 h-6" />
+                  </div>
+                  <span className="text-white text-sm font-semibold">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <Button
+            className="mt-6 w-full bg-gradient-to-r from-[#FFD400] to-[#FFA500] text-black font-bold py-3 rounded-full transition-all duration-300 transform hover:scale-105 relative overflow-hidden group"
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+          >
+            <span className="relative z-10 transition-colors duration-300">
+              Explore {feature.title}
+            </span>
+            <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-            const ImageSection = (
-              <div className="relative md:col-span-3 grid grid-cols-3">
-                
-                <div className="col-span-3 md:bg-zinc-950 relative h-full">
-                  <Image
-                    src={feature.image}
-                    alt={`Feature ${index + 1}`}
-                    width={1200}
-                    height={675}
-                    className="relative z-10 transform md:translate-y-8 md:-translate-x-[15%] w-full h-full object-cover object-center"
-                  />
-                </div>
-                
-              </div>
-            );
+const EpicFeatures = () => {
+  const [isHoveringTry, setIsHoveringTry] = useState(false);
 
-            return (
-              <div
-                key={index}
-                className={`flex ${
-                  'flex-col'
-                } text-clip md:col-span-6 md:grid md:grid-cols-6 md:gap-0 lg:gap-0`}
-              >
-                <div className="md:col-span-3">
-                  {ContentSection}
-                </div>
-                <div className="md:col-span-3">
-                  {ImageSection}
-                </div>
-              </div>
-            );
-          })}
-          {/* Roadmap */}
-          <div className="md:col-span-6 flex flex-col justify-center items-center px-6 py-8 md:px-8 md:py-12 lg:px-16 lg:py-16 bg-accent">
-                <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center">
-                  Roadmap
-                </h1>
-                <p className="text-muted-foreground lg:text-lg col-span-2 max-w-[66%] text-center">
-                  Our mission is to build user-driven<br />integrations and automations in partnership<br/>with JobTread.
-                </p>
-                <Image
-                  src="/assets/images/icon4.png"
-                  alt="Roadmap"
-                  width={250}
-                  height={250}
-                  className="relative w-25 h-25"
-                />
-                  <Button className="bg-primary text-primary-foreground w-full sm:w-auto">
-                    View Roadmap
-                  </Button>
-              </div>
+  return (
+    <section className="py-16 md:py-24 bg-gradient-to-b from-black to-[#111] text-white overflow-hidden">
+      <div className="container mx-auto px-4">
+        <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold text-center mb-4 md:mb-6 leading-tight">  
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#ffd400] to-[#fff]">  
+          DATAx  
+          </span>{' '}
+        <span className="font-normal">your JOB</span>
+        <strong>TREAD</strong>  
+          </h1>
+        <motion.p 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-xl md:text-2xl text-center mb-12 md:mb-16 text-gray-300 max-w-3xl mx-auto"
+        >
+          Spend less time managing data and creating automations—and more time growing your business.
+        </motion.p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature) => (
+            <FeatureCard key={feature.id} feature={feature} />
+          ))}
         </div>
       </div>
     </section>
   );
 };
 
-export default Feature74;
+export default EpicFeatures;
+
