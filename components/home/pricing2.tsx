@@ -1,94 +1,112 @@
 'use client';
 
-import { Card } from "@/components/ui/card";
+import { useState } from 'react';
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users2, Clock, Calendar, Rocket, UserCog, Pin } from "lucide-react";
+import { CirclePlus } from 'lucide-react';
 
 interface AddOn {
+  id: string;
   icon: JSX.Element;
-  title: string;
+  name: string;
   price: number;
-  period: string;
   description: string;
 }
 
-const addOns: AddOn[] = [
+const addons: AddOn[] = [
   {
-    icon: <Pin className="size-5" />,
-    title: "Branding & White-labeling",
+    id: "branding",
+    icon: <CirclePlus className="w-10 h-10 text-yellow-400" />,
+    name: "Branding & White-labeling",
     price: 250,
-    period: "month",
-    description: "Create an on-brand experience by white-labeling your Databox Account. Allow users to login, view dashboards, and receive emails with your company's branding. Perfect if you plan to resell Databox to your clients."
+    description: "Create an on-brand experience by white-labeling your Databox Account."
   },
   {
-    icon: <Users2 className="size-5" />,
-    title: "Guided onboarding",
+    id: "guided-onboarding",
+    icon: <CirclePlus className="w-10 h-10 text-yellow-400" />,
+    name: "Guided onboarding",
     price: 500,
-    period: "",
-    description: "Training and consulting on setting up Databox for your company or clients. Includes 6 training calls over Zoom and Priority Support for 3 months."
+    description: "Training and consulting on setting up Databox for your company or clients."
   },
   {
-    icon: <Clock className="size-5" />,
-    title: "15 min sync per source",
+    id: "sync",
+    icon: <CirclePlus className="w-10 h-10 text-yellow-400" />,
+    name: "15 min sync per source",
     price: 18,
-    period: "month",
-    description: "Sync every 15 minutes for selected Data Sources. Not available for all data sources due to vendor's API limitations and rate limits."
+    description: "Sync every 15 minutes for selected Data Sources."
   },
   {
-    icon: <Calendar className="size-5" />,
-    title: "Fiscal calendar",
+    id: "fiscal-calendar",
+    icon: <CirclePlus className="w-10 h-10 text-yellow-400" />,
+    name: "Fiscal calendar",
     price: 50,
-    period: "month",
-    description: "Monitor, visualize, and report on all of your business data based on your fiscal calendar to improve your accounting, performance, and revenue tracking processes."
+    description: "Monitor, visualize, and report on all of your business data based on your fiscal calendar."
   },
   {
-    icon: <Rocket className="size-5" />,
-    title: "Quickstart Onboarding",
+    id: "quickstart",
+    icon: <CirclePlus className="w-10 h-10 text-yellow-400" />,
+    name: "Quickstart Onboarding",
     price: 1000,
-    period: "",
-    description: "Setup of your initial set of metrics, dashboards, and reports along with training on core Databox features and functionality."
+    description: "Setup of your initial set of metrics, dashboards, and reports."
   },
   {
-    icon: <UserCog className="size-5" />,
-    title: "Dedicated analyst",
+    id: "dedicated-analyst",
+    icon: <CirclePlus className="w-10 h-10 text-yellow-400" />,
+    name: "Dedicated analyst",
     price: 200,
-    period: "month",
     description: "Ongoing success planning, training and data analysis from a Databox and analytics expert."
   }
 ];
 
 const AddOns = () => {
+  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
+
+  const toggleAddon = (addonId: string) => {
+    setSelectedAddons(prev => 
+      prev.includes(addonId) 
+        ? prev.filter(id => id !== addonId)
+        : [...prev, addonId]
+    );
+  };
+
   return (
-    <section className="py-8 w-full">
+    <section className="py-16 w-full bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-screen-xl flex-col gap-8">
-          <h2 className="text-pretty text-3xl font-bold lg:text-4xl">
-            Upgrade Your Experience with Add-Ons
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {addOns.map((addon, index) => (
-              <Card key={index} className="flex flex-col p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="p-2 bg-muted rounded-md">
+        <div className="mt-16">
+          <h3 className="text-3xl font-bold text-center mb-8 text-black">Supercharge Your Plan</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {addons.map((addon) => (
+              <Card
+                key={addon.id}
+                className={`flex items-center p-6 rounded-xl bg-white shadow-lg border-2 transition-all duration-300 ${
+                  selectedAddons.includes(addon.id) ? 'border-yellow-400 scale-105' : 'border-transparent'
+                }`}
+                onClick={() => toggleAddon(addon.id)}
+              >
+                <CardContent className="flex items-center p-0 w-full">
+                  <div className="mr-6">
                     {addon.icon}
                   </div>
-                  <div className="text-right">
-                    <span className="text-2xl font-semibold">${addon.price}</span>
-                    {addon.period && (
-                      <span className="text-muted-foreground">/{addon.period}</span>
-                    )}
+                  <div className="flex-1">
+                    <h4 className="text-xl font-semibold mb-2 text-black">{addon.name}</h4>
+                    <p className="text-gray-600">{addon.description}</p>
                   </div>
-                </div>
-                
-                <h3 className="text-lg font-semibold mb-2">{addon.title}</h3>
-                <p className="text-muted-foreground text-sm flex-grow mb-4">
-                  {addon.description}
-                </p>
-                
-                <Button variant="outline" className="w-full mt-auto">
-                  Learn more
-                </Button>
+                  <div className="text-right">
+                    <span className="text-2xl font-bold text-black">${addon.price}</span>
+                    <span className="text-gray-600">/month</span>
+                    <div className="mt-2">
+                      <Button
+                        className={`px-4 py-2 rounded-full transition-colors ${
+                          selectedAddons.includes(addon.id)
+                            ? 'bg-yellow-400 text-black'
+                            : 'bg-gray-200 text-gray-700 hover:bg-yellow-400 hover:text-black'
+                        }`}
+                      >
+                        {selectedAddons.includes(addon.id) ? 'Selected' : 'Add'}
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
               </Card>
             ))}
           </div>
@@ -99,3 +117,4 @@ const AddOns = () => {
 };
 
 export default AddOns;
+

@@ -1,31 +1,118 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
+import { motion, useAnimation } from 'framer-motion';
+import { Map, MapPin } from 'lucide-react';
+import { useState, useEffect } from 'react';
+
+const EpicRoadmapButton = () => {
+  const [isHovered, setIsHovered] = useState(false);
+  const controls = useAnimation();
+  const pathControls = useAnimation();
+
+  useEffect(() => {
+    if (isHovered) {
+      controls.start({
+        scale: [1, 1.05, 1],
+        transition: { duration: 0.5, repeat: Infinity }
+      });
+      pathControls.start({
+        pathLength: [0, 1],
+        transition: { duration: 1.5, ease: "easeInOut" }
+      });
+    } else {
+      controls.stop();
+      pathControls.stop();
+      pathControls.start({ pathLength: 0 });
+    }
+  }, [isHovered, controls, pathControls]);
+
+  return (
+    <Link href="/roadmap" passHref>
+      <motion.button
+        className="group relative px-8 py-3 bg-[#ffd400] text-gray-800 font-bold rounded-md shadow-lg overflow-hidden"
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+      >
+        <motion.div
+          className="relative z-10 flex items-center justify-center space-x-2"
+          animate={controls}
+        >
+          <Map className="w-5 h-5" />
+          <span>Roadmap</span>
+        </motion.div>
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <motion.path
+            d="M10,50 Q25,30 40,50 T70,50 T100,50"
+            fill="none"
+            stroke="white"
+            strokeWidth="2"
+            initial={{ pathLength: 0 }}
+            animate={pathControls}
+          />
+          {[25, 50, 75].map((x, i) => (
+            <motion.circle
+              key={i}
+              cx={x}
+              cy="50"
+              r="3"
+              fill="white"
+              initial={{ scale: 0 }}
+              animate={isHovered ? { scale: [0, 1.5, 1] } : { scale: 0 }}
+              transition={{ delay: i * 0.2, duration: 0.5 }}
+            />
+          ))}
+        </svg>
+        <motion.div
+          className="absolute right-2 bottom-2"
+          initial={{ scale: 0, rotate: 0 }}
+          animate={isHovered ? { scale: 1, rotate: 360 } : { scale: 0, rotate: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <MapPin className="w-6 h-6 text-white" />
+        </motion.div>
+      </motion.button>
+    </Link>
+  );
+};
 
 const About = () => {
   return (
-    <section className="py-8 w-full">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid items-center gap-8 lg:grid-cols-2">
-          <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-            <h1 className="my-6 text-pretty text-4xl font-bold lg:text-6xl">
+    <section className="py-16 w-full bg-[#fff] overflow-hidden">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+        <div className="grid items-center gap-12 lg:grid-cols-2 relative z-10">
+          <motion.div 
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-col items-center text-center lg:items-start lg:text-left"
+          >
+            <h1 className="my-6 text-pretty text-5xl font-bold lg:text-7xl text-[#ffd400] drop-shadow-md">
               About Us
             </h1>
-            <p className="mb-8 max-w-xl text-muted-foreground lg:text-xl">
+            <p className="mb-8 max-w-xl text-gray-700 lg:text-xl leading-relaxed">
               We&apos;re contractors passionate about helping other contractors
-              through technology. DATAx is on a mission to make data simple.
-              Through our partnership together we want to empower you as a
+              through technology. <br></br><br></br>DATAx is on a mission to make data simple.
+              <br></br><br></br>Through our partnership together we want to empower you as a
               business owner to spend more time on your business and less on
               spreadsheets.
             </p>
-          </div>
-          <Image
-            src="/assets/images/hero1.png"
-            alt="placeholder hero"
-            width={1200}
-            height={800}
-            className="max-h-auto w-full rounded-md object-cover border-4 border-gray-200"
-          />
+            <EpicRoadmapButton />
+          </motion.div>
+          <motion.div
+            initial={{ x: 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Image
+              src="/assets/images/hero1.png"
+              alt="DATAx Team"
+              width={1200}
+              height={800}
+              className="max-h-auto w-full rounded-2xl object-cover border-8 border-[#ffd400] shadow-2xl"
+            />
+          </motion.div>
         </div>
       </div>
     </section>
@@ -33,3 +120,4 @@ const About = () => {
 };
 
 export default About;
+
