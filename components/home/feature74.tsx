@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { BarChart3, Wrench, BookOpen, LucideIcon } from 'lucide-react';
+import Link from 'next/link';
+import { BarChart3, Wrench, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Feature {
@@ -30,7 +31,8 @@ const features = [
     ],
     image: "/assets/images/feature1.png",
     color: "#ffd400",
-    icon: BarChart3
+    icon: BarChart3,
+    link: "/dashboard"
   },
   {
     title: 'Toolbox',
@@ -44,7 +46,8 @@ const features = [
     ],
     image: "/assets/images/feature2.png",
     color: "#ffd400",
-    icon: Wrench
+    icon: Wrench,
+    link: "/toolbox"
   },
   {
     title: 'Library',
@@ -58,7 +61,8 @@ const features = [
     ],
     image: "/assets/images/feature3.png",
     color: "#ffd400",
-    icon: BookOpen
+    icon: BookOpen,
+    link: "/library"
   }
 ];
 
@@ -108,16 +112,18 @@ const FeatureCard = ({ feature }: { feature: Feature }) => {
               ))}
             </ul>
           </div>
-          <Button
-            className="mt-6 w-full bg-gradient-to-r from-[#FFD400] to-[#FFA500] text-black font-bold py-3 rounded-full transition-all duration-300 transform hover:scale-105 relative overflow-hidden group"
-            onMouseEnter={() => setIsHovering(true)}
-            onMouseLeave={() => setIsHovering(false)}
-          >
-            <span className="relative z-10 transition-colors duration-300">
-              Explore {feature.title}
-            </span>
-            <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-          </Button>
+          <Link href="/signup" passHref>
+            <Button
+              className="mt-6 w-full bg-gradient-to-r from-[#FFD400] to-[#FFA500] text-black font-bold py-3 rounded-full transition-all duration-300 transform hover:scale-105 relative overflow-hidden group"
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
+            >
+              <span className="relative z-10 transition-colors duration-300">
+                Explore {feature.title}
+              </span>
+              <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
@@ -126,7 +132,7 @@ const FeatureCard = ({ feature }: { feature: Feature }) => {
 
 const EpicFeatures = () => {
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-black to-[#111] text-white overflow-hidden">
+    <section id="epic-features" className="py-16 md:py-24 bg-gradient-to-b from-black to-[#111] text-white overflow-hidden">
       <div className="container mx-auto px-4">
         <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold text-center mb-4 md:mb-6 leading-tight">  
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#ffd400] to-[#fff]">  

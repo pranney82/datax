@@ -31,7 +31,7 @@ export default function ColorfulEnhancedCTA() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.5 }}
           >
-            Join a growing community of data-driven companies and start making smarter decisions today.
+            Join a growing community of data-driven JOBTREAD companies and start making smarter decisions today.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -40,7 +40,7 @@ export default function ColorfulEnhancedCTA() {
           >
             <Link href="/signup">
               <button 
-                className="w-full sm:w-auto bg-[#000] text-[#FFF] font-bold py-3 px-6 rounded-md transition-all duration-300 transform hover:scale-105 hover:bg-[#FFD400] hover:text-[#000] relative overflow-hidden group shadow-[0_0_15px_rgba(0,0,0,0.3)]"
+                className="w-full sm:w-auto min-w-[200px] bg-[#000] text-[#FFF] font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 hover:bg-[#FFD400] hover:text-[#000] relative overflow-hidden group shadow-[0_0_15px_rgba(0,0,0,0.3)]"
                 onMouseEnter={() => setIsHoveringTry(true)}
                 onMouseLeave={() => setIsHoveringTry(false)}
               >

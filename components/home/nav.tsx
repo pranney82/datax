@@ -120,7 +120,7 @@ const Navbar1 = () => {
                         <li>
                           <NavigationMenuLink asChild>
                             <Link
-                              href="/#dashboard"
+                              href="https://www.winyourdata.com/#epic-features"
                               className={cn(
                                 'flex select-none items-center gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#ffd400]/10 focus:bg-[#ffd400]/10 group'
                               )}
@@ -141,7 +141,7 @@ const Navbar1 = () => {
                         <li>
                           <NavigationMenuLink asChild>
                             <Link
-                              href="/#toolbox"
+                              href="https://www.winyourdata.com/#epic-features"
                               className={cn(
                                 'flex select-none items-center gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#ffd400]/10 focus:bg-[#ffd400]/10 group'
                               )}
@@ -162,7 +162,7 @@ const Navbar1 = () => {
                         <li>
                           <NavigationMenuLink asChild>
                             <Link
-                              href="/#library"
+                              href="https://www.winyourdata.com/#epic-features"
                               className={cn(
                                 'flex select-none items-center gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#ffd400]/10 focus:bg-[#ffd400]/10 group'
                               )}
@@ -235,16 +235,6 @@ const Navbar1 = () => {
                 href="/about"
               >
                 <span>About</span>
-              </Link>
-              <Link
-                className={cn(
-                  'text-gray-800 hover:text-ffd400 transition-colors duration-200',
-                  navigationMenuTriggerStyle,
-                  buttonVariants({ variant: 'ghost' })
-                )}
-                href="#"
-              >
-                <span>Test Drive</span>
               </Link>
 
               {/* TODO: link to pricing page when ready */}
@@ -382,9 +372,6 @@ const Navbar1 = () => {
                 </div>
                 <Link href="/about" className="flex items-center text-base font-medium text-gray-800 hover:text-ffd400 transition-colors duration-200">
                   <span>About</span>
-                </Link>
-                <Link href="#" className="flex items-center text-base font-medium text-gray-800 hover:text-ffd400 transition-colors duration-200">
-                  <span>Test Drive</span>
                 </Link>
                 <Link href="/pricing" className="flex items-center text-base font-medium text-gray-800 hover:text-ffd400 transition-colors duration-200">
                   <span>Pricing</span>

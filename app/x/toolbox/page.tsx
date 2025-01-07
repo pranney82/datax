@@ -2,57 +2,71 @@
 
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { 
-  ArrowRight, 
-  Star,
-  FileText, // Documents
-  CheckSquare, // Tasks
-  Calendar,
-  Download, // Export
-  type LucideIcon
-} from "lucide-react"
+import { ArrowRight, Star, FileText, CheckSquare, Calendar, Download, TypeIcon as type, Zap, TrendingUp } from 'lucide-react'
 import Link from "next/link"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 
 interface FeatureCardProps {
   title: string
   description: string
   href: string
-  icon: LucideIcon
   isPopular?: boolean
+  isActive: boolean
 }
 
-function FeatureCard({ title, description, href, icon: Icon, isPopular }: FeatureCardProps) {
+function FeatureCard({ title, description, href, isPopular, isActive }: FeatureCardProps) {
   return (
-    <Link href={href}>
-      <Card className="group relative h-full p-6 hover:bg-muted/50 transition-colors">
-        <div className="flex flex-col items-center text-center">
-          <Icon className="h-12 w-12 mb-4 text-muted-foreground" />
+    <Card className="bg-white border border-gray-200 rounded-lg overflow-hidden transition-all duration-200 ease-in-out hover:shadow-md hover:border-gray-300 flex flex-col">
+      <div className="p-4 flex-grow">
+        <div className="flex flex-row justify-between items-center mb-3">
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold">{title}</h3>
+            <Zap className="h-5 w-5 text-[#ffd400]" />
+            <Link
+              href={href}
+              className="text-lg font-semibold text-gray-900 hover:text-gray-700 transition-colors duration-200 ease-in-out group"
+            >
+              <span className="border-b-2 border-gray-200 group-hover:border-gray-400 pb-1">{title}</span>
+            </Link>
           </div>
-          {isPopular && (
-              <Badge variant="secondary" className="gap-1">
-                <Star className="h-3 w-3" /> Popular
-              </Badge>
-            )}
-          <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+          <Badge 
+            variant={isActive ? "default" : "secondary"}
+            className={`${isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'} font-medium pointer-events-none ml-2 whitespace-nowrap`}
+          >
+            {isActive ? 'On' : 'Off'}
+          </Badge>
         </div>
-        <ArrowRight className="absolute bottom-4 right-4 h-4 w-4 opacity-0 transition-opacity group-hover:opacity-100" />
-      </Card>
-    </Link>
+      </div>
+      <div className="bg-gray-50 p-4 text-sm text-gray-600">
+        <div className="flex justify-between items-center">
+          <p className="line-clamp-2">{description}</p>
+          {isPopular && (
+            <Badge 
+              variant="secondary" 
+              className="gap-1 bg-[#ffd400] text-[#fff] border-[#ffd400] font-semibold pointer-events-none ml-2 whitespace-nowrap"
+            >
+              <TrendingUp className="h-3 w-3 text-[#000]" /> Popular
+            </Badge>
+          )}
+        </div>
+      </div>
+    </Card>
   )
 }
 
 export default function FeaturesPage() {
   const [searchQuery, setSearchQuery] = useState("")
+  const [activeFeatures, setActiveFeatures] = useState<Record<string, boolean>>({
+    "Cash Flow Calendar": true,
+    "Zillow Data Import": true,
+    "Google Maps Cover Photos": false,
+    "Print ToDos": false,
+  })
 
   const allFeatures = [
-
     {
       title: "Cash Flow Calendar",
       description: "Track and manage your cash flow based on JobTread's calendar task types.",
@@ -83,10 +97,19 @@ export default function FeaturesPage() {
     },
   ]
 
-  const filteredFeatures = allFeatures.filter(feature => 
-    feature.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    feature.description.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const filteredAndSortedFeatures = useMemo(() => {
+    return allFeatures
+      .filter(feature => 
+        feature.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        feature.description.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .sort((a, b) => {
+        if (activeFeatures[a.title] === activeFeatures[b.title]) {
+          return 0;
+        }
+        return activeFeatures[a.title] ? -1 : 1;
+      });
+  }, [allFeatures, searchQuery, activeFeatures]);
 
   return (
     <main className="flex flex-col flex-1 p-0">
@@ -108,31 +131,30 @@ export default function FeaturesPage() {
         </div>
       </header>
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-        <div className="container py-8">
-          <div className="flex flex-col gap-4 mb-8">
-            <h1 className="text-3xl font-bold">Toolbox</h1>
-            <Input
-              placeholder="Search tools..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="max-w-md"
-            />
-          </div>
+        <div className="flex justify-between items-center gap-2">
+          <h1 className="text-2xl font-bold">Toolbox</h1>
+          <Input
+            placeholder="Search tools..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="max-w-xs"
+          />
+        </div>
 
-          <div className="grid gap-4 md:grid-cols-5">
-            {filteredFeatures.map((feature, index) => (
-              <FeatureCard
-                key={index}
-                title={feature.title}
-                description={feature.description}
-                href={feature.href}
-                icon={feature.icon}
-                isPopular={feature.isPopular}
-              />
-            ))}
-          </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredAndSortedFeatures.map((feature, index) => (
+            <FeatureCard
+              key={index}
+              title={feature.title}
+              description={feature.description}
+              href={feature.href}
+              isPopular={feature.isPopular}
+              isActive={activeFeatures[feature.title]}
+            />
+          ))}
         </div>
       </div>
     </main>
   )
 }
+
