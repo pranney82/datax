@@ -25,7 +25,7 @@ interface MenuItem {
 interface DashCardProps {
   title: string
   description?: string
-  content?: string
+  content?: string | ReactNode
   subContent?: string
   children?: ReactNode
   footer?: {
@@ -107,7 +107,12 @@ export default function ModernDashboardCard({
       <CardContent className="flex flex-grow flex-col space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-3xl font-bold">{content}</div>
+            {typeof content === 'string' ? (
+              <div className="text-3xl font-extrabold text-black tracking-tight">{content}</div>
+            ) : (
+              content
+            )}
+
             {subContent && (
               <div className="text-sm text-muted-foreground">{subContent}</div>
             )}

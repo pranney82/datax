@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
+import EpicDashboardCard from "@/components/dash-card";
 
 export interface JobLocation {
     id: number;
@@ -66,16 +66,15 @@ export default function SalesMap({
     if (!GOOGLE_MAPS_KEY) {
         console.error('Google Maps API key is not configured');
         return (
-            <Card>
-                <CardHeader>
-                    <CardTitle>{title}</CardTitle>
-                </CardHeader>
-                <CardContent>
+            <EpicDashboardCard
+                title={title}
+                content={
                     <div className="p-4 text-center text-red-500">
                         Map configuration error. Please check API key.
                     </div>
-                </CardContent>
-            </Card>
+                }
+                accentColor="from-red-400 via-red-200 to-white"
+            />
         );
     }
 
@@ -92,37 +91,37 @@ export default function SalesMap({
         + `&key=${GOOGLE_MAPS_KEY}`
         + `&visible=${bounds.south},${bounds.west}|${bounds.north},${bounds.east}`;
 
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle>{title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="relative">
-                    <Image 
-                        src={mapUrl} 
-                        alt="Map of active jobs"
-                        width={mapWidth}
-                        height={mapHeight}
-                        className="rounded-lg w-full h-auto"
-                        unoptimized
-                    />
-                    <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
-                        {jobs.map(job => (
-                            <div key={job.id} className="flex items-center space-x-2 p-2 bg-gray-50 rounded">
-                                <div className="flex-shrink-0 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                                    {job.id}
-                                </div>
-                                <div>
-                                    <div className="font-medium">{job.title}</div>
-                                    <div className="text-gray-500">{job.address}</div>
-                                </div>
-                            </div>
-                        ))}
+    const MapContent = (
+        <div className="relative">
+            <Image 
+                src={mapUrl} 
+                alt="Map of active jobs"
+                width={mapWidth}
+                height={mapHeight}
+                className="rounded-lg w-full h-auto"
+                unoptimized
+            />
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                {jobs.map(job => (
+                    <div key={job.id} className="flex items-center space-x-2 p-2 bg-gray-50 rounded">
+                        <div className="flex-shrink-0 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                            {job.id}
+                        </div>
+                        <div>
+                            <div className="font-medium">{job.title}</div>
+                            <div className="text-gray-500">{job.address}</div>
+                        </div>
                     </div>
-                </div>
-            </CardContent>
-        </Card>
+                ))}
+            </div>
+        </div>
+    );
+
+    return (
+        <EpicDashboardCard
+            title={title}
+            content={MapContent}
+        />
     );
 }
 

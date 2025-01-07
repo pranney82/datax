@@ -50,7 +50,7 @@ const iconMap = {
 };
 
 const Navbar1 = () => {
-  //const { user, loading } = useAuth();
+  const { user, loading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [authType, setAuthType] = useState<'login' | 'signup'>('signup');
@@ -77,13 +77,13 @@ const Navbar1 = () => {
     };
   }, [isOpen]);
 
-    // const handleSignOut = async () => {
-    //   try {
-    //     await signOut(auth);
-    //   } catch (error) {
-    //     console.error('Error signing out:', error);
-    //   }
-    // };
+    const handleSignOut = async () => {
+      try {
+        await signOut(auth);
+      } catch (error) {
+        console.error('Error signing out:', error);
+      }
+    };
 
   return (
     <section className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -215,6 +215,7 @@ const Navbar1 = () => {
                               )}
                             >
                               {iconMap.BookDown}
+
                               <div>
                                 <div className="text-sm font-semibold">
                                   Cover Photo Automation
@@ -249,7 +250,7 @@ const Navbar1 = () => {
                   navigationMenuTriggerStyle,
                   buttonVariants({ variant: 'ghost' })
                 )}
-                href="/#"
+                href="/pricing"
               >
 
                 <span>Pricing</span>
@@ -257,8 +258,8 @@ const Navbar1 = () => {
               </Link>
             </div>
           </div>
-          {/* 
-            UNCOMMMENT WHEN READY TO ALLOW LOGGING IN
+          
+            
           <div className="flex gap-2">
             {loading ? (
               <div className="flex gap-2">
@@ -310,7 +311,7 @@ const Navbar1 = () => {
                 </Button>
               </>
             )}
-          </div> */}
+          </div>
         </nav>
 
         {/* Mobile Navigation */}
