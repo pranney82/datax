@@ -2,7 +2,20 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, Clock, Zap, Rocket, CheckCircle2, ChevronDown, ChevronUp, Mail } from 'lucide-react'
+import { Sparkles, Clock, Zap, Rocket, CheckCircle2, ChevronDown, ChevronUp, Mail, LucideIcon } from 'lucide-react'
+
+interface RoadmapSection {
+  status: string;
+  icon: LucideIcon;
+  color: string;
+  features: Array<{
+    title: string;
+    description: string;
+    eta?: string;
+    completionDate?: string;
+    status: string;
+  }>;
+}
 
 const roadmapData = [
   {
@@ -269,7 +282,7 @@ function FeatureCard({ feature, color }: {
   )
 }
 
-function KanbanColumn({ section }: { section: string }) {
+function KanbanColumn({ section }: { section: RoadmapSection }) {
   const [expanded, setExpanded] = useState(false)
   const visibleFeatures = expanded ? section.features : section.features.slice(0, 3)
 
@@ -291,7 +304,7 @@ function KanbanColumn({ section }: { section: string }) {
             scrollbarColor: '#ffffff40 transparent'
           }}
         >
-          {visibleFeatures.map((feature: string) => (
+          {visibleFeatures.map((feature) => (
             <FeatureCard key={feature.title} feature={feature} color={section.color} />
           ))}
         </motion.div>

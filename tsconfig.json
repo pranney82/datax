@@ -22,5 +22,16 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "node_modules/caseless",
+    "node_modules/d3-color",
+    "node_modules/d3-path",
+    "node_modules/prop-types",
+    "node_modules/qs",
+    "node_modules/range-parser",
+    "node_modules/send",
+    "node_modules/serve-static",
+    "node_modules/tough-cookie"
+  ]
 }
