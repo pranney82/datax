@@ -78,14 +78,18 @@ const EpicFAQ: React.FC = () => {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    {faq.icon}
+                    <div className="flex-shrink-0 w-6 h-6">
+                      {faq.icon}
+                    </div>
                     <h3 className="text-xl font-semibold">{faq.question}</h3>
                   </div>
-                  {activeIndex === index ? (
-                    <ChevronUp className="w-6 h-6 text-gray-600" />
-                  ) : (
-                    <ChevronDown className="w-6 h-6 text-gray-600" />
-                  )}
+                  <div className="flex-shrink-0 w-6 h-6">
+                    {activeIndex === index ? (
+                      <ChevronUp className="w-full h-full text-gray-600" />
+                    ) : (
+                      <ChevronDown className="w-full h-full text-gray-600" />
+                    )}
+                  </div>
                 </div>
               </button>
               <AnimatePresence>

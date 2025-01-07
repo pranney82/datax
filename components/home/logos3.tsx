@@ -52,6 +52,7 @@ const toolIcons = [Hammer, Paintbrush, Drill];
 
 const EpicLogoShowcase = () => {
   const [stars, setStars] = useState<{ x: number; y: number; size: number; isIcon: boolean; iconIndex: number }[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const generateStars = () => {
@@ -59,15 +60,26 @@ const EpicLogoShowcase = () => {
         x: Math.random() * 100,
         y: Math.random() * 100,
         size: Math.random() * 2 + 1,
-        isIcon: Math.random() > 0.95, // 5% chance of being an icon (reduced from 10%)
+        isIcon: Math.random() > 0.95,
         iconIndex: Math.floor(Math.random() * toolIcons.length),
       }));
       setStars(newStars);
     };
 
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
     generateStars();
-    const interval = setInterval(generateStars, 10000);
-    return () => clearInterval(interval);
+    handleResize();
+
+    const starInterval = setInterval(generateStars, 10000);
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      clearInterval(starInterval);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const titleProps = useSpring({
@@ -112,13 +124,13 @@ const EpicLogoShowcase = () => {
           by these companies
         </animated.h1>
         <div className="relative overflow-hidden mb-4">
-          <div className="flex space-x-8 animate-scroll">
+          <div className={`flex space-x-8 ${isMobile ? 'animate-scroll-mobile' : 'animate-scroll-desktop'}`}>
             {[...logos, ...logos].map((logo, index) => (
               <div
                 key={`${logo.id}-${index}`}
                 className="flex flex-col items-center justify-center p-8 bg-gray-900 bg-opacity-80 rounded-lg backdrop-filter backdrop-blur-lg transition-all duration-300 flex-shrink-0 shadow-lg shadow-ffd400/20"
               >
-                <div className="relative w-32 h-32"> {/* Increased from w-24 h-24 to w-32 h-32 */}
+                <div className="relative w-32 h-32">
                   <Image
                     src={logo.image}
                     alt={logo.description}
@@ -145,8 +157,11 @@ const EpicLogoShowcase = () => {
             transform: translateX(-50%);
           }
         }
-        .animate-scroll {
+        .animate-scroll-desktop {
           animation: scroll 30s linear infinite;
+        }
+        .animate-scroll-mobile {
+          animation: scroll 15s linear infinite;
         }
         .text-ffd400 {
           color: #ffd400;
