@@ -2,7 +2,12 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { getAuth } from "firebase/auth";
 
-const StripePaymentButton: React.FC<{ priceId: string }> = ({ priceId }) => {
+interface StripePaymentButtonProps {
+  priceId: string;
+  className?: string;
+}
+
+const StripePaymentButton: React.FC<StripePaymentButtonProps> = ({ priceId, className }) => {
   const handleCheckout = async () => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
@@ -39,7 +44,7 @@ const StripePaymentButton: React.FC<{ priceId: string }> = ({ priceId }) => {
   return (
     <Button
       onClick={handleCheckout}
-      className="w-full mt-8"
+      className={`w-full mt-8 ${className}`}
     >
       Subscribe
     </Button>

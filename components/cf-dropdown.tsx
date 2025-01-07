@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { queryCFFields } from '@/app/x/dashboard/leads/query';
@@ -48,7 +48,7 @@ export default function CFDropdown({ value, onChange, className = '', targetType
     }
   };
 
-  const fetchAllCustomFields = async (orgID: string, grantKey: string) => {
+  const fetchAllCustomFields = useCallback(async (orgID: string, grantKey: string) => {
     let currentPage = "";
     let allFields: CustomField[] = [];
     let hasNextPage = true;
@@ -70,7 +70,7 @@ export default function CFDropdown({ value, onChange, className = '', targetType
     }
     console.log('All fields:', allFields);
     return allFields;
-  };
+  }, []);
 
   useEffect(() => {
     const fetchCustomFields = async () => {
@@ -101,7 +101,7 @@ export default function CFDropdown({ value, onChange, className = '', targetType
     };
 
     fetchCustomFields();
-  }, [targetType, onFieldsLoad]);
+  }, [targetType, onFieldsLoad, fetchAllCustomFields]);
 
   return (
     <div className={`relative inline-block w-full ${className}`}>

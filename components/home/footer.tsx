@@ -35,7 +35,7 @@ const footerLinks = [
   },
 ];
 
-const FooterColumn = ({ title, links }) => {
+const FooterColumn = ({ title, links }: { title: string; links: { name: string; href: string }[] }) => {
   return (
     <div className="mb-8 lg:mb-0">
       <h3 className="text-xl font-bold text-[#FFD400] mb-4 group-hover:text-white transition-colors duration-300">{title}</h3>

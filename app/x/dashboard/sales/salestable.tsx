@@ -108,7 +108,6 @@ export default function SalesTable() {
             setIsLoading(false);
             return;
         }
-
         setIsLoading(true);
         try {
             const currentUser = auth.currentUser;
@@ -183,7 +182,7 @@ export default function SalesTable() {
         } finally {
             setIsLoading(false);
         }
-    }, [dateRange]); // Add dependencies used inside fetchSalesData
+    }, [dateRange, setIsLoading]); // Add all dependencies
 
     // Update useEffect dependency array
     useEffect(() => {
@@ -247,7 +246,7 @@ export default function SalesTable() {
         };
 
         fetchSavedCustomField();
-    }, [user]); // Remove fetchSalesData from dependencies
+    }, [user, fetchSalesData]); // Add fetchSalesData as dependency since it's stable now
 
     // Handle saving custom field selection
     const handleSaveCustomField = async () => {

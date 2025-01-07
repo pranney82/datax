@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { execSync } from 'child_process';
 
-const webhookURL = 'https://discord.com/api/webhooks/1310829737119060041/Xurf4fvJDxPxd5PmyN9nxK0_OsSpa_L_eAc_015GRq9OGhvkvlQanuR7tQo0i7KiD4ce';
+const webhookURL = 'https://discord.com/api/webhooks/1310829737119060041/Xurf4fvJDxPxd5PmyN9nxK0_OsSpa_L_eAc_015GRq9OGhvkvlQanuR7tQo0i7KiD4';
 
 const getLastCommitMessage = () => {
   try {
