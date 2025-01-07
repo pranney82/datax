@@ -2,17 +2,13 @@
 
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { 
-  Plus,
-  Check
-} from "lucide-react";
+import { Plus, Check, ArrowDownAZ, ArrowUpAZ, ArrowDownUp, Download, Calendar, User } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ArrowDownAZ, ArrowUpAZ, ArrowDownUp } from "lucide-react"
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
@@ -59,15 +55,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 
-// Add this type above the component
 type SortOption = 'name-asc' | 'name-desc' | 'downloads-asc' | 'downloads-desc';
-
-// Add this type definition
 type FilterOption = 'all' | 'cost-group' | 'schedule' | 'todos';
 
 export default function TemplatesPage() {
@@ -107,6 +99,19 @@ export default function TemplatesPage() {
   const filterTemplates = (templates: Template[]): Template[] => {
     if (filterOption === 'all') return templates;
     return templates.filter(template => template.type === filterOption);
+  };
+
+  const getBadgeColors = (type: Template['type']) => {
+    switch (type) {
+      case 'cost-group':
+        return 'bg-green-100 text-green-800';
+      case 'schedule':
+        return 'bg-purple-100 text-purple-800';
+      case 'todos':
+        return 'bg-orange-100 text-orange-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
   };
 
   return (
@@ -158,86 +163,78 @@ export default function TemplatesPage() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                <ArrowDownUp className="mr-2 h-4 w-4" />
-                Sort
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => handleSort('name-asc')}>
-                <ArrowDownAZ className="mr-2 h-4 w-4" /> Name A-Z
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleSort('name-desc')}>
-                <ArrowUpAZ className="mr-2 h-4 w-4" /> Name Z-A
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleSort('downloads-asc')}>
-                Downloads (Low to High)
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleSort('downloads-desc')}>
-                Downloads (High to Low)
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Link href="/x/library/templates/add">
-          <Button variant="outline" className="bg-primary text-primary-foreground"> 
-            <Plus className="mr-2 h-4 w-4" />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  <ArrowDownUp className="mr-2 h-4 w-4" />
+                  Sort
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => handleSort('name-asc')}>
+                  <ArrowDownAZ className="mr-2 h-4 w-4" /> Name A-Z
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleSort('name-desc')}>
+                  <ArrowUpAZ className="mr-2 h-4 w-4" /> Name Z-A
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleSort('downloads-asc')}>
+                  Downloads (Low to High)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleSort('downloads-desc')}>
+                  Downloads (High to Low)
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Link href="/x/library/templates/add" className="hidden md:block">
+              <Button variant="outline" className="bg-primary text-primary-foreground"> 
+                <Plus className="mr-2 h-4 w-4" />
                 Add Template
               </Button>
             </Link>
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filterTemplates(sortTemplates(templates)).map((template) => (
-            <Card key={template.id} className="flex flex-col">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <CardTitle className="text-lg">
-                      <Link
-                        href={`/x/library/templates/${template.id}`}
-                        className="hover:underline"
-                      >
-                        {template.name}
-                      </Link>
-                    </CardTitle>
-                    <Badge variant="outline" className="capitalize">
+            <div key={template.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden transition-all duration-200 ease-in-out hover:shadow-md hover:border-gray-300 flex flex-col">
+              <div className="p-4 flex-grow">
+                <div className="flex justify-between items-start mb-3">
+                  <Link
+                    href={`/x/library/templates/${template.id}`}
+                    className="text-lg font-semibold text-gray-900 hover:text-gray-700 transition-colors duration-200 ease-in-out group"
+                  >
+                    <span className="border-b-2 border-gray-200 group-hover:border-gray-400 pb-1">{template.name}</span>
+                  </Link>
+                </div>
+                <p className="text-sm text-gray-600 mb-4 line-clamp-3">{template.desc}</p>
+              </div>
+              <div className="bg-gray-50 p-4 text-sm text-gray-500">
+                <div className="flex justify-between items-center mb-2">
+                  <div className="flex items-center">
+                    <Download className="w-4 h-4 mr-2 text-gray-400" />
+                    <span>{template.downloads} downloads</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Calendar className="w-4 h-4 mr-2 text-gray-400" />
+                    <span>{template.createdAt}</span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <User className="w-4 h-4 mr-2 text-gray-400" />
+                    <span>{template.author}</span>
+                  </div>
+                  <div className="pointer-events-none">
+                    <Badge className={`capitalize ${getBadgeColors(template.type)} text-xs font-medium px-2 py-1 rounded`}>
                       {template.type.replace('-', ' ')}
                     </Badge>
                   </div>
-                </div>                
-              </CardHeader>
-              <CardContent className="flex-1">
-                <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {template.desc}
-                  </p>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Downloads</span>
-                      <span>{template.downloads}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Created At</span>
-                      <span>
-                        {template.createdAt
-                          ? new Date(template.createdAt).toLocaleDateString() 
-                          : template.createdAt}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Created By</span>
-                      <span>{template.author}</span>
-                    </div>
-                  </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       </div>
     </main>
   );
-} 
+}
