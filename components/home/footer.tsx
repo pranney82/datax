@@ -12,10 +12,9 @@ const footerLinks = [
     title: 'Product',
     links: [
       { name: 'Home', href: '/' },
-      { name: 'Dashboard', href: '/#dashboard' },
-      { name: 'Toolbox', href: '/#toolbox' },
-      { name: 'Library', href: '/#library' },
-      { name: 'Test Drive', href: '#' },
+      { name: 'Dashboard', href: "https://www.winyourdata.com/#epic-features" },
+      { name: 'Toolbox', href: "https://www.winyourdata.com/#epic-features" },
+      { name: 'Library', href: "https://www.winyourdata.com/#epic-features" },
       { name: 'Pricing', href: '/pricing' },
     ],
   },
@@ -172,7 +171,7 @@ const Footer = () => {
           >
             <Link href="/" className="inline-block">
               <Image
-                src="/assets/logos/7.png"
+                src="/assets/logos/10.png"
                 alt="logo"
                 width={240}
                 height={120}
@@ -183,9 +182,9 @@ const Footer = () => {
               Data made easy. <br/>Unleash the power of <span className="font-normal">JOB</span>
               <strong>TREAD</strong>  .
             </p>
-            <div className="flex flex-col sm:flex-row items-center gap-6">
+            <div className="flex flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
               <Button 
-                className="w-full sm:w-auto bg-[#FFD400] text-black font-bold py-3 px-6 rounded-md transition-all duration-300 transform hover:scale-105 hover:bg-white hover:text-black relative overflow-hidden group shadow-[0_0_15px_rgba(255,212,0,0.5)]"
+                className="w-auto sm:w-auto bg-[#FFD400] text-black font-bold py-6 px-6 sm:px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 hover:bg-white hover:text-black relative overflow-hidden group shadow-[0_0_15px_rgba(255,212,0,0.5)]"
                 onMouseEnter={() => setIsHoveringTry(true)}
                 onMouseLeave={() => setIsHoveringTry(false)}
               >
@@ -198,7 +197,7 @@ const Footer = () => {
                   transition={{ duration: 0.3 }}
                 />
               </Button>
-              <p className="text-sm text-gray-400 font-medium">No card required</p>
+              <p className="text-xs sm:text-sm text-gray-400 font-medium whitespace-nowrap">No card required</p>
             </div>
             <Link href="#" className="inline-block">
               <Image

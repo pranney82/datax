@@ -28,30 +28,30 @@ const Hero1 = () => {
               <br /><br />
               ... no tech ability required
             </p>
-            <div className="flex w-full flex-col justify-center gap-4 sm:flex-row lg:justify-start">
-              <div className="flex flex-col items-center sm:items-start">
-                <a href="#" className="group">
+            <div className="flex w-full flex-col sm:flex-row justify-center gap-4 lg:justify-start">
+              <div className="flex flex-col items-center">
+                <a href="#" className="group w-auto">
                   <Button 
-                    className="w-full sm:w-auto bg-gradient-to-r from-[#FFD400] to-[#FFA500] text-[#000000] transition-all duration-300 transform hover:scale-105 relative overflow-hidden group-hover:shadow-[0_0_20px_5px_rgba(255,212,0,0.3)] hover:from-[#FFE666] hover:to-[#FFB733]"
+                    className="h-14 px-8 w-auto bg-gradient-to-r from-[#FFD400] to-[#FFA500] text-[#000000] transition-all duration-300 transform hover:scale-105 relative overflow-hidden group-hover:shadow-[0_0_20px_5px_rgba(255,212,0,0.3)] hover:from-[#FFE666] hover:to-[#FFB733] rounded-full"
                     onMouseEnter={() => setIsHoveringTry(true)}
                     onMouseLeave={() => setIsHoveringTry(false)}
                   >
-                    <span className="relative z-10 transition-colors duration-300">Try Free</span>
-                    <Zap className={`ml-2 h-4 w-4 relative z-10 transition-all duration-300 ${isHoveringTry ? 'rotate-[360deg] scale-125 text-white' : 'text-black'}`} />
+                    <span className="relative z-10 transition-colors duration-300 text-lg font-semibold">Try Free</span>
+                    <Zap className={`ml-2 h-5 w-5 relative z-10 transition-all duration-300 ${isHoveringTry ? 'rotate-[360deg] scale-125 text-white' : 'text-black'}`} />
                     <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                   </Button>
                 </a>
-                <span className="text-gray-400 text-xs mt-2">No card required</span>
+                <span className="text-gray-400 text-xs mt-2 text-center w-full">No card required</span>
               </div>
-              <a href="#features" className="group">
+              <a href="#epic-features" className="group w-auto">
                 <Button 
                   variant="outline" 
-                  className="w-full sm:w-auto bg-[#FFD400]/10 backdrop-blur-sm text-[#FFD400] border-[#FFD400]/20 hover:bg-[#FFD400]/20 transition-all duration-300 transform hover:scale-105 relative overflow-hidden group-hover:shadow-[0_0_20px_5px_rgba(255,212,0,0.3)]"
+                  className="h-14 px-8 w-auto bg-[#FFD400]/10 backdrop-blur-sm text-[#FFD400] border-[#FFD400]/20 hover:bg-[#FFD400]/20 transition-all duration-300 transform hover:scale-105 relative overflow-hidden group-hover:shadow-[0_0_20px_5px_rgba(255,212,0,0.3)]"
                   onMouseEnter={() => setIsHoveringFeatures(true)}
                   onMouseLeave={() => setIsHoveringFeatures(false)}
                 >
-                  <span className="relative z-10 transition-colors duration-300 group-hover:text-white">Features</span>
-                  <ArrowDownRight className={`ml-2 h-4 w-4 transition-all duration-300 ${isHoveringFeatures ? 'rotate-[360deg] scale-125 text-white' : ''}`} />
+                  <span className="relative z-10 transition-colors duration-300 group-hover:text-white text-lg font-semibold">Features</span>
+                  <ArrowDownRight className={`ml-2 h-5 w-5 transition-all duration-300 ${isHoveringFeatures ? 'rotate-[360deg] scale-125 text-white' : ''}`} />
                 </Button>
               </a>
             </div>

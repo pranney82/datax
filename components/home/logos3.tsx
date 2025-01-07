@@ -9,16 +9,16 @@ const logos = [
   {
     id: "logo-1",
     description: "Built with Love",
-    image: "/assets/lovedlogos/4.png"
+    image: "/assets/lovedlogos/love.png"
   },
   {
     id: "logo-2",
-    description: "Figma",
-    image: "/assets/lovedlogos/4.png"
+    description: "Ranney Blair Weidmann",
+    image: "/assets/lovedlogos/rbw.png"
   },
   {
     id: "logo-3",
-    description: "Next.js",
+    description: "???",
     image: "/assets/lovedlogos/4.png"
   },
   {
@@ -32,9 +32,9 @@ const logos = [
     image: "/assets/lovedlogos/4.png"
   },
   {
-    id: "logo-6",
+    id: "Sunshine on a Ranney Day",
     description: "Supabase",
-    image: "/assets/lovedlogos/4.png"
+    image: "/assets/lovedlogos/soard.png"
   },
   {
     id: "logo-7",
@@ -118,7 +118,7 @@ const EpicLogoShowcase = () => {
                 key={`${logo.id}-${index}`}
                 className="flex flex-col items-center justify-center p-8 bg-gray-900 bg-opacity-80 rounded-lg backdrop-filter backdrop-blur-lg transition-all duration-300 flex-shrink-0 shadow-lg shadow-ffd400/20"
               >
-                <div className="relative w-24 h-24">
+                <div className="relative w-32 h-32"> {/* Increased from w-24 h-24 to w-32 h-32 */}
                   <Image
                     src={logo.image}
                     alt={logo.description}

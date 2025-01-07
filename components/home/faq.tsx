@@ -9,34 +9,29 @@ const faqData = {
   subtitle: "Frequently Asked Questions",
   questions: [
     {
-      question: "Won't JobTread develop these features themselves?",
+      question: "Won't JOBTREAD develop these features themselves?",
       answer: "JobTread is laser-focused on building the ultimate construction management platform. Some of our epic features are beyond their current scope, so we've crafted them here to supercharge your workflow!",
-      icon: <Lightbulb className="w-6 h-6 text-blue-500" />
+      icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     },
     {
-      question: "How is this different from what JobTread offers?",
+      question: "How is this different from what JOBTREAD offers?",
       answer: "We're the turbo boost to JobTread's engine! Our custom integrations and solutions are more specialized and advanced than the standard JobTread offerings. These supercharged features are built on top of JobTread, allowing you to leverage your existing data with unprecedented power and flexibility!",
-      icon: <Lightbulb className="w-6 h-6 text-blue-500" />
+      icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     },
     {
-      question: "Can I still use my JobTread data with your enhanced features?",
-      answer: "Our enhanced features are designed to seamlessly integrate with your JobTread data. Think of it as giving your data superpowers - all the familiarity of JobTread, but with turbo-charged capabilities!",
-      icon: <Lightbulb className="w-6 h-6 text-blue-500" />
+      question: "What is DATAx?",
+      answer: "A software solution built specifically for JOBTREAD users that connects JOBTREAD to other software tools, enabling you to automate workflows, streamline processes, and unlock the full potential of your data.",
+      icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     },
     {
-      question: "What kind of support do you offer?",
-      answer: "We provide comprehensive support for all our enhanced features. Our team of experts is always ready to assist you with any questions or issues you might encounter while using our integrations.",
-      icon: <Lightbulb className="w-6 h-6 text-blue-500" />
+      question: "What kind of features can DATAx build?",
+      answer: "In collaboration with the JOBTREAD team and DATAx users, we're constantly developing new features to enhance your JOBTREAD experience. From custom reports and dashboards to integrations with other software tools, the possibilities are endless!",
+      icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     },
     {
-      question: "Can I customize the enhanced features?",
-      answer: "Our enhanced features are designed with flexibility in mind. We offer various customization options to tailor the functionality to your specific needs and workflow.",
-      icon: <Lightbulb className="w-6 h-6 text-blue-500" />
-    },
-    {
-      question: "Is training available for your enhanced features?",
-      answer: "Yes, we offer comprehensive training sessions to help you and your team get the most out of our enhanced features. These sessions are designed to ensure you can leverage the full power of our integrations from day one.",
-      icon: <Lightbulb className="w-6 h-6 text-blue-500" />
+      question: "How secure is the integration with JOBTREAD?",
+      answer: "Security is our top priority. We use industry-standard encryption and security protocols to ensure your data is safe and secure. Our integration with JOBTREAD is seamless and secure, so you can trust that your data is in good hands.",
+      icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     }
   ]
 }

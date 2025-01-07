@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Users, Zap, Target, Clock, Rocket, TrendingUp } from 'lucide-react';
 
@@ -15,7 +16,7 @@ const reasons = [
   {
     title: 'Easy to Use',
     description:
-      'Simply enter your JOBTREAD login, and we’ll handle the rest—no coding required. We’ve managed the complexities so you can enjoy the benefits effortlessly.',
+      'Simply enter your JOBTREAD login, and we\'ll handle the rest—no coding required. We\'ve managed the complexities so you can enjoy the benefits effortlessly.',
     icon: Zap,
     color: '#FBBF24',
   },
@@ -82,22 +83,34 @@ const EpicFeatureSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-<h2 className="mb-6 text-4xl font-bold lg:text-5xl text-gray-900">
-  What is{" "}
-  <span
-    className="bg-clip-text text-transparent"
-    style={{
-      backgroundImage: "linear-gradient(to right, #000, #FFD400)",
-    }}
-  >
-    DATAx
-  </span>
-  ?
-</h2>
-          <div className="w-32 h-1 mx-auto bg-gray-300"></div>  
-          <p className="mt-6 text-xl text-gray-600 max-w-3xl mx-auto">
-          A custom built application made specifically for JOBTREAD users. <br></br><br></br>We build custom features, dashboards, just add your JOBTREAD login and go.
-          </p>
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="mb-8"
+          >
+            <Image
+              src="/assets/logos/5.png"
+              alt="DATAx Logo"
+              width={300}
+              height={300}
+              className="mx-auto rounded-xl"
+            />
+          </motion.div>
+          <div className="w-32 h-1 mx-auto bg-gray-300 mb-6"></div>  
+          <motion.div 
+            className="mt-6 max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <h2 className="text-3xl font-bold mb-4" style={{ color: '#000' }}>
+              Built by <span style={{ color: '#ffd400' }}>JOBTREAD</span> users, for <span style={{ color: '#ffd400' }}>JOBTREAD</span> users
+            </h2>
+            <p className="text-xl" style={{ color: '#000' }}>
+              Simply connect your JobTread account and get started—<span className="font-semibold" style={{ color: '#ffd400' }}>no hassle, just results.</span>
+            </p>
+          </motion.div>
         </motion.div>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {reasons.map((reason, i) => (
