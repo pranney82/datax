@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu, X, Zap, Home, Info, Car, DollarSign, BarChart3, Wrench, BookOpen, Map } from 'lucide-react';
+import { Menu, X, Zap, Home, Info, Car, DollarSign, BarChart3, Wrench, BookOpen, Map, BookDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
@@ -42,6 +42,11 @@ const iconMap = {
   Info: <Info className="size-5 shrink-0" />,
   Car: <Car className="size-5 shrink-0" />,
   DollarSign: <DollarSign className="size-5 shrink-0" />,
+  BookDown: (
+    <div className="p-3 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
+      <BookDown className="size-8 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
+    </div>
+  ),
 };
 
 const Navbar1 = () => {
@@ -90,10 +95,10 @@ const Navbar1 = () => {
               <Link href="https://winyourdata.com">
                 <Image
                   src="/assets/logos/5.png"
-                  width={96}
-                  height={64}
+                  width={144}
+                  height={96}
                   alt="logo"
-                  className="w-auto"
+                  className="w-auto h-16"
                 />
               </Link>
             </div>
@@ -209,7 +214,7 @@ const Navbar1 = () => {
                                 'flex select-none gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
                               )}
                             >
-                              {iconMap.Book}
+                              {iconMap.BookDown}
                               <div>
                                 <div className="text-sm font-semibold">
                                   Cover Photo Automation
@@ -315,10 +320,10 @@ const Navbar1 = () => {
               <Link href="https://winyourdata.com">
                 <Image
                   src="/assets/logos/5.png"
-                  width={96}
-                  height={64}
+                  width={120}
+                  height={80}
                   alt="logo"
-                  className="w-auto"
+                  className="w-auto h-12"
                 />
               </Link>
             </div>

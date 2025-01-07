@@ -1,15 +1,7 @@
 "use client"
 
 import * as React from "react"
-import Image from "next/image"
-import {
-  BookOpen,
-  Home,
-  LifeBuoy,
-  LineChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react"
+import { BookOpen, Home, BarChart3, Settings2, Zap, type LucideIcon } from 'lucide-react'
 
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
@@ -23,6 +15,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+
+interface NavItem {
+  title: string
+  url: string
+  icon: LucideIcon
+}
 
 const data = {
   user: {
@@ -39,31 +37,31 @@ const data = {
     {
       title: "Dashboard",
       url: "/x/dashboard",
-      icon: LineChart,
+      icon: BarChart3,
     },
     {
       title: "Toolbox",
       url: "/x/toolbox",
-      icon: SquareTerminal,
+      icon: Zap,
     },
     {
       title: "Library",
       url: "/x/library/templates",
       icon: BookOpen,
     },
-  ],
+  ] as NavItem[],
   navSecondary: [
     {
       title: "Settings",
       url: "/x/settings",
       icon: Settings2,
-    },
-    {
-      title: "Support & Feedback",
-      url: "/x/support",
-      icon: LifeBuoy,
     }
-  ]
+  ] as NavItem[]
+}
+
+interface NavComponentProps {
+  items: NavItem[]
+  className?: string
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -73,22 +71,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="/x">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <Image src="/assets/icons/1.png" alt="DATAx Logo" width={32} height={32} />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">DATA x</span>
-                  <span className="truncate text-xs">v0.2</span>
-                </div>
-              </a>
+              {/* Add your button content here */}
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain 
+          items={data.navMain} 
+        />
+        <NavSecondary 
+          items={data.navSecondary} 
+          className="mt-auto" 
+        />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
@@ -96,3 +91,4 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     </Sidebar>
   )
 }
+

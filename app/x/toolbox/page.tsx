@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Star, FileText, CheckSquare, Calendar, Download, TypeIcon as type, Zap, TrendingUp } from 'lucide-react'
+import { Zap, TrendingUp } from 'lucide-react'
 import Link from "next/link"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
@@ -59,7 +59,7 @@ function FeatureCard({ title, description, href, isPopular, isActive }: FeatureC
 
 export default function FeaturesPage() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [activeFeatures, setActiveFeatures] = useState<Record<string, boolean>>({
+  const [activeFeatures] = useState<Record<string, boolean>>({
     "Cash Flow Calendar": true,
     "Zillow Data Import": true,
     "Google Maps Cover Photos": false,
@@ -71,28 +71,24 @@ export default function FeaturesPage() {
       title: "Cash Flow Calendar",
       description: "Track and manage your cash flow based on JobTread's calendar task types.",
       href: "/x/toolbox/calendar",
-      icon: Calendar,
       isPopular: true,
     },
     {
       title: "Zillow Data Import",
       description: "When a job is created, automatically import property data from Zillow and assign to custom fields.",
       href: "/x/toolbox/zillow",
-      icon: Download,
       isPopular: true,
     },
     {
       title: "Google Maps Cover Photos",
       description: "Automatically fetch Google Maps images and assign to Job Cover Photo.",
       href: "/x/toolbox/coverphoto",
-      icon: FileText,
       isPopular: true,
     },
     {
       title: "Print ToDos",
       description: "Generate printable task lists for offline use.",
       href: "/x/toolbox/print",
-      icon: CheckSquare,
       isPopular: false,
     },
   ]

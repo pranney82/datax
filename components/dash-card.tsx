@@ -1,6 +1,4 @@
-"use client"
-
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import {
   Card,
   CardContent,
@@ -45,7 +43,7 @@ interface DashCardProps {
   icon?: ReactNode
 }
 
-const EpicDashboardCard: React.FC<DashCardProps> = ({
+export default function ModernDashboardCard({
   title,
   description,
   content,
@@ -55,13 +53,13 @@ const EpicDashboardCard: React.FC<DashCardProps> = ({
   menuItems,
   badge,
   loading = false,
-  accentColor = 'from-[#ffd400] via-[#e6e6e6] to-white',
+  accentColor = 'bg-black',
   icon
-}) => {
+}: DashCardProps) {
   if (loading) {
     return (
-      <Card className="overflow-hidden bg-gradient-to-br from-white via-gray-100 to-[#ffd400]/10">
-        <div className={`h-1 w-full bg-gradient-to-r ${accentColor}`} />
+      <Card className="overflow-hidden shadow-sm">
+        <div className="h-0.5 w-full bg-gray-200" />
         <CardHeader className="pb-2">
           <Skeleton className="h-6 w-1/2" />
         </CardHeader>
@@ -78,17 +76,15 @@ const EpicDashboardCard: React.FC<DashCardProps> = ({
   }
 
   return (
-    <Card className="group relative flex flex-col overflow-hidden shadow-sm bg-gradient-to-br from-white via-gray-50 to-[#ffd400]/5 transition-all duration-300 hover:shadow-md hover:scale-[1.002]">
-      <div className={`h-px w-full bg-gradient-to-r ${accentColor}`} />
-      <CardHeader className="pb-2 relative z-10">
+    <Card className="group flex flex-col overflow-hidden transition-all duration-300 hover:shadow-md shadow-sm">
+      <div className={`h-0.5 w-full ${accentColor}`} />
+      <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold text-gray-900">
-            {title}
-          </CardTitle>
+          <CardTitle className="text-lg font-semibold">{title}</CardTitle>
           {menuItems && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-black hover:text-[#ffd400] transition-colors">
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                   <span className="sr-only">Open menu</span>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
                     <circle cx="12" cy="12" r="1" />
@@ -108,30 +104,30 @@ const EpicDashboardCard: React.FC<DashCardProps> = ({
           )}
         </div>
       </CardHeader>
-      <CardContent className="flex flex-grow flex-col space-y-4 relative z-10">
+      <CardContent className="flex flex-grow flex-col space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-3xl font-extrabold text-black tracking-tight">{content}</div>
+            <div className="text-3xl font-bold">{content}</div>
             {subContent && (
-              <div className="text-sm text-gray-600 mt-1">{subContent}</div>
+              <div className="text-sm text-muted-foreground">{subContent}</div>
             )}
           </div>
           {icon && (
-            <div className={`flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br ${accentColor} p-3 text-gray-700 transition-all duration-300 group-hover:scale-105`}>
+            <div className={`flex h-16 w-16 items-center justify-center rounded-full ${accentColor} p-3 text-white transition-transform group-hover:scale-110`}>
               {icon}
             </div>
           )}
         </div>
         {description && (
-          <CardDescription className="text-gray-600">{description}</CardDescription>
+          <CardDescription>{description}</CardDescription>
         )}
         {children}
       </CardContent>
       {(footer || badge) && (
-        <CardFooter className="flex items-center justify-between border-t border-gray-100 bg-white/50 px-6 py-3 mt-auto relative z-10">
+        <CardFooter className="flex items-center justify-between border-t bg-muted/50 px-6 py-3 mt-auto">
           {footer && (
             <div className="flex items-center space-x-2 text-sm">
-              <span className="text-gray-600">{footer.text}</span>
+              <span className="text-muted-foreground">{footer.text}</span>
               {footer.trend && footer.value && (
                 <div className={`flex items-center gap-1 font-medium ${
                   footer.trend === 'up' ? 'text-green-600' : 'text-red-600'
@@ -149,10 +145,7 @@ const EpicDashboardCard: React.FC<DashCardProps> = ({
             </div>
           )}
           {badge && (
-            <Badge 
-              variant={badge.variant} 
-              className={`px-2 py-1 bg-gradient-to-r ${accentColor} text-gray-700 font-medium`}
-            >
+            <Badge variant={badge.variant} className="px-2 py-1">
               {badge.text}
             </Badge>
           )}
@@ -161,6 +154,4 @@ const EpicDashboardCard: React.FC<DashCardProps> = ({
     </Card>
   )
 }
-
-export default EpicDashboardCard;
 

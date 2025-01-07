@@ -1,6 +1,7 @@
 "use client"
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
+import Image from 'next/image'
+import { Home, type LucideIcon } from 'lucide-react'
 
 import {
   Collapsible,
@@ -9,7 +10,6 @@ import {
 } from "@/components/ui/collapsible"
 import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuAction,
   SidebarMenuButton,
@@ -35,7 +35,17 @@ export function NavMain({
 }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      <div className="flex flex-col justify-start w-full mb-6 pl-4">
+        <Image
+          src="/assets/logos/12.png"
+          alt="Datax logo"
+          width={150}
+          height={150}
+          className="mb-2"
+        />
+        <p className="text-sm font-medium text-muted-foreground mt-1">Data Made Easy</p>
+      </div>
+      <div className="h-px bg-gray-300 my-2" aria-hidden="true" />
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible key={item.title} asChild defaultOpen>
@@ -50,7 +60,7 @@ export function NavMain({
                 <>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuAction className="data-[state=open]:rotate-90">
-                      <ChevronRight />
+                      <Home />
                       <span className="sr-only">Toggle</span>
                     </SidebarMenuAction>
                   </CollapsibleTrigger>
@@ -76,3 +86,4 @@ export function NavMain({
     </SidebarGroup>
   )
 }
+
