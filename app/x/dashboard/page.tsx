@@ -54,9 +54,6 @@ export default function Page() {
             <TabsTrigger value="sales" className="whitespace-nowrap">
               Sales
             </TabsTrigger>
-            <TabsTrigger value="jobs" className="whitespace-nowrap">
-              Jobs
-            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="summary">

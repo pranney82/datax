@@ -244,7 +244,7 @@ const Navbar1 = () => {
                   navigationMenuTriggerStyle,
                   buttonVariants({ variant: 'ghost' })
                 )}
-                href="/#"
+                href="/pricing"
               >
 
                 <span>Pricing</span>
