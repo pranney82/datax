@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { BarChart3, Wrench, BookOpen } from 'lucide-react';
+import { BarChart3, Wrench, BookOpen, LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Feature {
@@ -16,6 +16,7 @@ interface Feature {
   image: string;
   color: string;
   icon: LucideIcon;
+  link: string;
 }
 
 const features = [

@@ -161,7 +161,7 @@ export default function GMapCoverPhotoPage() {
               </ModernDashboardCard>
             </div>
             <div className="col-span-2">
-              <SingleRun className="max-w-md" />
+              <SingleRun />
             </div>
           </div>
         </div>

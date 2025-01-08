@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/popover"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useCoverPhotoLogs } from "./cplogs"
 import { useLogsStore } from './store'
 
 interface Job {
@@ -39,11 +38,18 @@ interface Job {
   }
 }
 
-interface SingleRunProps {
-  className?: string
+interface JobData {
+  id?: string
+  name?: string
+  location?: {
+    formattedAddress?: string
+    account?: {
+      name?: string
+    }
+  }
 }
 
-export function SingleRun({ className }: SingleRunProps) {
+export function SingleRun() {
   const { user } = useAuth()
   const [jobId, setJobId] = useState('')
   const [address, setAddress] = useState('')
@@ -56,7 +62,7 @@ export function SingleRun({ className }: SingleRunProps) {
   const debouncedValue = useDebounce(inputValue, 300)
   const [jobs, setJobs] = useState<Job[]>([])
   const [userSettings, setUserSettings] = useState<{grantKey?: string, orgId?: string}>({})
-  const { logs, isLoading: isLoadingLogs } = useCoverPhotoLogs()
+
   const triggerRefresh = useLogsStore((state) => state.triggerRefresh)
 
   // Fetch user settings once when component mounts
@@ -158,7 +164,7 @@ export function SingleRun({ className }: SingleRunProps) {
         const jobsData = data?.organization?.jobs?.nodes || []
         //console.log('Raw jobs data:', jobsData)
 
-        const mappedJobs = jobsData.map((job: any) => ({
+        const mappedJobs = jobsData.map((job: JobData) => ({
           id: job.id || '',
           name: job.name || '',
           location: {

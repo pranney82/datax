@@ -59,11 +59,6 @@ const data = {
   ] as NavItem[]
 }
 
-interface NavComponentProps {
-  items: NavItem[]
-  className?: string
-}
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>

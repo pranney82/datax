@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import { createWebhook } from "./cpquery"
-import { useAuth } from "@/lib/context/auth-context"
 
 interface CreateWebhookButtonProps {
   isConnected: boolean
