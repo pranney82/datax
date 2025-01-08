@@ -10,58 +10,94 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { useState } from "react"
+import { SingleRun } from "./singlerun"
+import { CoverPhotoLogsTable } from "./cplogstable"
+import ModernDashboardCard from "@/components/dash-card"
+import { Input } from "@/components/ui/input"
+import { CreateWebhookButton } from "./cpwebhook"
+import { searchWebhooks } from "./cpquery"
+import { doc, getDoc } from "firebase/firestore"
+import { useAuth } from "@/lib/context/auth-context"
+import { useState, useEffect } from "react"
+import { db } from "@/lib/firebase"
+import { Loader2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
-interface RunHistory {
+interface Webhook {
   id: string
-  timestamp: Date
-  status: 'success' | 'failed'
-  jobsProcessed: number
-  errorMessage?: string
+  url: string
 }
 
 export default function GMapCoverPhotoPage() {
-  const [isEnabled, setIsEnabled] = useState(false)
+  const { user } = useAuth()
+  const [orgId, setOrgId] = useState<string | null>(null)
+  const [grantKey, setGrantKey] = useState<string | null>(null)
+  const [webhookExists, setWebhookExists] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // Mock data for the history table
-  const runHistory: RunHistory[] = [
-    {
-      id: '1',
-      timestamp: new Date('2024-03-20T14:30:00'),
-      status: 'success',
-      jobsProcessed: 15,
-    },
-    {
-      id: '2',
-      timestamp: new Date('2024-03-19T10:15:00'),
-      status: 'failed',
-      jobsProcessed: 8,
-      errorMessage: 'API Rate limit exceeded'
-    },
-    {
-      id: '3',
-      timestamp: new Date('2024-03-18T16:45:00'),
-      status: 'success',
-      jobsProcessed: 12,
-    },
-    {
-      id: '4',
-      timestamp: new Date('2024-03-17T09:20:00'),
-      status: 'failed',
-      jobsProcessed: 3,
-      errorMessage: 'Network connection timeout'
-    },
-  ]
+  useEffect(() => {
+    if (!user) return
+    const fetchUserSettings = async () => {
+      try {
+        setIsLoading(true)
+        setError(null)
+        const userDocRef = doc(db, 'users', user.uid)
+        const userDoc = await getDoc(userDocRef)
+        const userData = userDoc.data()
+        const orgDocRef = doc(db, 'orgs', userData?.org)
+        const orgDoc = await getDoc(orgDocRef)
+        const orgData = orgDoc.data()
+        
+        if (!orgData?.orgID || !orgData?.grantKey) {
+          setError('Organization settings not found. Please check your settings.')
+          return
+        }
+        
+        setOrgId(orgData.orgID)
+        setGrantKey(orgData.grantKey)
+      } catch (error) {
+        console.error('Error fetching user settings:', error)
+        setError('Failed to load organization settings')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    
+    fetchUserSettings()
+  }, [user])
+
+  useEffect(() => {
+    const fetchWebhooks = async () => {
+      if (!orgId || !grantKey) return
+
+      try {
+        const response = await fetch('/api/jtfetch', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: {
+              "$": { "grantKey": grantKey },
+              ...searchWebhooks({ orgID: orgId })
+            }
+          })
+        })
+        const data = await response.json()
+        
+        const webhooks = data?.organization?.webhooks?.nodes || []
+        const exists = webhooks.some((webhook: Webhook) => 
+          webhook.url === "https://winyourdata.com/api/coverphoto/2"
+        )
+        setWebhookExists(exists)
+      } catch (error) {
+        console.error('Error fetching webhooks:', error)
+      }
+    }
+    fetchWebhooks()
+  }, [orgId, grantKey])
 
   return (
     <main className="flex flex-col flex-1 p-0">
@@ -86,54 +122,51 @@ export default function GMapCoverPhotoPage() {
       <div className="flex flex-col gap-8 p-6">
         <div>
           <h1 className="text-2xl font-semibold mb-6">Google Maps Job Cover Photo</h1>
-          
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={isEnabled}
-              onCheckedChange={setIsEnabled}
-              id="gmap-cover-photo"
-            />
-            <Label htmlFor="gmap-cover-photo">
-              Enable Automatic Cover Photo Updates
-            </Label>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="col-span-2">
+              <ModernDashboardCard 
+                title="Automatic Cover Photo Updates"
+                description="Enable automatic cover photo creation on job creation. This will create a cover photo for each job created in JobTread using a static Google Streetview image.">
+                
+                <div className="flex flex-col space-y-2">
+                  <div className="flex justify-between items-center">
+                    <Label htmlFor="gmap-cover-photo">
+                      Webhook URL
+                    </Label>
+                  </div>
+                  <div className="flex w-full gap-2">
+                    <Input 
+                      className="w-full" 
+                      type="text" 
+                      id="webhook-url"
+                      value="https://winyourdata.com/api/coverphoto/2"
+                      disabled
+                    />
+                  </div>
+                  {isLoading ? (
+                    <Button disabled className="w-full">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Loading...
+                    </Button>
+                  ) : error ? (
+                    <div className="text-sm text-red-600">{error}</div>
+                  ) : (
+                    <CreateWebhookButton 
+                      isConnected={webhookExists} 
+                      orgId={orgId} 
+                      grantKey={grantKey}
+                    />
+                  )}
+                </div>
+              </ModernDashboardCard>
+            </div>
+            <div className="col-span-2">
+              <SingleRun />
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-col gap-4">
-          <h2 className="text-lg font-medium">Run History</h2>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date & Time</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Jobs Processed</TableHead>
-                <TableHead>Details</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {runHistory.map((run) => (
-                <TableRow key={run.id}>
-                  <TableCell>
-                    {run.timestamp.toLocaleString()}
-                  </TableCell>
-                  <TableCell>
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                      run.status === 'success' 
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {run.status.charAt(0).toUpperCase() + run.status.slice(1)}
-                    </span>
-                  </TableCell>
-                  <TableCell>{run.jobsProcessed} jobs</TableCell>
-                  <TableCell className="text-gray-500">
-                    {run.errorMessage || 'Completed successfully'}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        <CoverPhotoLogsTable />
       </div>
     </main>
   )

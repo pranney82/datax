@@ -4,6 +4,13 @@ import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Users, Zap, Target, Clock, Rocket, TrendingUp } from 'lucide-react';
+import { LucideIcon } from 'lucide-react';
+interface Reason {
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  color: string;
+}
 
 const reasons = [
   {
@@ -50,7 +57,7 @@ const reasons = [
   },
 ];
 
-const FeatureCard = ({ reason, index }) => {
+const FeatureCard = ({ reason, index }: { reason: Reason; index: number }) => {
   const IconComponent = reason.icon;
 
   return (

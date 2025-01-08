@@ -4,8 +4,20 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { BarChart3, Wrench, BookOpen } from 'lucide-react';
+import { BarChart3, Wrench, BookOpen, LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
+interface Feature {
+  title: string;
+  subtitle: string;
+  id: string;
+  description: string;
+  list: string[];
+  image: string;
+  color: string;
+  icon: LucideIcon;
+  link: string;
+}
 
 const features = [
   {
@@ -55,7 +67,7 @@ const features = [
   }
 ];
 
-const FeatureCard = ({ feature }) => {
+const FeatureCard = ({ feature }: { feature: Feature }) => {
   const IconComponent = feature.icon;
   const [, setIsHovering] = useState(false);
 

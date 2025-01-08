@@ -50,7 +50,8 @@ const data = {
       url: "/x/settings",
       icon: Settings2,
     }
-  ] as const
+  ] as NavItem[]
+
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

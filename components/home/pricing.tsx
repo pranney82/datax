@@ -78,10 +78,7 @@ const Pricing = () => {
       <StripePaymentButton 
         priceId={plan.priceId} 
         className={`w-full py-4 text-lg font-bold rounded-xl ${className} transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center gap-2`}
-      >
-        <Sparkles className="w-5 h-5" />
-        <span>Subscribe Now</span>
-      </StripePaymentButton>
+      />
     ) : (
       <Button 
         className={`w-full py-4 text-lg font-bold rounded-xl ${className} transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center gap-2`}
