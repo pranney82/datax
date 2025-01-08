@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { BookOpen, Home, BarChart3, Settings2, Zap } from 'lucide-react'
+import { BookOpen, Home, BarChart3, Settings2, Zap, LucideIcon } from 'lucide-react'
 
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
@@ -15,6 +15,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+
+interface NavItem {
+  title: string
+  url: string
+  icon: LucideIcon
+  isActive?: boolean
+  items?: { title: string; url: string }[]
+}
 
 const data = {
   user: {
@@ -43,7 +51,7 @@ const data = {
       url: "/x/library/templates",
       icon: BookOpen,
     },
-  ] as const,
+  ],
   navSecondary: [
     {
       title: "Settings",
