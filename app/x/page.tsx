@@ -1,16 +1,17 @@
 "use client";
 
+import React from 'react';
 import { useEffect, useState } from 'react';
-import { Bell, LineChart, Users, Building, Calendar, Clock } from "lucide-react"
+import { Lightbulb, ExternalLink, Map, BarChart3, Zap, BookOpen, Settings2, Rocket } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
-import { Breadcrumb, BreadcrumbLink, BreadcrumbItem, BreadcrumbList } from "@/components/ui/breadcrumb"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useAuth } from "@/lib/context/auth-context"
 import { getFirestore, doc, getDoc } from "firebase/firestore"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+import { InspirationQuote } from "@/components/ui/InspirationQuote"
 
-// Add these interfaces for type safety
 interface CompanyUpdate {
   id: string
   title: string
@@ -19,19 +20,9 @@ interface CompanyUpdate {
   author: {
     name: string
     avatar: string
-    initials: string
   }
 }
 
-interface QuickStat {
-  id: string
-  title: string
-  value: string
-  change: string
-  trend: 'up' | 'down'
-}
-
-// Add this interface above the HomePage component
 interface UserData {
   name?: string;
   // Add other potential user data fields here
@@ -40,6 +31,7 @@ interface UserData {
 export default function HomePage() {
   const { user } = useAuth();
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [featureRequest, setFeatureRequest] = useState('');
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -48,17 +40,13 @@ export default function HomePage() {
       const db = getFirestore();
       const userDoc = await getDoc(doc(db, 'users', user.uid));
       if (userDoc.exists()) {
-        setUserData(userDoc.data());
+        setUserData(userDoc.data() as UserData);
       }
     };
 
     fetchUserData();
   }, [user]);
 
-  const name = userData?.name || user?.displayName;
-  console.log("userdata", userData);
-
-  // Sample company updates
   const companyUpdates: CompanyUpdate[] = [
     {
       id: '1',
@@ -67,8 +55,7 @@ export default function HomePage() {
       date: 'Today at 9:32 AM',
       author: {
         name: 'Sarah Johnson',
-        avatar: '/avatars/sarah.jpg',
-        initials: 'SJ'
+        avatar: '/avatars/sarah.jpg'
       }
     },
     {
@@ -78,139 +65,116 @@ export default function HomePage() {
       date: 'Yesterday at 4:15 PM',
       author: {
         name: 'Mike Peters',
-        avatar: '/avatars/mike.jpg',
-        initials: 'MP'
+        avatar: '/avatars/mike.jpg'
       }
     }
   ]
 
-  // Sample quick stats
-  const quickStats: QuickStat[] = [
-    {
-      id: '1',
-      title: 'Active Projects',
-      value: '24',
-      change: '+2 from last month',
-      trend: 'up'
-    },
-    {
-      id: '2',
-      title: 'Pending Invoices',
-      value: '$75,750',
-      change: '+15% vs last month',
-      trend: 'up'
-    },
-    {
-      id: '3',
-      title: 'Team Members',
-      value: '12',
-      change: 'No change',
-      trend: 'up'
-    }
-  ]
+  const handleFeatureRequestSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Feature request submitted:', featureRequest);
+    setFeatureRequest('');
+  };
+
+  const greeting = userData?.name || user?.displayName ? `Welcome, ${userData?.name || user?.displayName}!` : 'Welcome to your dashboard!';
 
   return (
-    <main className="flex flex-col flex-1 p-0">
-      <header className="flex h-16 shrink-0 items-center gap-2">
+    <main className="flex flex-col flex-1 p-0 bg-[#f8f9fa] text-[#333]">
+      <header className="flex h-16 shrink-0 items-center gap-2 shadow">
         <div className="flex items-center gap-2 px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="/x">Home</BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <SidebarTrigger className="-ml-1 hover:bg-[#fff] rounded-full transition-colors duration-200" />
         </div>
       </header> 
-      {/* Welcome Section */}
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0 ">
+      <div className="flex flex-1 flex-col gap-4 p-6 pt-4 animate-fadeIn">
         <div className="flex justify-between items-center mb-6">
           <div>
-          <h1 className="text-2xl font-bold">Welcome back, {name}</h1>
-          <p className="text-muted-foreground">Here&apos;s what&apos;s happening with your projects</p>
+            <h1 className="text-3xl font-bold text-[#333]">Company Name Here</h1>
+            <p className="text-lg text-[#555]">{greeting}</p>
+          </div>
         </div>
-        <button className="p-2 hover:bg-gray-100 rounded-full relative">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-        </button>
-      </div>
 
-      {/* Quick Stats */}
-      <div className="grid gap-4 md:grid-cols-3 mb-6">
-        {quickStats.map((stat) => (
-          <Card key={stat.id}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {stat.title}
-              </CardTitle>
-              <LineChart className="w-4 h-4 text-muted-foreground" />
+        <div className="mb-6">
+          <InspirationQuote />
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card className="md:col-span-1 shadow-md hover:shadow-lg transition-shadow duration-200">
+            <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
+              <CardTitle className="text-xl">Company Updates</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {stat.change}
-              </p>
+            <CardContent className="pt-4">
+              <div className="space-y-6">
+                {companyUpdates.map((update) => (
+                  <div key={update.id} className="flex gap-4 items-start hover:bg-[#f0f0f0] p-2 rounded-lg transition-colors duration-200">
+                    <Avatar className="border-2 border-[#e0e0e0]">
+                      <AvatarImage src={update.author.avatar} alt={`Avatar of ${update.author.name}`} />
+                      <AvatarFallback className="bg-[#ffd400] text-[#333]">
+                        <Rocket className="w-4 h-4" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="space-y-1">
+                      <h3 className="font-medium leading-none text-lg text-[#333]">{update.title}</h3>
+                      <p className="text-sm text-[#555]">{update.content}</p>
+                      <p className="text-xs text-[#777]">{update.date}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
 
-      {/* Main Content Grid */}
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Company Updates */}
-        <Card className="md:col-span-1">
-          <CardHeader>
-            <CardTitle>Company Updates</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {companyUpdates.map((update) => (
-                <div key={update.id} className="flex gap-4">
-                  <Avatar>
-                    <AvatarImage src={update.author.avatar} />
-                    <AvatarFallback>{update.author.initials}</AvatarFallback>
-                  </Avatar>
-                  <div className="space-y-1">
-                    <h3 className="font-medium leading-none">{update.title}</h3>
-                    <p className="text-sm text-muted-foreground">{update.content}</p>
-                    <p className="text-xs text-muted-foreground">{update.date}</p>
-                  </div>
+          <Card className="shadow-md hover:shadow-lg transition-shadow duration-200">
+            <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
+              <CardTitle className="text-xl">Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-4">
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { icon: BarChart3, label: 'Dashboard' },
+                  { icon: Zap, label: 'Toolbox' },
+                  { icon: BookOpen, label: 'Library' },
+                  { icon: Settings2, label: 'Settings' }
+                ].map((action, index) => (
+                  <button key={index} className="p-4 border-2 border-[#e0e0e0] rounded-lg hover:bg-[#ffd400] hover:text-[#333] flex flex-col items-center gap-2 transition-all duration-200 group">
+                    <action.icon className="w-8 h-8 text-[#ffd400] group-hover:text-[#333] group-hover:scale-110 transition-all duration-200" />
+                    <span className="text-sm font-medium">{action.label}</span>
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="md:col-span-2 shadow-md hover:shadow-lg transition-shadow duration-200">
+            <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Lightbulb className="w-6 h-6 text-[#ffd400]" />
+                Feature Requests
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-4">
+              <form onSubmit={handleFeatureRequestSubmit} className="space-y-4">
+                <Textarea
+                  placeholder="What feature would you like to see?"
+                  value={featureRequest}
+                  onChange={(e) => setFeatureRequest(e.target.value)}
+                  className="min-h-[100px] border-2 border-[#e0e0e0] focus:border-[#ffd400] focus:ring-[#ffd400] transition-all duration-200"
+                />
+                <div className="flex justify-between items-center">
+                  <a 
+                    href="/roadmap" 
+                    className="text-sm text-[#555] hover:text-[#ffd400] flex items-center gap-1 transition-colors duration-200"
+                  >
+                    <Map className="w-4 h-4" />
+                    View our roadmap <ExternalLink className="w-4 h-4" />
+                  </a>
+                  <Button type="submit" className="bg-[#ffd400] text-[#333] hover:bg-[#ffd400]/80 transition-colors duration-200">Submit Request</Button>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4">
-              <button className="p-4 border rounded-lg hover:bg-gray-50 flex flex-col items-center gap-2">
-                <Calendar className="w-6 h-6" />
-                <span className="text-sm">Schedule Meeting</span>
-              </button>
-              <button className="p-4 border rounded-lg hover:bg-gray-50 flex flex-col items-center gap-2">
-                <Users className="w-6 h-6" />
-                <span className="text-sm">Team Directory</span>
-              </button>
-              <button className="p-4 border rounded-lg hover:bg-gray-50 flex flex-col items-center gap-2">
-                <Building className="w-6 h-6" />
-                <span className="text-sm">Project Overview</span>
-              </button>
-              <button className="p-4 border rounded-lg hover:bg-gray-50 flex flex-col items-center gap-2">
-                <Clock className="w-6 h-6" />
-                <span className="text-sm">Time Tracking</span>
-              </button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </main>
   )
-} 
+}
+
