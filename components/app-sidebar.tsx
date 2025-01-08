@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { BookOpen, Home, BarChart3, Settings2, Zap, type LucideIcon } from 'lucide-react'
+import { BookOpen, Home, BarChart3, Settings2, Zap } from 'lucide-react'
 
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
@@ -15,12 +15,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-
-interface NavItem {
-  title: string
-  url: string
-  icon: LucideIcon
-}
 
 const data = {
   user: {
@@ -49,7 +43,7 @@ const data = {
       url: "/x/library/templates",
       icon: BookOpen,
     },
-  ] as NavItem[],
+  ] as const,
   navSecondary: [
     {
       title: "Settings",
@@ -57,6 +51,7 @@ const data = {
       icon: Settings2,
     }
   ] as NavItem[]
+
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -72,13 +67,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain 
-          items={data.navMain} 
-        />
-        <NavSecondary 
-          items={data.navSecondary} 
-          className="mt-auto" 
-        />
+        <NavMain items={data.navMain} />
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
