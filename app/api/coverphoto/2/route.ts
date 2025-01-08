@@ -1,22 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/firebase'
-import { collection, addDoc } from 'firebase/firestore'
-
-interface JobTreadWebhookData {
-  job: {
-    _type: string;
-    id: string;
-  };
-  location: {
-    _type: string;
-    id: string;
-  };
-  organization: {
-    _type: string;
-    id: string;
-  };
-  type: string;
-}
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore'
 
 interface JobTreadResponse {
     createUploadRequest: {
@@ -32,26 +16,68 @@ interface JobTreadResponse {
     uploadId: string;
   }
 
+async function getOrgGrantKey(jtOrgId: string): Promise<string | null> {
+  try {
+    // Query orgs collection for document where orgID matches JobTread org ID
+    const orgsRef = collection(db, 'orgs')
+    const q = query(orgsRef, where('orgID', '==', jtOrgId))
+    const querySnapshot = await getDocs(q)
+
+    if (querySnapshot.empty) {
+      console.error('No matching organization found for:', jtOrgId)
+      return null
+    }
+
+    // Get the first matching document
+    const orgDoc = querySnapshot.docs[0]
+    return orgDoc.data()?.grantKey || null
+  } catch (error) {
+    console.error('Error fetching org grant key:', error)
+    return null
+  }
+}
+
 export async function POST(request: Request) {
   try {
-    const webhookData = await request.json() as JobTreadWebhookData
-    
-    // Only process 'jobCreated' events
-    if (webhookData.type !== 'jobCreated') {
-      return NextResponse.json({ status: 'ignored', reason: 'Not a job creation event' })
+    const webhookData = await request.json()
+    const jtOrgId = webhookData.createdEvent.organization.id
+
+    // Get the grantKey for this organization
+    const grantKey = await getOrgGrantKey(jtOrgId)
+    if (!grantKey) {
+      await addDoc(collection(db, 'coverphotoLogs'), {
+        date: new Date().toISOString(),
+        status: 'error',
+        error: 'Could not find matching organization',
+        orgId: jtOrgId
+      })
+      return NextResponse.json(
+        { error: 'Organization not found' },
+        { status: 400 }
+      )
     }
 
     // Extract the required data from webhook payload
     const jobData = {
-      jobId: webhookData.job.id,
-      locationId: webhookData.location.id,
-      orgId: webhookData.organization.id,
+      jobId: webhookData.createdEvent.job.id,
+      locationId: webhookData.createdEvent.location.id,
+      orgId: webhookData.createdEvent.organization.id,
+    }
+
+    // Add null checks
+    if (!jobData.jobId || !jobData.locationId || !jobData.orgId) {
+      console.error('Missing required data:', jobData)
+      return NextResponse.json({ 
+        error: 'Missing required data',
+        received: jobData 
+      }, { status: 400 })
     }
 
     // Get the location details using the locationId
     const locationDetails = await getLocationDetails(
       jobData.locationId, 
-      jobData.orgId
+      jobData.orgId,
+      grantKey
     )
 
     if (!locationDetails?.address) {
@@ -74,7 +100,7 @@ export async function POST(request: Request) {
         locationDetails.address,
         jobData.jobId,
         jobData.orgId,
-        process.env.JOBTREAD_GRANT_KEY || ''
+        grantKey
       )
       
       await addDoc(collection(db, 'coverphotoLogs'), {
@@ -99,18 +125,15 @@ export async function POST(request: Request) {
     }
   } catch (error) {
     console.error('Error processing webhook:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
-async function getLocationDetails(locationId: string, orgId: string) {
-  // Query JobTread API to get location details
-  const query = {
+async function getLocationDetails(locationId: string, orgId: string, grantKey: string) {
+  // First query to get location details
+  const locationQuery = {
     query: {
-      "$": { "grantKey": process.env.JOBTREAD_GRANT_KEY },
+      "$": { "grantKey": grantKey },
       "organization": {
         "$": { "id": orgId }
       },
@@ -125,7 +148,7 @@ async function getLocationDetails(locationId: string, orgId: string) {
     const response = await fetch('https://api.jobtread.com/pave', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(query)
+      body: JSON.stringify(locationQuery)
     })
 
     if (!response.ok) {
@@ -133,10 +156,16 @@ async function getLocationDetails(locationId: string, orgId: string) {
     }
 
     const data = await response.json()
-    const location = data.location
+    console.log('Location API response:', data)
+
+    // Check if we have the formatted address
+    const formattedAddress = data?.location?.formattedAddress
+    if (!formattedAddress) {
+      throw new Error('Location formatted address missing')
+    }
 
     return {
-      address: location.formattedAddress
+      address: formattedAddress
     }
   } catch (error) {
     console.error('Error fetching location details:', error)
