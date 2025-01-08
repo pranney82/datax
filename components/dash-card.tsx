@@ -104,13 +104,13 @@ export default function ModernDashboardCard({
           )}
         </div>
       </CardHeader>
-      <CardContent className="flex flex-grow flex-col space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
+      <CardContent className="flex flex-grow flex-col space-y-4 w-full">
+        <div className="flex items-center justify-between w-full">
+          <div className="w-full">
             {typeof content === 'string' ? (
               <div className="text-3xl font-extrabold text-black tracking-tight">{content}</div>
             ) : (
-              content
+              <div className="w-full">{content}</div>
             )}
 
             {subContent && (
