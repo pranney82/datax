@@ -17,11 +17,9 @@ import {
 } from "@/components/ui/sidebar"
 
 interface NavItem {
-  title: string
-  url: string
-  icon: LucideIcon
-  isActive?: boolean
-  items?: { title: string; url: string }[]
+  title: string;
+  url: string;
+  icon: LucideIcon;
 }
 
 const data = {

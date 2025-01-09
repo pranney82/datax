@@ -7,11 +7,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from "@/components/ui/button";
 import { MoreVertical } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import CFDropdown from "@/components/cf-dropdown";
 import LeadsLostQuery from "./leadsLostQuery";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+
 
 export default function LeadsLost() {
     const [isCustomFieldOpen, setIsCustomFieldOpen] = useState(false);
@@ -132,12 +133,21 @@ export default function LeadsLost() {
                                 tickFormatter={(value) => value.length > 10 ? `${value.substring(0, 10)}...` : value}
                             />
                             <ChartTooltip 
-                                content={
-                                    <ChartTooltipContent 
-                                        labelClassName="text-xs sm:text-sm"
-                                        valueClassName="text-xs sm:text-sm"
-                                    />
-                                } 
+                                content={({ active, payload }) => {
+                                    if (active && payload && payload.length) {
+                                        return (
+                                            <div className="bg-background p-2 rounded-lg shadow-lg border">
+                                                <p className="text-foreground text-xs sm:text-sm">
+                                                    {payload[0].name}
+                                                </p>
+                                                <p className="text-muted-foreground text-xs sm:text-sm">
+                                                    {payload[0].value}
+                                                </p>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                }}
                             />
                             <Legend 
                                 wrapperStyle={{ fontSize: '12px' }}

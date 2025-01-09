@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/firebase'
 import { collection, getDocs, query, where } from 'firebase/firestore'
-import { updateLocJT } from '@/app/x/toolbox/zillow/zquery'
+import { updateLocJT } from '../../x/toolbox/zillow/zquery'
 
 interface WebhookEvent {
   createdEvent?: {

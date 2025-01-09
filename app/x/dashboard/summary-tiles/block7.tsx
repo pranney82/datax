@@ -33,7 +33,7 @@ export function Block7() {
     <DashCard 
       title="Monthly Revenue" 
       description="Revenue collected over time"
-      className="p-2"
+      
     >
       <ResponsiveContainer width="100%" height={280}>
         <ComposedChart

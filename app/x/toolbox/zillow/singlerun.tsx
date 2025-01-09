@@ -9,7 +9,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import ModernDashboardCard from "@/components/dash-card"
 import { zQuery1 } from "./zquery"
-import { useDebounce } from "@/hooks/useDebounce"
+import { useDebounce } from "./hooks/useDebounce"
 import {
   Command,
   CommandEmpty,

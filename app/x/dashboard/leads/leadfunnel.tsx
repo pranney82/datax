@@ -2,6 +2,93 @@ import { FunnelChart, Funnel, LabelList, ResponsiveContainer, Tooltip, Cell } fr
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLeadsCount } from "@/lib/hooks/use-leads-count";
 
+interface LabelProps {
+    x?: string | number;
+    y?: string | number;
+    width?: string | number;
+    height?: string | number;
+    name?: string | number;
+    value?: string | number;
+}
+
+// Custom label component
+const CustomLabel = (props: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    name: string;
+    value: number;
+}) => {
+    const { x, y, width, height, name, value } = props;
+    const centerX = x + width / 2;
+    const centerY = y + height / 2;
+    const labelWidth = 140;
+    const labelHeight = 60;
+    const cornerRadius = 8;
+
+    return (
+        <g>
+            <rect
+                x={centerX - labelWidth / 2}
+                y={centerY - labelHeight / 2}
+                width={labelWidth}
+                height={labelHeight}
+                fill="rgba(255, 255, 255, 0.95)"
+                stroke="rgba(0, 0, 0, 0.1)"
+                strokeWidth={1}
+                rx={cornerRadius}
+                ry={cornerRadius}
+            />
+            <text
+                x={centerX}
+                y={centerY - 10}
+                textAnchor="middle"
+                fill="hsl(var(--foreground))"
+                fontSize={14}
+                fontWeight="bold"
+            >
+                {name}
+            </text>
+            <text
+                x={centerX}
+                y={centerY + 15}
+                textAnchor="middle"
+                fill="hsl(var(--foreground))"
+                fontSize={16}
+                fontWeight="bold"
+            >
+                {value.toLocaleString()}
+            </text>
+        </g>
+    );
+};
+
+// // Custom shape component
+// const CustomShape = (props: {
+//     x: number;
+//     y: number;
+//     width: number;
+//     height: number;
+//     fill: string;
+// }) => {
+//     const { x, y, width, height, fill } = props;
+//     const radius = 20;
+
+//     return (
+//         <path
+//             d={`
+//                 M ${x},${y}
+//                 L ${x + width},${y}
+//                 L ${x + width / 2 + radius},${y + height}
+//                 Q ${x + width / 2},${y + height + radius} ${x + width / 2 - radius},${y + height}
+//                 Z
+//             `}
+//             fill={fill}
+//         />
+//     );
+// };
+
 export default function LeadFunnel() {
     const { leadsCount, block3StatusCounts } = useLeadsCount();
 
@@ -80,73 +167,6 @@ export default function LeadFunnel() {
         return null;
     };
 
-    // Custom label component to display name and value with improved background visibility
-    const CustomLabel = (props: string) => {
-        const { x, y, width, height, name, value } = props;
-        const centerX = x + width / 2;
-        const centerY = y + height / 2;
-        const labelWidth = 140;
-        const labelHeight = 60;
-        const cornerRadius = 8;
-
-        return (
-            <g>
-                {/* Background rectangle with improved visibility */}
-                <rect
-                    x={centerX - labelWidth / 2}
-                    y={centerY - labelHeight / 2}
-                    width={labelWidth}
-                    height={labelHeight}
-                    fill="rgba(255, 255, 255, 0.95)"
-                    stroke="rgba(0, 0, 0, 0.1)"
-                    strokeWidth={1}
-                    rx={cornerRadius}
-                    ry={cornerRadius}
-                />
-                {/* Label text */}
-                <text
-                    x={centerX}
-                    y={centerY - 10}
-                    textAnchor="middle"
-                    fill="hsl(var(--foreground))"
-                    fontSize={14}
-                    fontWeight="bold"
-                >
-                    {name}
-                </text>
-                <text
-                    x={centerX}
-                    y={centerY + 15}
-                    textAnchor="middle"
-                    fill="hsl(var(--foreground))"
-                    fontSize={16}
-                    fontWeight="bold"
-                >
-                    {value.toLocaleString()}
-                </text>
-            </g>
-        );
-    };
-
-    // Custom shape for the bottom of the funnel
-    const CustomShape = (props: string) => {
-        const { x, y, width, height, fill } = props;
-        const radius = 20; // Adjust this value to change the roundness
-
-        return (
-            <path
-                d={`
-                    M ${x},${y}
-                    L ${x + width},${y}
-                    L ${x + width / 2 + radius},${y + height}
-                    Q ${x + width / 2},${y + height + radius} ${x + width / 2 - radius},${y + height}
-                    Z
-                `}
-                fill={fill}
-            />
-        );
-    };
-
     return (
         <Card className="w-full">
             <CardHeader>
@@ -164,14 +184,25 @@ export default function LeadFunnel() {
                             labelLine={false}
                         >
                             <LabelList
-                                content={<CustomLabel />}
+                                dataKey="value"
+                                position="center"
+                                content={(props: LabelProps) => {
+                                    const { x, y, width, height, name, value } = props;
+                                    return <CustomLabel 
+                                        x={Number(x)} 
+                                        y={Number(y)} 
+                                        width={Number(width)} 
+                                        height={Number(height)} 
+                                        name={String(name)} 
+                                        value={Number(value)} 
+                                    />;
+                                }}
                             />
                             {data.map((entry, index) => (
                                 <Cell 
                                     key={`cell-${index}`} 
                                     fill={entry.fill} 
                                     fillOpacity={entry.opacity}
-                                    shape={index === data.length - 1 ? <CustomShape /> : undefined}
                                 />
                             ))}
                         </Funnel>
