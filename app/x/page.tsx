@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { Lightbulb, ExternalLink, Map, BarChart3, Zap, BookOpen, Settings2, Rocket } from 'lucide-react'
+import { PlusCircle, ExternalLink, Map, BarChart3, Zap, BookOpen, Settings2, Rocket } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { SidebarTrigger } from "@/components/ui/sidebar"
@@ -11,6 +11,7 @@ import { getFirestore, doc, getDoc } from "firebase/firestore"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { InspirationQuote } from "@/components/ui/InspirationQuote"
+import Link from 'next/link'
 
 interface CompanyUpdate {
   id: string
@@ -50,9 +51,9 @@ export default function HomePage() {
   const companyUpdates: CompanyUpdate[] = [
     {
       id: '1',
-      title: 'New Estimating Software Release',
-      content: "We've launched version 2.0 of our estimating software with improved accuracy and faster processing.",
-      date: 'Today at 9:32 AM',
+      title: 'Dashboards, Toolbox, and Library',
+      content: "Company dashboards, toolbox, and library are now available to all users. We're excited to see how you use them.",
+      date: 'Jan 7 2025',
       author: {
         name: 'Sarah Johnson',
         avatar: '/avatars/sarah.jpg'
@@ -60,9 +61,9 @@ export default function HomePage() {
     },
     {
       id: '2',
-      title: 'Q1 Company Meeting',
-      content: 'Mark your calendars for our Q1 all-hands meeting next Friday at 2 PM EST.',
-      date: 'Yesterday at 4:15 PM',
+      title: 'DATAx is live!',
+      content: "DATAx is live! Available to all JOBTREAD users starting today. We're excited to see how you use it.",
+      date: 'Jan 7 2025',
       author: {
         name: 'Mike Peters',
         avatar: '/avatars/mike.jpg'
@@ -130,15 +131,15 @@ export default function HomePage() {
             <CardContent className="pt-4">
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { icon: BarChart3, label: 'Dashboard' },
-                  { icon: Zap, label: 'Toolbox' },
-                  { icon: BookOpen, label: 'Library' },
-                  { icon: Settings2, label: 'Settings' }
+                  { icon: BarChart3, label: 'Dashboard', href: '/x/dashboard' },
+                  { icon: Zap, label: 'Toolbox', href: '/x/toolbox' },
+                  { icon: BookOpen, label: 'Library', href: '/x/library/templates' },
+                  { icon: Settings2, label: 'Settings', href: '/x/settings' }
                 ].map((action, index) => (
-                  <button key={index} className="p-4 border-2 border-[#e0e0e0] rounded-lg hover:bg-[#ffd400] hover:text-[#333] flex flex-col items-center gap-2 transition-all duration-200 group">
+                  <Link key={index} href={action.href} className="p-4 border-2 border-[#e0e0e0] rounded-lg hover:bg-[#ffd400] hover:text-[#333] flex flex-col items-center gap-2 transition-all duration-200 group">
                     <action.icon className="w-8 h-8 text-[#ffd400] group-hover:text-[#333] group-hover:scale-110 transition-all duration-200" />
                     <span className="text-sm font-medium">{action.label}</span>
-                  </button>
+                  </Link>
                 ))}
               </div>
             </CardContent>
@@ -147,7 +148,7 @@ export default function HomePage() {
           <Card className="md:col-span-2 shadow-md hover:shadow-lg transition-shadow duration-200">
             <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
               <CardTitle className="flex items-center gap-2 text-xl">
-                <Lightbulb className="w-6 h-6 text-[#ffd400]" />
+                <PlusCircle className="w-6 h-6 text-[#ffd400]" />
                 Feature Requests
               </CardTitle>
             </CardHeader>
@@ -160,13 +161,13 @@ export default function HomePage() {
                   className="min-h-[100px] border-2 border-[#e0e0e0] focus:border-[#ffd400] focus:ring-[#ffd400] transition-all duration-200"
                 />
                 <div className="flex justify-between items-center">
-                  <a 
+                  <Link 
                     href="/roadmap" 
                     className="text-sm text-[#555] hover:text-[#ffd400] flex items-center gap-1 transition-colors duration-200"
                   >
                     <Map className="w-4 h-4" />
                     View our roadmap <ExternalLink className="w-4 h-4" />
-                  </a>
+                  </Link>
                   <Button type="submit" className="bg-[#ffd400] text-[#333] hover:bg-[#ffd400]/80 transition-colors duration-200">Submit Request</Button>
                 </div>
               </form>

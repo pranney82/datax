@@ -1,10 +1,11 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { useState, useEffect } from "react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreVertical } from "lucide-react";
+import { MoreVertical } from 'lucide-react';
 import CFDropdown from "@/components/cf-dropdown";
 import {
     Dialog,
@@ -13,15 +14,14 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog";
-import { useState, useEffect } from "react";
 import LeadsBarOneQuery from './leadsbaronequery';
 
 type ChartDataType = {
     month: string;
-    [key: string]: string | number; // For dynamic source fields
+    [key: string]: string | number;
 }
 
-export default function LeadsSourceChart() {
+export default function ImprovedLeadsSourceChart() {
     const defaultData = [
         {month: "Jan", socialMedia: 10, googleAds: 20, Referral: 30, Direct: 40, Email: 50, Other: 60},
         {month: "Feb", socialMedia: 15, googleAds: 25, Referral: 35, Direct: 45, Email: 55, Other: 65},
@@ -37,25 +37,20 @@ export default function LeadsSourceChart() {
         {month: "Dec", socialMedia: 65, googleAds: 75, Referral: 85, Direct: 95, Email: 105, Other: 115},
     ];
 
-    
     const [isCustomFieldOpen, setIsCustomFieldOpen] = useState(false);
     const [selectedField, setSelectedField] = useState("");
     const [selectedFieldName, setSelectedFieldName] = useState("");
     const [chartData, setChartData] = useState<ChartDataType[]>(defaultData as ChartDataType[]);
     
-    // Use the hook at the component level
     const { queryResult, isLoading } = LeadsBarOneQuery({ selectedField });
 
-    // Add useEffect to handle query results
     useEffect(() => {
         if (!isLoading && queryResult?.organization?.customFields?.nodes?.[0]?.customFieldValues?.processedData) {
             const processedData: ChartDataType[] = queryResult.organization.customFields.nodes[0].customFieldValues.processedData;
-            //console.log('Setting chart data:', processedData);
             setChartData(processedData);
         }
     }, [queryResult, isLoading]);
 
-    // Add new useEffect to fetch saved custom field
     useEffect(() => {
         const fetchSavedCustomField = async () => {
             try {
@@ -83,39 +78,25 @@ export default function LeadsSourceChart() {
         };
 
         fetchSavedCustomField();
-    }, []); // Run once on component mount
+    }, []);
 
     const handleSaveCustomField = async () => {
         try {
             const currentUser = auth.currentUser;
-            if (!currentUser) {
-                console.log('No current user');
-                return;
-            }
+            if (!currentUser) return;
 
             const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-            if (!userDoc.exists()) {
-                console.log('User doc does not exist');
-                return;
-            }
+            if (!userDoc.exists()) return;
 
             const org = userDoc.data().org;
-            if (!org) {
-                console.log('No org found');
-                return;
-            }
+            if (!org) return;
 
-            if (!selectedField) {
-                console.log('No field selected');
-                return;
-            }
+            if (!selectedField) return;
 
             const updateData = {
                 leadsbarcfv: selectedField,
                 leadsbarcfvName: selectedFieldName
             };
-
-            //console.log('Updating with data:', updateData);
             
             await updateDoc(doc(db, 'orgs', org), updateData);
             setIsCustomFieldOpen(false);
@@ -123,12 +104,14 @@ export default function LeadsSourceChart() {
             console.error('Error saving custom field:', error);
         }
     };
+    
+    const legendColors = ['#FFD400', '#FF6B6B', '#4ECDC4', '#45B7D1'];
 
     return (
         <>
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>{selectedFieldName || "select custom field, preferrably Lead Source"}</CardTitle>
+                    <CardTitle>{selectedFieldName || "select custom field, preferably Lead Source"}</CardTitle>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="h-8 w-8 p-0">
@@ -142,32 +125,43 @@ export default function LeadsSourceChart() {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-6">
                     <ResponsiveContainer width="100%" height={400}>
-                        <BarChart data={chartData}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="month" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
+                        <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                            <XAxis dataKey="month" stroke="#9CA3AF" tick={{ fill: '#333333' }} tickLine={{ stroke: '#9CA3AF' }} />
+                            <YAxis stroke="#9CA3AF" tick={{ fill: '#333333' }} tickLine={{ stroke: '#9CA3AF' }} />
+                            <Tooltip 
+                                contentStyle={{
+                                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                                    border: 'none',
+                                    borderRadius: '12px',
+                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                                }}
+                                labelStyle={{ fontWeight: 'bold', color: '#333' }}
+                            />
+                            <Legend 
+                                wrapperStyle={{ paddingTop: '20px' }}
+                                payload={
+                                    Object.keys(chartData[0] || {})
+                                        .filter(key => key !== 'month')
+                                        .map((key, index) => ({
+                                            value: key,
+                                            type: 'rect',
+                                            color: legendColors[index % legendColors.length],
+                                        }))
+                                }
+                            />
                             {Object.keys(chartData[0] || {})
                                 .filter(key => key !== 'month')
-                                .map((key, index) => {
-                                    const colors = [
-                                        '#8884d8', '#82ca9d', '#ffc658', 
-                                        '#ff7300', '#0088fe', '#00C49F',
-                                        '#ff84d8', '#82ceff', '#ffc000',
-                                        '#ff0000', '#0000fe', '#00FF9F'
-                                    ];
-                                    return (
-                                        <Bar 
-                                            key={key}
-                                            dataKey={key}
-                                            stackId="a"
-                                            fill={colors[index % colors.length]}
-                                        />
-                                    );
-                                })}
+                                .map((key, index) => (
+                                    <Bar 
+                                        key={key}
+                                        dataKey={key}
+                                        stackId="a"
+                                        fill={legendColors[index % legendColors.length]}
+                                        fillOpacity={0.6}
+                                    />
+                                ))}
                         </BarChart>
                     </ResponsiveContainer>
                 </CardContent>
@@ -200,3 +194,4 @@ export default function LeadsSourceChart() {
         </>
     );
 }
+

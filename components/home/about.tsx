@@ -106,7 +106,7 @@ const About = () => {
             transition={{ duration: 0.5 }}
           >
             <Image
-              src="/assets/images/hero1.png"
+              src="/assets/images/founders.png"
               alt="DATAx Team"
               width={1200}
               height={800}
