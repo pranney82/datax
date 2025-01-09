@@ -1,10 +1,13 @@
+"use client"
+
+import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreVertical } from "lucide-react";
-import { useState, useEffect } from "react";
+import { MoreVertical } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import CFDropdown from "@/components/cf-dropdown";
 import LeadsLostQuery from "./leadsLostQuery";
 import { auth, db } from "@/lib/firebase";
@@ -71,8 +74,6 @@ export default function LeadsLost() {
                 leadslostcfv: selectedField,
                 leadslostcfvName: selectedFieldName
             };
-
-            //console.log('Updating with data:', updateData);
             
             await updateDoc(doc(db, 'orgs', org), updateData);
             setIsCustomFieldOpen(false);
@@ -82,14 +83,16 @@ export default function LeadsLost() {
     };
 
     return (
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                    <CardTitle>{selectedFieldName || "select custom field, preferrably Lead Lost Reason"}</CardTitle>
+        <Card className="w-full h-full min-h-[300px] sm:min-h-[400px] md:min-h-[500px] flex flex-col">
+            <CardHeader className="flex flex-row items-center justify-between flex-shrink-0 p-4 sm:p-6">
+                <div className="w-full pr-4">
+                    <CardTitle className="text-base sm:text-lg md:text-l truncate">
+                        {selectedFieldName || "Select custom field, preferably Lead Lost Reason"}
+                    </CardTitle>
                 </div>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
+                        <Button variant="ghost" className="h-8 w-8 p-0 flex-shrink-0">
                             <MoreVertical className="h-4 w-4 text-muted-foreground" />
                         </Button>
                     </DropdownMenuTrigger>
@@ -100,24 +103,53 @@ export default function LeadsLost() {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </CardHeader>
-            <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
-                    <BarChart
-                        data={data}
-                        layout="vertical"
-                        margin={{ top: 20, right: 30, left: 100, bottom: 5 }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis type="number" />
-                        <YAxis type="category" dataKey="reason" width={100} />
-                        <Legend />
-                        <Bar dataKey="count" fill="#8884d8" radius={[0, 4, 4, 0]} />
-                    </BarChart>
-                </ResponsiveContainer>
+            <CardContent className="flex-grow p-2 sm:p-4">
+                <ChartContainer
+                    config={{
+                        count: {
+                            label: "Count",
+                            color: "#ffd400",
+                        },
+                    }}
+                    className="w-full h-full"
+                >
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                            data={data}
+                            layout="vertical"
+                            margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis 
+                                type="number"
+                                tick={{ fontSize: 12 }}
+                            />
+                            <YAxis 
+                                type="category" 
+                                dataKey="reason" 
+                                width={80}
+                                tick={{ fontSize: 12 }}
+                                tickFormatter={(value) => value.length > 10 ? `${value.substring(0, 10)}...` : value}
+                            />
+                            <ChartTooltip 
+                                content={
+                                    <ChartTooltipContent 
+                                        labelClassName="text-xs sm:text-sm"
+                                        valueClassName="text-xs sm:text-sm"
+                                    />
+                                } 
+                            />
+                            <Legend 
+                                wrapperStyle={{ fontSize: '12px' }}
+                            />
+                            <Bar dataKey="count" fill="#ffd400" radius={[0, 4, 4, 0]} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </ChartContainer>
             </CardContent>
 
             <Dialog open={isCustomFieldOpen} onOpenChange={setIsCustomFieldOpen}>
-                <DialogContent>
+                <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                         <DialogTitle>Select Custom Field</DialogTitle>
                     </DialogHeader>
@@ -142,4 +174,5 @@ export default function LeadsLost() {
             </Dialog>
         </Card>
     );
-} 
+}
+

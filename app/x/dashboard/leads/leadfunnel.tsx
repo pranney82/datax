@@ -1,9 +1,8 @@
-import { FunnelChart, Funnel, LabelList, ResponsiveContainer, Tooltip } from "recharts";
+import { FunnelChart, Funnel, LabelList, ResponsiveContainer, Tooltip, Cell } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLeadsCount } from "@/lib/hooks/use-leads-count";
 
 export default function LeadFunnel() {
-    //total leads
     const { leadsCount, block3StatusCounts } = useLeadsCount();
 
     // Aggregate status counts across all months
@@ -19,24 +18,45 @@ export default function LeadFunnel() {
         return total + (aggregatedStatusCounts[status] || 0);
     }, 0);
 
+    // Define the gradients with opacity
+    const gradients = (
+        <defs>
+            <linearGradient id="topGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="rgba(255, 255, 255, 0.8)" />
+                <stop offset="100%" stopColor="rgba(255, 212, 0, 0.8)" />
+            </linearGradient>
+            <linearGradient id="middleGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="rgba(255, 212, 0, 0.8)" />
+                <stop offset="100%" stopColor="rgba(255, 167, 0, 0.8)" />
+            </linearGradient>
+            <linearGradient id="bottomGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="rgba(255, 167, 0, 0.8)" />
+                <stop offset="100%" stopColor="rgba(0, 0, 0, 0.8)" />
+            </linearGradient>
+        </defs>
+    );
+
     // Transform into array format for the funnel chart
     const data = [
         {
             name: "Total Leads",
             value: leadsCount,
-            fill: "#8884d8",
+            fill: "url(#topGradient)",
+            opacity: 0.8,
         },
         {
             name: "Qualified Leads",
             value: qualifiedLeadsTotal,
             conversionRate: ((qualifiedLeadsTotal / leadsCount) * 100).toFixed(1),
-            fill: "#83a6ed",
+            fill: "url(#middleGradient)",
+            opacity: 0.8,
         },
         {
             name: "Closed Leads",
             value: aggregatedStatusCounts['approved'] || 0,
             conversionRate: (((aggregatedStatusCounts['approved'] || 0) / leadsCount) * 100).toFixed(1),
-            fill: "#8dd1e1",
+            fill: "url(#bottomGradient)",
+            opacity: 0.8,
         },
     ];
 
@@ -48,11 +68,11 @@ export default function LeadFunnel() {
         if (active && payload && payload.length) {
             const data = payload[0].payload;
             return (
-                <div className="bg-white p-4 rounded-lg shadow-lg border">
-                    <p className="font-bold">{data.name}</p>
-                    <p>Total: {data.value}</p>
+                <div className="bg-background p-4 rounded-lg shadow-lg border">
+                    <p className="font-bold text-foreground">{data.name}</p>
+                    <p className="text-muted-foreground">Total: {data.value.toLocaleString()}</p>
                     {data.conversionRate && (
-                        <p>Conversion Rate: {data.conversionRate}%</p>
+                        <p className="text-muted-foreground">Conversion Rate: {data.conversionRate}%</p>
                     )}
                 </div>
             );
@@ -60,27 +80,100 @@ export default function LeadFunnel() {
         return null;
     };
 
+    // Custom label component to display name and value with improved background visibility
+    const CustomLabel = (props: string) => {
+        const { x, y, width, height, name, value } = props;
+        const centerX = x + width / 2;
+        const centerY = y + height / 2;
+        const labelWidth = 140;
+        const labelHeight = 60;
+        const cornerRadius = 8;
+
+        return (
+            <g>
+                {/* Background rectangle with improved visibility */}
+                <rect
+                    x={centerX - labelWidth / 2}
+                    y={centerY - labelHeight / 2}
+                    width={labelWidth}
+                    height={labelHeight}
+                    fill="rgba(255, 255, 255, 0.95)"
+                    stroke="rgba(0, 0, 0, 0.1)"
+                    strokeWidth={1}
+                    rx={cornerRadius}
+                    ry={cornerRadius}
+                />
+                {/* Label text */}
+                <text
+                    x={centerX}
+                    y={centerY - 10}
+                    textAnchor="middle"
+                    fill="hsl(var(--foreground))"
+                    fontSize={14}
+                    fontWeight="bold"
+                >
+                    {name}
+                </text>
+                <text
+                    x={centerX}
+                    y={centerY + 15}
+                    textAnchor="middle"
+                    fill="hsl(var(--foreground))"
+                    fontSize={16}
+                    fontWeight="bold"
+                >
+                    {value.toLocaleString()}
+                </text>
+            </g>
+        );
+    };
+
+    // Custom shape for the bottom of the funnel
+    const CustomShape = (props: string) => {
+        const { x, y, width, height, fill } = props;
+        const radius = 20; // Adjust this value to change the roundness
+
+        return (
+            <path
+                d={`
+                    M ${x},${y}
+                    L ${x + width},${y}
+                    L ${x + width / 2 + radius},${y + height}
+                    Q ${x + width / 2},${y + height + radius} ${x + width / 2 - radius},${y + height}
+                    Z
+                `}
+                fill={fill}
+            />
+        );
+    };
+
     return (
-        <Card>
+        <Card className="w-full">
             <CardHeader>
-                <CardTitle>Lead Funnel</CardTitle>
+                <CardTitle className="text-l font-bold">Lead Funnel</CardTitle>
             </CardHeader>
             <CardContent>
                 <ResponsiveContainer width="100%" height={400}>
                     <FunnelChart>
+                        {gradients}
                         <Tooltip content={<CustomTooltip />} />
                         <Funnel
                             dataKey="value"
                             data={data}
                             isAnimationActive
-                            labelLine
+                            labelLine={false}
                         >
                             <LabelList
-                                position="right"
-                                fill="#000"
-                                stroke="none"
-                                dataKey="name"
+                                content={<CustomLabel />}
                             />
+                            {data.map((entry, index) => (
+                                <Cell 
+                                    key={`cell-${index}`} 
+                                    fill={entry.fill} 
+                                    fillOpacity={entry.opacity}
+                                    shape={index === data.length - 1 ? <CustomShape /> : undefined}
+                                />
+                            ))}
                         </Funnel>
                     </FunnelChart>
                 </ResponsiveContainer>
@@ -88,3 +181,4 @@ export default function LeadFunnel() {
         </Card>
     );
 }
+

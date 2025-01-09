@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu, X, Zap, Home, Info, Car, DollarSign, BarChart3, Wrench, BookOpen, Map, BookDown } from 'lucide-react';
+import { Menu, X, Zap, Home, Info, Car, DollarSign, BarChart3, BookOpen, Map, BookDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
@@ -22,9 +22,9 @@ const iconMap = {
       <BarChart3 className="size-8 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
     </div>
   ),
-  Wrench: (
+  Zap: (
     <div className="p-3 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
-      <Wrench className="size-8 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
+      <Zap className="size-8 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
     </div>
   ),
   BookOpen: (
@@ -37,7 +37,7 @@ const iconMap = {
       <Map className="size-8 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
     </div>
   ),
-  Zap: <Zap className="size-5 shrink-0 text-[#ffd400]" />,
+  ZapSmall: <Zap className="size-5 shrink-0 text-[#ffd400]" />,
   Home: <Home className="size-5 shrink-0" />,
   Info: <Info className="size-5 shrink-0" />,
   Car: <Car className="size-5 shrink-0" />,
@@ -98,7 +98,7 @@ const Navbar1 = () => {
                   width={144}
                   height={96}
                   alt="logo"
-                  className="w-auto h-16"
+                  className="w-auto h-11"
                 />
               </Link>
             </div>
@@ -117,7 +117,7 @@ const Navbar1 = () => {
                 <NavigationMenuList>
                   <NavigationMenuItem className="text-gray-800">
                     <NavigationMenuTrigger className="hover:text-ffd400 transition-colors duration-200">
-                      <Zap className="size-5 shrink-0 text-[#ffd400]" />
+                      {iconMap.ZapSmall}
                       <span className="ml-2">Features</span>
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
@@ -125,7 +125,7 @@ const Navbar1 = () => {
                         <li>
                           <NavigationMenuLink asChild>
                             <Link
-                              href="https://www.winyourdata.com/#epic-features"
+                              href="/#epic-features"
                               className={cn(
                                 'flex select-none items-center gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#ffd400]/10 focus:bg-[#ffd400]/10 group'
                               )}
@@ -146,12 +146,12 @@ const Navbar1 = () => {
                         <li>
                           <NavigationMenuLink asChild>
                             <Link
-                              href="https://www.winyourdata.com/#epic-features"
+                              href="/#epic-features"
                               className={cn(
                                 'flex select-none items-center gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#ffd400]/10 focus:bg-[#ffd400]/10 group'
                               )}
                             >
-                              {iconMap.Wrench}
+                              {iconMap.Zap}
                               <div className="transition-transform duration-300 transform group-hover:translate-x-1">
                                 <div className="text-base font-semibold text-black group-hover:text-[#ffd400] transition-colors duration-200">
                                   Toolbox
@@ -167,7 +167,7 @@ const Navbar1 = () => {
                         <li>
                           <NavigationMenuLink asChild>
                             <Link
-                              href="https://www.winyourdata.com/#epic-features"
+                              href="/#epic-features"
                               className={cn(
                                 'flex select-none items-center gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#ffd400]/10 focus:bg-[#ffd400]/10 group'
                               )}
@@ -260,11 +260,11 @@ const Navbar1 = () => {
           </div>
           
             
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             {loading ? (
-              <div className="flex gap-2">
-                <div className="w-20 h-9 bg-muted animate-pulse rounded-md"></div>
-                <div className="w-24 h-9 bg-muted animate-pulse rounded-md"></div>
+              <div className="flex gap-1">
+                <div className="w-5 h-1 bg-muted animate-pulse rounded-md"></div>
+                <div className="w-10 h-1 bg-muted animate-pulse rounded-md"></div>
               </div>
             ) : user ? (
               <>
@@ -354,19 +354,19 @@ const Navbar1 = () => {
                 </Link>
                 <div className="space-y-2">
                   <div className="flex items-center text-base font-medium text-gray-800">
-                    {iconMap.Zap}
+                    {iconMap.ZapSmall}
                     <span className="ml-2">Features</span>
                   </div>
                   <div className="pl-4 space-y-2">
-                    <Link href="/#dashboard" className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#ffd400] transition-colors duration-200">
+                    <Link href="/#epic-features" className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#ffd400] transition-colors duration-200">
                       {iconMap.BarChart3}
                       <span>Dashboard</span>
                     </Link>
-                    <Link href="/#toolbox" className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#ffd400] transition-colors duration-200">
-                      {iconMap.Wrench}
+                    <Link href="/#epic-features" className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#ffd400] transition-colors duration-200">
+                      {iconMap.Zap}
                       <span>Toolbox</span>
                     </Link>
-                    <Link href="/#library" className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#ffd400] transition-colors duration-200">
+                    <Link href="/#epic-features" className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#ffd400] transition-colors duration-200">
                       {iconMap.BookOpen}
                       <span>Library</span>
                     </Link>
