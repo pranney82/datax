@@ -26,10 +26,12 @@ const Pricing = () => {
       monthlyPrice: 0,
       features: [
         'Unlimited Users',
+        'Active Jobs Map',
         'Summary Dashboard',
         'Template Library',
         'Resource Library',
         'Real-time Data Sync',
+        'API Script Library',
       ],
       priceId: 'price_1QW3bD2LwdZLeKQfcfRhQ0LZ',
       color: 'bg-gradient-to-br from-gray-100 to-gray-200',
@@ -45,6 +47,9 @@ const Pricing = () => {
         'Sales Dashboard',
         'Leads Dashboard',
         'Jobs Dashboard',
+        'Google Street View Automation',
+        'Zestimate Automation',
+        'Cash Flow Calendar',
         'Support & Feature Requests',
       ],
       priceId: isAnnually ? "price_1QVggE2LwdZLeKQfk2YRCDUV" : "price_1QVNq42LwdZLeKQfaXHHsMI6",
@@ -53,19 +58,18 @@ const Pricing = () => {
       popular: true,
     },
     {
-      name: 'PRO',
+      name: 'PRO (Coming Soon)',
       icon: <Rocket className="w-6 h-6 text-yellow-400" />,
       price: isAnnually ? 1450 : 145,
       monthlyPrice: 145,
       features: [
-        'Everything in Standard',
-        'Toolbox Access:',
-        'JT Integrated Inventory',
-        'JT Internal Automations',
-        'Google Street View Integration',
-        'Cash Flow Projection Calendars',
-        'Jobs Maps',
-        'Print ToDos & Calendars',
+        'Everything in CORE',
+        'Advanced Automations',
+        'Inventory',
+        'Job Routing',
+        'AI Forecasting',
+        'Dashboard Benchmarking',
+        ' TV Dashboard',
       ],
       priceId: isAnnually ? "price_1QVgfq2LwdZLeKQfIamPtpYN" : "price_1QVNqu2LwdZLeKQffZfNFRH4",
       color: 'bg-gradient-to-br from-gray-100 to-gray-200',
@@ -136,7 +140,7 @@ const Pricing = () => {
                     htmlFor="annually"
                     className="flex h-full cursor-pointer items-center justify-center px-8 font-semibold text-gray-700 peer-data-[state=checked]:text-black"
                   >
-                    Yearly (Save up to 17%)
+                    Yearly (Save, 2 months FREE!)
                   </Label>
                 </div>
               </RadioGroup>
@@ -166,7 +170,7 @@ const Pricing = () => {
                     <span className="text-gray-600">/{isAnnually ? 'year' : 'month'}</span>
                     {isAnnually && plan.price > 0 && (
                       <div className="mt-2 text-green-600 font-semibold">
-                        Save ${(plan.monthlyPrice * 12 - plan.price).toFixed(2)} per year
+                        Save ${(plan.monthlyPrice * 12 - plan.price).toFixed(0)} per year
                       </div>
                     )}
                   </div>
