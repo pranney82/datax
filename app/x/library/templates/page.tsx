@@ -201,8 +201,9 @@ export default function TemplatesPage() {
                 <div className="flex justify-between items-start mb-3">
                   <Link
                     href={`/x/library/templates/${template.id}`}
-                    className="text-lg font-semibold text-gray-900 hover:text-gray-700 transition-colors duration-200 ease-in-out group"
+                    className="text-lg font-semibold text-gray-900 hover:text-gray-700 transition-colors duration-200 ease-in-out group flex items-center"
                   >
+                    <Download className="w-5 h-5 mr-2 text-gray-400 group-hover:text-gray-600" />
                     <span className="border-b-2 border-gray-200 group-hover:border-gray-400 pb-1">{template.name}</span>
                   </Link>
                 </div>
@@ -238,3 +239,4 @@ export default function TemplatesPage() {
     </main>
   );
 }
+
