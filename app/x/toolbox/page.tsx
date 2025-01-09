@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Zap, TrendingUp } from 'lucide-react'
+import { Zap, TrendingUp, Clock } from 'lucide-react'
 import Link from "next/link"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
@@ -15,10 +15,10 @@ interface FeatureCardProps {
   description: string
   href: string
   isPopular?: boolean
-  isActive: boolean
+  comingSoon?: boolean
 }
 
-function FeatureCard({ title, description, href, isPopular, isActive }: FeatureCardProps) {
+function FeatureCard({ title, description, href, isPopular, comingSoon }: FeatureCardProps) {
   return (
     <Card className="bg-white border border-gray-200 rounded-lg overflow-hidden transition-all duration-200 ease-in-out hover:shadow-md hover:border-gray-300 flex flex-col">
       <div className="p-4 flex-grow">
@@ -32,12 +32,6 @@ function FeatureCard({ title, description, href, isPopular, isActive }: FeatureC
               <span className="border-b-2 border-gray-200 group-hover:border-gray-400 pb-1">{title}</span>
             </Link>
           </div>
-          <Badge 
-            variant={isActive ? "default" : "secondary"}
-            className={`${isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'} font-medium pointer-events-none ml-2 whitespace-nowrap`}
-          >
-            {isActive ? 'On' : 'Off'}
-          </Badge>
         </div>
       </div>
       <div className="bg-gray-50 p-4 text-sm text-gray-600">
@@ -51,6 +45,14 @@ function FeatureCard({ title, description, href, isPopular, isActive }: FeatureC
               <TrendingUp className="h-3 w-3 text-[#000]" /> Popular
             </Badge>
           )}
+          {comingSoon && (
+            <Badge 
+              variant="secondary" 
+              className="gap-1 bg-secondary text-secondary-foreground border-secondary font-semibold pointer-events-none ml-2 whitespace-nowrap"
+            >
+              <Clock className="h-3 w-3 text-[#000]" /> Coming Soon
+            </Badge>
+          )}
         </div>
       </div>
     </Card>
@@ -59,12 +61,6 @@ function FeatureCard({ title, description, href, isPopular, isActive }: FeatureC
 
 export default function FeaturesPage() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [activeFeatures] = useState<Record<string, boolean>>({
-    "Cash Flow Calendar": true,
-    "Zillow Data Import": true,
-    "Google Maps Cover Photos": false,
-    "Print ToDos": false,
-  })
 
   const allFeatures = [
     {
@@ -72,25 +68,51 @@ export default function FeaturesPage() {
       description: "Track and manage your cash flow based on JobTread's calendar task types.",
       href: "/x/toolbox/calendar",
       isPopular: true,
+      comingSoon: false,
     },
     {
       title: "Zillow Data Import",
       description: "When a job is created, automatically import property data from Zillow and assign to custom fields.",
       href: "/x/toolbox/zillow",
       isPopular: true,
+      comingSoon: false,
     },
     {
       title: "Google Maps Cover Photos",
       description: "Automatically fetch Google Maps images and assign to Job Cover Photo.",
       href: "/x/toolbox/coverphoto",
       isPopular: true,
+      comingSoon: false,
+    },
+    {
+      title: "Inventory",
+      description: "Track and manage your inventory using your JobTread data.",
+      href: "#",
+      isPopular: false,
+      comingSoon: true,
+    },
+    {
+      title: "AI Estimating",
+      description: "Use AI to generate estimates for your jobs.",
+      href: "#",
+      isPopular: false,
+      comingSoon: true,
     },
     {
       title: "Print ToDos",
-      description: "Generate printable task lists for offline use.",
-      href: "/x/toolbox/print",
+      description: "Generate printable ToDo lists for offline use.",
+      href: "#",
       isPopular: false,
+      comingSoon: true,
     },
+    {
+      title: "Print Calendar",
+      description: "Generate printable calendar for offline use.",
+      href: "#",
+      isPopular: false,
+      comingSoon: true,
+    },
+    
   ]
 
   const filteredAndSortedFeatures = useMemo(() => {
@@ -99,13 +121,7 @@ export default function FeaturesPage() {
         feature.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         feature.description.toLowerCase().includes(searchQuery.toLowerCase())
       )
-      .sort((a, b) => {
-        if (activeFeatures[a.title] === activeFeatures[b.title]) {
-          return 0;
-        }
-        return activeFeatures[a.title] ? -1 : 1;
-      });
-  }, [allFeatures, searchQuery, activeFeatures]);
+  }, [allFeatures, searchQuery]);
 
   return (
     <main className="flex flex-col flex-1 p-0">
@@ -145,7 +161,7 @@ export default function FeaturesPage() {
               description={feature.description}
               href={feature.href}
               isPopular={feature.isPopular}
-              isActive={activeFeatures[feature.title]}
+              comingSoon={feature.comingSoon}
             />
           ))}
         </div>

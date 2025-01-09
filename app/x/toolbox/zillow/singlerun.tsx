@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import ModernDashboardCard from "@/components/dash-card"
-import { cpQuery1 } from "./cpquery"
+import { zQuery1 } from "./zquery"
 import { useDebounce } from "@/hooks/useDebounce"
 import {
   Command,
@@ -25,12 +25,13 @@ import {
 } from "@/components/ui/popover"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useLogsStore } from './store'
+import { useCustomFieldsStore } from './store'
 
 interface Job {
   id: string
   name: string
   location?: {
+    id?: string
     formattedAddress?: string
     account?: {
       name?: string
@@ -42,6 +43,7 @@ interface JobData {
   id?: string
   name?: string
   location?: {
+    id?: string
     formattedAddress?: string
     account?: {
       name?: string
@@ -61,9 +63,12 @@ export function SingleRun() {
   const [inputValue, setInputValue] = useState("")
   const debouncedValue = useDebounce(inputValue, 300)
   const [jobs, setJobs] = useState<Job[]>([])
+  const [locationID, setLocationID] = useState('')
   const [userSettings, setUserSettings] = useState<{grantKey?: string, orgId?: string}>({})
+  const [zestimateField, setZestimateField] = useState<string>("")
+  const [zestimateUrlField, setZestimateUrlField] = useState<string>("")
 
-  const triggerRefresh = useLogsStore((state) => state.triggerRefresh)
+  const triggerRefresh = useCustomFieldsStore((state) => state.triggerRefresh)
 
   // Fetch user settings once when component mounts
   useEffect(() => {
@@ -114,6 +119,14 @@ export function SingleRun() {
           grantKey: orgData.grantKey,
           orgId: orgData.orgID
         })
+        //console.log('UserSettings after set:', {
+        //  grantKey: orgData.grantKey,
+        //  orgId: orgData.orgID
+        //})
+
+        // Set the zestimate field ID
+        setZestimateField(orgData.zestimateField || "")
+        setZestimateUrlField(orgData.zillowUrlField || "")
       } catch (error) {
         console.error('Error fetching settings:', error)
         if (error instanceof Error) {
@@ -128,70 +141,76 @@ export function SingleRun() {
   // Search jobs using the cached user settings
   useEffect(() => {
     const searchJobs = async () => {
-      //console.log('Search triggered with:', debouncedValue)
       if (!debouncedValue || !userSettings.grantKey || !userSettings.orgId) {
-        //console.log('Empty search or missing settings, clearing jobs')
-        setJobs([])
-        return
+        // console.log('Search aborted. Debug values:', {
+        //   debouncedValue,
+        //   grantKey: userSettings.grantKey,
+        //   orgId: userSettings.orgId
+        // });
+        setJobs([]);
+        return;
       }
 
-      setIsSearching(true)
+      setIsSearching(true);
       try {
-        //console.log('Fetching jobs with query:', {
-        //  orgID: userSettings.orgId,
-        //  value: debouncedValue
-        //})
+        const query = {
+          "$": { "grantKey": userSettings.grantKey },
+          ...zQuery1({ 
+            orgID: userSettings.orgId, 
+            value: debouncedValue 
+          })
+        };
+        
+        //console.log('Sending query:', JSON.stringify(query, null, 2));
 
         const response = await fetch('/api/jtfetch', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            query: {
-              "$": { "grantKey": userSettings.grantKey },
-              ...cpQuery1({ 
-                orgID: userSettings.orgId, 
-                value: debouncedValue 
-              })
-            }
-          })
-        })
+          body: JSON.stringify({ query })
+        });
         
-        const data = await response.json()
-        //console.log('API Parsed Response:', data)
+        const data = await response.json();
+        
+        if (!data?.organization?.jobs?.nodes) {
+          console.error('Invalid response structure:', data);
+          return;
+        }
 
-        const jobsData = data?.organization?.jobs?.nodes || []
-        //console.log('Raw jobs data:', jobsData)
-
+        const jobsData = data.organization.jobs.nodes;
         const mappedJobs = jobsData.map((job: JobData) => ({
           id: job.id || '',
           name: job.name || '',
           location: {
+            id: job.location?.id || '',
             formattedAddress: job.location?.formattedAddress || '',
             account: {
               name: job.location?.account?.name || ''
             }
           }
-        }))
-        //console.log('Mapped jobs:', mappedJobs)
-        
-        setJobs(mappedJobs)
-      } catch (error) {
-        console.error('Job search error:', error)
-      } finally {
-        setIsSearching(false)
-      }
-    }
+        }));
 
-    searchJobs()
-  }, [debouncedValue, userSettings]) // Only depends on debouncedValue and cached userSettings
+        setJobs(mappedJobs);
+        if (mappedJobs[0]?.location?.id) {
+          setLocationID(mappedJobs[0].location.id);
+        }
+      } catch (error) {
+        console.error('Job search error:', error);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+    //console.log('locationID', locationID)
+    searchJobs();
+  }, [debouncedValue, userSettings]);
 
   const handleJobSelect = (selectedJob: Job) => {
-    //console.log('Selected job:', selectedJob)
-    setJobId(selectedJob.id)
-    setAddress(selectedJob.location?.formattedAddress || '')
-    setOpen(false)
+    //console.log('Selected job:', selectedJob);
+    setJobId(selectedJob.id);
+    setAddress(selectedJob.location?.formattedAddress || '');
+    setLocationID(selectedJob.location?.id || '');
+    setOpen(false);
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -206,17 +225,37 @@ export function SingleRun() {
         throw new Error('User not authenticated');
       }
 
-      const response = await fetch('/api/coverphoto', {
+      if (!userSettings.grantKey) {
+        throw new Error('No grant key found');
+      }
+
+      if (!zestimateField) {
+        throw new Error('No Zestimate field configured');
+      }
+
+      if (!zestimateUrlField) {
+        throw new Error('No Zestimate URL field configured');
+      }
+
+      console.log('Submitting with:', {
+        grantKey: userSettings.grantKey,
+        locid: locationID,
+        zestimateField: zestimateField,
+        zestimateUrlField: zestimateUrlField
+      });
+      
+      const response = await fetch('/api/zillow', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          jobId,
-          address,
           orgId: userSettings.orgId,
-          grantKey: userSettings.grantKey,
+          locid: locationID,
           email: user.email,
+          grantKey: userSettings.grantKey,
+          zestimateField: zestimateField,
+          zestimateUrlField: zestimateUrlField
         }),
       });
 
@@ -242,7 +281,7 @@ export function SingleRun() {
   return (
     <div className="w-full">
       <ModernDashboardCard
-        title="Update cover photo for a specific job"
+        title="Update location data for a specific job"
         description=""
         loading={isLoading}
         content={
@@ -323,7 +362,7 @@ export function SingleRun() {
 
             {success && (
               <div className="text-sm text-green-600 w-full">
-                Cover photo updated successfully!
+                Zillow data updated successfully!
               </div>
             )}
 
@@ -332,7 +371,7 @@ export function SingleRun() {
               disabled={isLoading}
               className="w-full"
             >
-              {isLoading ? 'Processing...' : 'Update Cover Photo'}
+              {isLoading ? 'Processing...' : 'Update Zillow Data'}
             </Button>
           </div>
         }
