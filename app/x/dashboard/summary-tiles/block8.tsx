@@ -29,7 +29,6 @@ export function Block8() {
     <DashCard 
       title="Monthly Leads & Estimates" 
       description="Conversion performance over time"
-      className="p-2"
     >
       <ResponsiveContainer width="100%" height={280}>
         <ComposedChart
