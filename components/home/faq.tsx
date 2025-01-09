@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, ChevronUp, Lightbulb } from 'lucide-react'
 
 const faqData = {
-  title: "Unleash the Power of JobTread",
+  title: "Unleash the Power of JobTread API",
   subtitle: "Frequently Asked Questions",
   questions: [
     {
@@ -53,7 +53,7 @@ const EpicFAQ: React.FC = () => {
           transition={{ duration: 0.5 }}
         >
           Unleash the Power of <span className="font-normal">JOB</span>
-          <strong>TREAD</strong>
+          <strong>TREAD</strong> API
         </motion.h1>
         <motion.p 
           className="text-xl md:text-2xl text-center mb-12 text-gray-600"

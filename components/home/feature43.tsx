@@ -99,8 +99,8 @@ const EpicFeatureSection = () => {
             <Image
               src="/assets/logos/5.png"
               alt="DATAx Logo"
-              width={300}
-              height={300}
+              width={260}
+              height={260}
               className="mx-auto rounded-xl"
             />
           </motion.div>
