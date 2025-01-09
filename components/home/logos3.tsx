@@ -19,32 +19,32 @@ const logos = [
   {
     id: "logo-3",
     description: "???",
-    image: "/assets/lovedlogos/4.png"
+    image: "/assets/lovedlogos/soard.png"
   },
   {
     id: "logo-4",
     description: "React",
-    image: "/assets/lovedlogos/4.png"
+    image: "/assets/lovedlogos/0.png"
   },
   {
     id: "logo-5",
     description: "shadcn/ui",
-    image: "/assets/lovedlogos/4.png"
+    image: "/assets/lovedlogos/love.png"
   },
   {
     id: "Sunshine on a Ranney Day",
     description: "Supabase",
-    image: "/assets/lovedlogos/soard.png"
+    image: "/assets/lovedlogos/rbw.png"
   },
   {
     id: "logo-7",
     description: "Tailwind CSS",
-    image: "/assets/lovedlogos/4.png"
+    image: "/assets/lovedlogos/soard.png"
   },
   {
     id: "logo-8",
     description: "Vercel",
-    image: "/assets/lovedlogos/4.png"
+    image: "/assets/lovedlogos/0.png"
   }
 ];
 
