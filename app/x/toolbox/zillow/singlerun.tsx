@@ -241,7 +241,8 @@ export function SingleRun() {
         grantKey: userSettings.grantKey,
         locid: locationID,
         zestimateField: zestimateField,
-        zestimateUrlField: zestimateUrlField
+        zestimateUrlField: zestimateUrlField,
+        address: address
       });
       
       const response = await fetch('/api/zillow', {
@@ -255,7 +256,8 @@ export function SingleRun() {
           email: user.email,
           grantKey: userSettings.grantKey,
           zestimateField: zestimateField,
-          zestimateUrlField: zestimateUrlField
+          zestimateUrlField: zestimateUrlField,
+          address: address
         }),
       });
 

@@ -23,6 +23,7 @@ interface ManualRequest {
   locid: string;
   zestimateField: string;
   zestimateUrlField: string;
+  address: string;
 }
 
 type WebhookData = WebhookEvent | ManualRequest;
@@ -85,18 +86,19 @@ export async function POST(request: Request) {
       locid = manualRequest.locid
       zestimateField = manualRequest.zestimateField
       zestimateUrlField = manualRequest.zestimateUrlField
+      address = manualRequest.address.replace(/(,\s*|\s+)USA$/, '').trim() as string
     }
 
-    //console.log('Pre-Bridge API call values:', { 
-    //  grantKey, 
-    //  locid, 
-    //  zestimateField, 
-    //  zestimateUrlField, 
-    //  address 
-    //})
+    console.log('Pre-Bridge API call values:', { 
+     grantKey, 
+     locid, 
+     zestimateField, 
+     zestimateUrlField, 
+     address 
+    })
 
-    // Bridge API call using address
-    //console.log('Calling Bridge API with address:', address)
+    //Bridge API call using address
+    console.log('Calling Bridge API with address:', address)
 
     const bridgeResponse = await fetch(
       `https://api.bridgedataoutput.com/api/v2/zestimates_v2/zestimates?access_token=${process.env.NEXT_PUBLIC_BRIDGE_API_TOKEN}&address=${encodeURIComponent(address || '')}`,
@@ -116,8 +118,8 @@ export async function POST(request: Request) {
     const zestimate = bridgeResponse?.bundle?.[0]?.zestimate;
     const zestimateURL = bridgeResponse?.bundle?.[0]?.zillowUrl;
 
-    //console.log('Bridge API response:', { zestimate, zestimateURL })
-    //console.log('JT API call values:', { grantKey, locid, zestimateField, zestimateUrlField, zestimate, zestimateURL })
+    console.log('Bridge API response:', { zestimate, zestimateURL })
+    console.log('JT API call values:', { grantKey, locid, zestimateField, zestimateUrlField, zestimate, zestimateURL })
     // Update location in JT
     await fetch(`https://api.jobtread.com/pave`, {
       method: 'POST',
