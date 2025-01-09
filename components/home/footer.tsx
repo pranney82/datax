@@ -58,6 +58,7 @@ const FooterColumn = ({ title, links }: { title: string; links: { name: string; 
 
 const Footer = () => {
   const [isHoveringTry, setIsHoveringTry] = useState(false);
+  
 
   return (
     <footer className="relative text-white py-16 w-full overflow-hidden bg-black">
@@ -180,24 +181,28 @@ const Footer = () => {
             </Link>
             <p className="text-xl text-gray-300 max-w-md font-medium leading-relaxed">
               Data made easy. <br/>Unleash the power of <span className="font-normal">JOB</span>
-              <strong>TREAD</strong>  .
+              <strong>TREAD</strong> API
             </p>
             <div className="flex flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
-              <Button 
-                className="w-auto sm:w-auto bg-[#FFD400] text-black font-bold py-6 px-6 sm:px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 hover:bg-white hover:text-black relative overflow-hidden group shadow-[0_0_15px_rgba(255,212,0,0.5)]"
-                onMouseEnter={() => setIsHoveringTry(true)}
-                onMouseLeave={() => setIsHoveringTry(false)}
-              >
-                <span className="relative z-10 transition-colors duration-300">Try Free</span>
-                <Zap className={`ml-2 h-5 w-5 relative z-10 transition-all duration-300 ${isHoveringTry ? 'rotate-[360deg] scale-125' : ''}`} />
-                <motion.div 
-                  className="absolute inset-0 bg-gradient-to-r from-[#FFD400] to-white"
-                  initial={{ x: '100%' }}
-                  animate={isHoveringTry ? { x: '0%' } : { x: '100%' }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Button>
-              <p className="text-xs sm:text-sm text-gray-400 font-medium whitespace-nowrap">No card required</p>
+              <div className="group w-auto flex items-center">
+                <Button 
+                  className="w-auto sm:w-auto bg-[#FFD400] text-black font-bold py-6 px-6 sm:px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 hover:bg-white hover:text-black relative overflow-hidden group shadow-[0_0_15px_rgba(255,212,0,0.5)]"
+                  onMouseEnter={() => setIsHoveringTry(true)}
+                  onMouseLeave={() => setIsHoveringTry(false)}
+                >
+                  <Link href="/pricing" className="flex items-center">
+                    <span className="relative z-10 transition-colors duration-300">Try Free</span>
+                    <Zap className={`ml-2 h-5 w-5 relative z-10 transition-all duration-300 ${isHoveringTry ? 'rotate-[360deg] scale-125' : ''}`} />
+                  </Link>
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-r from-[#FFD400] to-white"
+                    initial={{ x: '100%' }}
+                    animate={isHoveringTry ? { x: '0%' } : { x: '100%' }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </Button>
+                <p className="text-xs sm:text-sm text-gray-400 font-medium whitespace-nowrap ml-4">No card required</p>
+              </div>
             </div>
             <Link href="#" className="inline-block">
               <Image

@@ -38,7 +38,7 @@ export default function ColorfulEnhancedCTA() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6, duration: 0.5 }}
           >
-            <Link href="/signup">
+            <Link href="/pricing">
               <button 
                 className="w-full sm:w-auto min-w-[200px] bg-[#000] text-[#FFF] font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 hover:bg-[#FFD400] hover:text-[#000] relative overflow-hidden group shadow-[0_0_15px_rgba(0,0,0,0.3)]"
                 onMouseEnter={() => setIsHoveringTry(true)}

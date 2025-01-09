@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { BarChart3, Wrench, BookOpen, LucideIcon } from 'lucide-react';
+import { BarChart3, Zap, BookOpen, type LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Feature {
@@ -47,7 +47,7 @@ const features = [
     ],
     image: "/assets/images/feature2.png",
     color: "#ffd400",
-    icon: Wrench,
+    icon: Zap,
     link: "/toolbox"
   },
   {
@@ -113,7 +113,7 @@ const FeatureCard = ({ feature }: { feature: Feature }) => {
               ))}
             </ul>
           </div>
-          <Link href="/signup" passHref>
+          <Link href="/pricing" passHref>
             <Button
               className="mt-6 w-full bg-gradient-to-r from-[#FFD400] to-[#FFA500] text-black font-bold py-3 rounded-full transition-all duration-300 transform hover:scale-105 relative overflow-hidden group"
               onMouseEnter={() => setIsHovering(true)}

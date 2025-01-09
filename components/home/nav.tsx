@@ -291,24 +291,26 @@ const Navbar1 = () => {
                 >
                   Log in
                 </Button>
-                <Button 
-                  className="w-full sm:w-auto bg-[#FFD400] text-black font-bold py-3 px-6 rounded-md transition-all duration-300 transform hover:scale-105 hover:bg-white hover:text-black relative overflow-hidden group shadow-[0_0_15px_rgba(255,212,0,0.5)]"
-                  onClick={() => {
-                    setAuthType('signup');
-                    setShowAuthDialog(true);
-                  }}
-                  onMouseEnter={() => setIsHoveringSignUp(true)}
-                  onMouseLeave={() => setIsHoveringSignUp(false)}
-                >
-                  <span className="relative z-10 transition-colors duration-300">Try Free</span>
-                  <Zap className={`ml-2 h-5 w-5 relative z-10 transition-all duration-300 ${isHoveringSignUp ? 'rotate-[360deg] scale-125' : ''}`} />
-                  <motion.div 
-                    className="absolute inset-0 bg-gradient-to-r from-[#FFD400] to-white"
-                    initial={{ x: '100%' }}
-                    animate={isHoveringSignUp ? { x: '0%' } : { x: '100%' }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </Button>
+                <Link href="/pricing">
+                  <Button 
+                    className="w-full sm:w-auto bg-[#FFD400] text-black font-bold py-3 px-6 rounded-md transition-all duration-300 transform hover:scale-105 hover:bg-white hover:text-black relative overflow-hidden group shadow-[0_0_15px_rgba(255,212,0,0.5)]"
+                    onClick={() => {
+                      setAuthType('signup');
+                      setShowAuthDialog(true);
+                    }}
+                    onMouseEnter={() => setIsHoveringSignUp(true)}
+                    onMouseLeave={() => setIsHoveringSignUp(false)}
+                  >
+                    <span className="relative z-10 transition-colors duration-300">Try Free</span>
+                    <Zap className={`ml-2 h-5 w-5 relative z-10 transition-all duration-300 ${isHoveringSignUp ? 'rotate-[360deg] scale-125' : ''}`} />
+                    <motion.div 
+                      className="absolute inset-0 bg-gradient-to-r from-[#FFD400] to-white"
+                      initial={{ x: '100%' }}
+                      animate={isHoveringSignUp ? { x: '0%' } : { x: '100%' }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  </Button>
+                </Link>
               </>
             )}
           </div>
@@ -393,24 +395,26 @@ const Navbar1 = () => {
                   >
                     Log in
                   </Button>
-                  <Button 
-                    className="w-full sm:w-auto bg-[#FFD400] text-black font-bold py-3 px-6 rounded-md transition-all duration-300 transform hover:scale-105 hover:bg-white hover:text-black relative overflow-hidden group shadow-[0_0_15px_rgba(255,212,0,0.5)]"
-                    onClick={() => {
-                      setAuthType('signup');
-                      setShowAuthDialog(true);
-                    }}
-                    onMouseEnter={() => setIsHoveringSignUp(true)}
-                    onMouseLeave={() => setIsHoveringSignUp(false)}
-                  >
-                    <span className="relative z-10 transition-colors duration-300">Sign up</span>
-                    <Zap className={`ml-2 h-5 w-5 relative z-10 transition-all duration-300 ${isHoveringSignUp ? 'rotate-[360deg] scale-125' : ''}`} />
-                    <motion.div 
-                      className="absolute inset-0 bg-gradient-to-r from-[#FFD400] to-white"
-                      initial={{ x: '100%' }}
-                      animate={isHoveringSignUp ? { x: '0%' } : { x: '100%' }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  </Button>
+                  <Link href="/pricing">
+                    <Button 
+                      className="w-full sm:w-auto bg-[#FFD400] text-black font-bold py-3 px-6 rounded-md transition-all duration-300 transform hover:scale-105 hover:bg-white hover:text-black relative overflow-hidden group shadow-[0_0_15px_rgba(255,212,0,0.5)]"
+                      onClick={() => {
+                        setAuthType('signup');
+                        setShowAuthDialog(true);
+                      }}
+                      onMouseEnter={() => setIsHoveringSignUp(true)}
+                      onMouseLeave={() => setIsHoveringSignUp(false)}
+                    >
+                      <span className="relative z-10 transition-colors duration-300">Sign up</span>
+                      <Zap className={`ml-2 h-5 w-5 relative z-10 transition-all duration-300 ${isHoveringSignUp ? 'rotate-[360deg] scale-125' : ''}`} />
+                      <motion.div 
+                        className="absolute inset-0 bg-gradient-to-r from-[#FFD400] to-white"
+                        initial={{ x: '100%' }}
+                        animate={isHoveringSignUp ? { x: '0%' } : { x: '100%' }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    </Button>
+                  </Link>
                 </div>
               </nav>
             </div>
@@ -428,4 +432,3 @@ const Navbar1 = () => {
 };
 
 export default Navbar1;
-
