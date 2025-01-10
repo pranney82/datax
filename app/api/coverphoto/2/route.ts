@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/firebase'
-import { collection, addDoc } from 'firebase/firestore'
+import { collection, addDoc, getDocs } from 'firebase/firestore'
 
 interface JobTreadWebhookData {
   job: {
@@ -48,10 +48,13 @@ export async function POST(request: Request) {
       orgId: webhookData.organization.id,
     }
 
+    const grantKey = await getGrantKey(jobData.orgId);
+
     // Get the location details using the locationId
     const locationDetails = await getLocationDetails(
       jobData.locationId, 
-      jobData.orgId
+      jobData.orgId,
+      grantKey
     )
 
     if (!locationDetails?.address) {
@@ -74,7 +77,7 @@ export async function POST(request: Request) {
         locationDetails.address,
         jobData.jobId,
         jobData.orgId,
-        process.env.JOBTREAD_GRANT_KEY || ''
+        grantKey
       )
       
       await addDoc(collection(db, 'coverphotoLogs'), {
@@ -106,16 +109,14 @@ export async function POST(request: Request) {
   }
 }
 
-async function getLocationDetails(locationId: string, orgId: string) {
+async function getLocationDetails(locationId: string, orgId: string, grantKey: string) {
   // Query JobTread API to get location details
   const query = {
     query: {
-      "$": { "grantKey": process.env.JOBTREAD_GRANT_KEY },
-      "organization": {
-        "$": { "id": orgId }
-      },
+      "$": { "grantKey": grantKey },
       "location": {
         "$": { "id": locationId },
+        "id": {},
         "formattedAddress": {}
       }
     }
@@ -144,6 +145,20 @@ async function getLocationDetails(locationId: string, orgId: string) {
   }
 }
 
+async function getGrantKey(orgId: string) {
+  // Query the orgs collection where orgID matches the webhook orgId
+  const orgsRef = collection(db, 'orgs');
+  const orgsSnapshot = await getDocs(orgsRef);
+  const orgDoc = orgsSnapshot.docs.find(doc => doc.data().orgID === orgId);
+  
+  if (!orgDoc) {
+    console.error('Organization not found:', orgId);
+    return null;
+  }
+
+  return orgDoc.data().grantKey;
+}
+
 // Step 1: Fetch the Google Street View image
 const getStreetViewImage = async ( address: string ): Promise<Uint8Array | null> => {
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
@@ -161,7 +176,7 @@ const getStreetViewImage = async ( address: string ): Promise<Uint8Array | null>
       const uint8Array = new Uint8Array(arrayBuffer);
   
       // Log the file size for verification
-      console.log(`Fetched Street View image of size: ${uint8Array.length} bytes`);
+      //console.log(`Fetched Street View image of size: ${uint8Array.length} bytes`);
   
       return uint8Array;
     } catch (error) {
@@ -243,7 +258,7 @@ const uploadToJobTread = async (
           }
   
           const data = await response.json() as JobTreadResponse;
-          console.log("JT response: ", data);
+          //console.log("JT response: ", data);
   
           const uploadUrl = data.createUploadRequest.createdUploadRequest.url;
           const uploadId = data.createUploadRequest.createdUploadRequest.id;
@@ -289,12 +304,12 @@ const uploadToJobTread = async (
       };
       
       try {
-          console.log("Attempting to update JobTread with:", {
-              jobId,
-              uploadId,
-              orgId,
-              grantKey: grantKey ? "present" : "missing"
-          });
+          //console.log("Attempting to update JobTread with:", {
+          //    jobId,
+          //    uploadId,
+          //    orgId,
+          //    grantKey: grantKey ? "present" : "missing"
+          //});
   
           const response = await fetch('https://api.jobtread.com/pave', {
               method: 'POST',
@@ -310,7 +325,8 @@ const uploadToJobTread = async (
                   status: response.status,
                   statusText: response.statusText,
                   responseBody: errorText,
-                  endpoint: 'https://api.jobtread.com/pave'
+                  endpoint: 'https://api.jobtread.com/pave',
+                  query: JSON.stringify(query, null, 2) 
               });
               throw new Error(`HTTP error! status: ${response.status}`);
           }
