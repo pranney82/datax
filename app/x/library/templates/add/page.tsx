@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useRouter } from "next/navigation";
 import {
@@ -34,6 +34,7 @@ import * as z from "zod";
 import { Breadcrumb, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useAuth } from "@/lib/context/auth-context"
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -45,7 +46,25 @@ const formSchema = z.object({
 
 export default function AddTemplatePage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/x');
+    } else {
+      const userID = user.uid;
+      const fetchUserName = async () => {
+        const userDoc = await getDoc(doc(db, "users", userID));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setUserName(userData.name);
+        }
+      };
+      fetchUserName();
+    }
+  }, [user, router]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,21 +80,37 @@ export default function AddTemplatePage() {
       setLoading(true);
       const storage = getStorage();
       
-      // Upload CSV file
+      // Validate CSV file
       const csvFile = (values.csvFile as FileList)[0];
       if (!csvFile.name.endsWith('.csv')) {
         throw new Error('Please upload a CSV file');
       }
+      if (csvFile.size > 5 * 1024 * 1024) {
+        throw new Error('CSV file size must be less than 5MB');
+      }
+
+      // Validate image file
+      const imageFile = (values.image as FileList)[0];
+      if (!imageFile.type.startsWith('image/')) {
+        throw new Error('Please upload a valid image file');
+      }
+      if (imageFile.size > 5 * 1024 * 1024) {
+        throw new Error('Image file size must be less than 5MB');
+      }
+
+      // Upload files with metadata
       const csvFileName = `${Date.now()}_${csvFile.name}`;
       const csvRef = ref(storage, `library/csv/${csvFileName}`);
-      await uploadBytes(csvRef, csvFile);
+      await uploadBytes(csvRef, csvFile, {
+        contentType: 'text/csv'
+      });
       const csvFileURL = await getDownloadURL(csvRef);
 
-      // Upload image
-      const imageFile = (values.image as FileList)[0];
       const imageFileName = `${Date.now()}_${imageFile.name}`;
       const imageRef = ref(storage, `library/images/${imageFileName}`);
-      await uploadBytes(imageRef, imageFile);
+      await uploadBytes(imageRef, imageFile, {
+        contentType: imageFile.type
+      });
       const imageURL = await getDownloadURL(imageRef);
 
       // Save to Firestore
@@ -86,8 +121,8 @@ export default function AddTemplatePage() {
         type: values.type,
         downloads: 0,
         createdAt: new Date(),
-        author: "Admin", // You might want to get this from user context
-        authorID: "admin", // You might want to get this from user context
+        author: userName,
+        authorID: user?.uid,
         csvFileName,
         csvFileURL,
         imageFileName,
@@ -98,6 +133,8 @@ export default function AddTemplatePage() {
       router.push('/x/library/templates');
     } catch (error) {
       console.error("Error adding template:", error);
+      // Show error to user
+      alert(error instanceof Error ? error.message : 'An error occurred while uploading files');
     } finally {
       setLoading(false);
     }
@@ -112,7 +149,7 @@ export default function AddTemplatePage() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="/x/library">Library</BreadcrumbLink>
+                <BreadcrumbLink>Library</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
