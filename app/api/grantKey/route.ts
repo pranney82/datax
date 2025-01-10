@@ -4,7 +4,7 @@ import puppeteer from 'puppeteer';
 // Helper function moved outside
 async function typeSlowly(page: Page, selector: string, text: string) {
   await page.waitForSelector(selector);
-  for (let char of text) {
+  for (const char of text) {
     await page.type(selector, char, { delay: 100 });
   }
 }
@@ -29,6 +29,8 @@ export async function POST(req: Request) {
     let browser;
     try {
       await sendMessage("🤖 Thinking ...");
+
+      const { email, password } = await req.json();
       
       browser = await puppeteer.launch({
         headless: false,  // Show browser for clipboard access
@@ -55,8 +57,8 @@ export async function POST(req: Request) {
 
       await sendMessage("🔑 Sneaking into JobTread...");
       await page.goto('https://app.jobtread.com');
-      await typeSlowly(page, 'input[type="email"]', 'elliott@builtwithlovellc.com');
-      await typeSlowly(page, 'input[type="password"]', '1Qaz!wsx');
+      await typeSlowly(page, 'input[type="email"]', email);
+      await typeSlowly(page, 'input[type="password"]', password);
       
       await sendMessage("🚪 Knocking on the door...");
       await page.click('button[type="submit"]');

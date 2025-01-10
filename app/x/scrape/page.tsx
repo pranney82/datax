@@ -1,11 +1,14 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { useState } from "react"
 
 export default function ScrapePage() {
   const [messages, setMessages] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
   const handleAutomate = async () => {
     setIsLoading(true)
@@ -14,6 +17,10 @@ export default function ScrapePage() {
     try {
       const response = await fetch('/api/grantKey', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
       });
 
       const reader = response.body?.getReader();
@@ -56,7 +63,20 @@ export default function ScrapePage() {
   return (
     <div className="container py-6">
       <h1 className="text-2xl font-bold mb-4">Automation Control</h1>
-
+      <Input 
+        type="email" 
+        placeholder="Enter your email" 
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="mb-2"
+      />
+      <Input 
+        type="password" 
+        placeholder="Enter your password" 
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="mb-2"
+      />
       <Button 
         onClick={handleAutomate} 
         className="bg-primary mb-4"
