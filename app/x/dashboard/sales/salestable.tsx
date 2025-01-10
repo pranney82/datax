@@ -22,7 +22,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from 'lucide-react';
 
 interface SalesRep {
     name: string;
@@ -54,7 +54,6 @@ interface SalesData {
     };
 }
 
-// Add this fetch function
 const fetchSalesRepsData = async (orgID: string, grantKey: string, cfName3: string, cfID: string, startDate: string, endDate: string) => {
     try {
         console.log('Fetching sales reps data with params:', { orgID, cfName3, cfID, startDate, endDate });
@@ -101,7 +100,6 @@ export default function SalesTable() {
     const [salesReps, setSalesReps] = useState<SalesRep[]>([]);
     const [, setOptions] = useState<string[]>([]);
     
-    // Wrap fetchSalesData in useCallback
     const fetchSalesData = useCallback(async (field: string, fieldName: string, fieldOptions: string[]) => {
         if (!field || fieldOptions.length === 0) {
             console.log('No selected field or options, skipping fetch:', { field, optionsLength: fieldOptions.length });
@@ -182,9 +180,8 @@ export default function SalesTable() {
         } finally {
             setIsLoading(false);
         }
-    }, [dateRange, setIsLoading]); // Add all dependencies
+    }, [dateRange, setIsLoading]);
 
-    // Update useEffect dependency array
     useEffect(() => {
         const fetchSavedCustomField = async () => {
             try {
@@ -208,7 +205,6 @@ export default function SalesTable() {
                     setSelectedField(salestablecfv);
                     setSelectedFieldName(salestablecfvName);
                     
-                    // Fetch options using queryCustomFieldOptions
                     const response = await fetch('/api/jtfetch', {
                         method: 'POST',
                         headers: {
@@ -232,12 +228,10 @@ export default function SalesTable() {
                     const result = await response.json();
                     console.log('Custom field options result:', result);
                     
-                    // Extract options from the result
                     const fieldOptions = result?.organization?.customFields?.nodes?.[0]?.options || [];
                     console.log('Setting options from saved field:', fieldOptions);
                     setOptions(fieldOptions);
 
-                    // Fetch sales data immediately if saved field is found
                     fetchSalesData(salestablecfv, salestablecfvName, fieldOptions);
                 }
             } catch (error) {
@@ -246,9 +240,8 @@ export default function SalesTable() {
         };
 
         fetchSavedCustomField();
-    }, [user, fetchSalesData]); // Add fetchSalesData as dependency since it's stable now
+    }, [user, fetchSalesData]);
 
-    // Handle saving custom field selection
     const handleSaveCustomField = async () => {
         if (!user?.uid) return;
 
@@ -268,10 +261,43 @@ export default function SalesTable() {
         }
     };
 
+    const formatCurrency = (value: number) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        }).format(value);
+    };
+
+    const renderMobileCard = (rep: SalesRep) => (
+        <Card key={rep.name} className="mb-4">
+            <CardHeader>
+                <CardTitle>{rep.name}</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="grid grid-cols-2 gap-2">
+                    <div>Leads Assigned:</div>
+                    <div className="text-right">{rep.leadsAssigned}</div>
+                    <div>Leads Closed:</div>
+                    <div className="text-right">{rep.leadsClosed}</div>
+                    <div>Revenue:</div>
+                    <div className="text-right">{formatCurrency(rep.revenue)}</div>
+                    <div>Avg Deal Size:</div>
+                    <div className="text-right">{formatCurrency(rep.avgDealSize)}</div>
+                    <div>Conv. Rate:</div>
+                    <div className="text-right">{rep.conversionRate.toFixed(1)}%</div>
+                    <div>Active Deals:</div>
+                    <div className="text-right">{rep.activeDeals}</div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>{selectedFieldName || "Select Custom Field for Sales Reps"}</CardTitle>
+                <CardTitle className="text-lg md:text-s">{selectedFieldName || "Select Custom Field for Sales Reps"}</CardTitle>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
@@ -296,55 +322,44 @@ export default function SalesTable() {
                         Please select a custom field from the menu to view the data
                     </div>
                 ) : (
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Rep</TableHead>
-                                <TableHead className="text-right">Leads Assigned</TableHead>
-                                <TableHead className="text-right">Leads Closed</TableHead>
-                                <TableHead className="text-right">Revenue</TableHead>
-                                <TableHead className="text-right">Avg Deal Size</TableHead>
-                                <TableHead className="text-right">Conv. Rate</TableHead>
-                                <TableHead className="text-right">Active Deals</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {salesReps.map((rep) => (
-                                <TableRow key={rep.name}>
-                                    <TableCell className="font-medium">
-                                        {rep.name}
-                                    </TableCell>
-                                    <TableCell className="text-right">{rep.leadsAssigned}</TableCell>
-                                    <TableCell className="text-right">{rep.leadsClosed}</TableCell>
-                                    <TableCell className="text-right">
-                                        {new Intl.NumberFormat('en-US', {
-                                            style: 'currency',
-                                            currency: 'USD',
-                                            minimumFractionDigits: 0,
-                                            maximumFractionDigits: 0,
-                                        }).format(rep.revenue)}
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        {new Intl.NumberFormat('en-US', {
-                                            style: 'currency',
-                                            currency: 'USD',
-                                            minimumFractionDigits: 0,
-                                            maximumFractionDigits: 0,
-                                        }).format(rep.avgDealSize)}
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        {rep.conversionRate.toFixed(1)}%
-                                    </TableCell>
-                                    <TableCell className="text-right">{rep.activeDeals}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                    <>
+                        <div className="hidden md:block">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Rep</TableHead>
+                                        <TableHead className="text-right">Leads Assigned</TableHead>
+                                        <TableHead className="text-right">Leads Closed</TableHead>
+                                        <TableHead className="text-right">Revenue</TableHead>
+                                        <TableHead className="text-right">Avg Deal Size</TableHead>
+                                        <TableHead className="text-right">Conv. Rate</TableHead>
+                                        <TableHead className="text-right">Active Deals</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {salesReps.map((rep) => (
+                                        <TableRow key={rep.name}>
+                                            <TableCell className="font-medium">{rep.name}</TableCell>
+                                            <TableCell className="text-right">{rep.leadsAssigned}</TableCell>
+                                            <TableCell className="text-right">{rep.leadsClosed}</TableCell>
+                                            <TableCell className="text-right">{formatCurrency(rep.revenue)}</TableCell>
+                                            <TableCell className="text-right">{formatCurrency(rep.avgDealSize)}</TableCell>
+                                            <TableCell className="text-right">{rep.conversionRate.toFixed(1)}%</TableCell>
+                                            <TableCell className="text-right">{rep.activeDeals}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                        <div className="md:hidden">
+                            {salesReps.map(renderMobileCard)}
+                        </div>
+                    </>
                 )}
             </CardContent>
 
             <Dialog open={isCustomFieldOpen} onOpenChange={setIsCustomFieldOpen}>
-                <DialogContent>
+                <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                         <DialogTitle>Select Custom Field</DialogTitle>
                     </DialogHeader>
@@ -382,3 +397,4 @@ export default function SalesTable() {
         </Card>
     );
 }
+

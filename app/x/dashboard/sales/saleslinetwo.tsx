@@ -1,4 +1,6 @@
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+"use client"
+
+import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLeadsCount } from "@/lib/hooks/use-leads-count";
 import { querySales, queryCustomFieldOptions } from "./salesquery";
@@ -15,7 +17,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from 'lucide-react';
 import { Payload } from 'recharts/types/component/DefaultLegendContent';
 
 interface OrgData {
@@ -27,19 +29,10 @@ interface OrgData {
 
 // Define consistent colors for the chart
 const COLORS: { [key: string]: string } = {
-    // Primary colors with more contrast
-    color1: '#2563eb',  // Bright blue
-    color2: '#16a34a',  // Green
-    color3: '#dc2626',  // Red
-    color4: '#9333ea',  // Purple
-    color5: '#ea580c',  // Orange
-    color6: '#0891b2',  // Cyan
-    color7: '#4f46e5',  // Indigo
-    color8: '#ca8a04',  // Yellow
-    color9: '#be185d',  // Pink
-    color10: '#059669', // Emerald
-    color11: '#7c3aed', // Violet
-    color12: '#0284c7'  // Sky blue
+    color1: '#FFD400',  // Yellow
+    color2: '#FF6B6B',  // Red
+    color3: '#4ECDC4',  // Teal
+    color4: '#45B7D1',  // Blue
 };
 
 interface MonthlyData {
@@ -70,11 +63,7 @@ const fetchCustomFieldOptions = async (orgID: string, grantKey: string, cfID: st
         }
 
         const result = await response.json();
-        //console.log('Custom field options result:', result);
-        
-        // Extract options from the result
         const options = result?.organization?.customFields?.nodes?.[0]?.options || [];
-        //console.log('Extracted options:', options);
         return options;
     } catch (error) {
         console.error('Error fetching custom field options:', error);
@@ -108,7 +97,6 @@ const fetchSalesData = async (orgID: string, grantKey: string, cfName3: string, 
         }
 
         const result = await response.json();
-        //console.log('Sales data result:', result);
         return result;
     } catch (error) {
         console.error('Error fetching sales data:', error);
@@ -118,7 +106,6 @@ const fetchSalesData = async (orgID: string, grantKey: string, cfName3: string, 
 
 const getLastDayOfMonth = (dateString: string) => {
     const [year, month] = dateString.split('-').map(num => parseInt(num));
-    // Create date for first day of next month, then subtract one day
     const lastDay = new Date(Date.UTC(year, month, 0));
     return lastDay.toISOString().split('T')[0];
 };
@@ -138,7 +125,6 @@ const processQueryResultForChart = (results: Array<{
     const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const monthlyTotals: { [key: string]: { [value: string]: number } } = {};
     
-    // Initialize all months with 0 for all options
     const uniqueOptions = Array.from(new Set(results.map(r => r.option)));
     monthOrder.forEach(month => {
         monthlyTotals[month] = {};
@@ -147,19 +133,15 @@ const processQueryResultForChart = (results: Array<{
         });
     });
 
-    // Process each result
     results.forEach(({ result, option, startDate }) => {
         const month = new Date(startDate).toLocaleString('default', { month: 'short' });
         const amount = result?.scope?.connection?.["Amount:sum"] || 0;
-
-        //console.log(`Processing result for ${option} in ${month}:`, { amount });
 
         if (monthlyTotals[month]) {
             monthlyTotals[month][option] = amount;
         }
     });
 
-    // Convert to chart format and sort
     return Object.entries(monthlyTotals)
         .map(([month, values]) => ({
             month,
@@ -177,8 +159,19 @@ export default function RevenueBySourceChart() {
     const [selectedFieldName, setSelectedFieldName] = useState("");
     const [hiddenSeries, setHiddenSeries] = useState<{ [key: string]: boolean }>({});
     const [chartData, setChartData] = useState<MonthlyData[]>([]);
+    const [isMobile, setIsMobile] = useState(false);
 
-    // Handle saving custom field selection
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768); // Adjust this breakpoint as needed
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     const handleSaveCustomField = async () => {
         if (!user?.uid) return;
 
@@ -198,7 +191,6 @@ export default function RevenueBySourceChart() {
         }
     };
 
-    // Fetch saved custom field on mount
     useEffect(() => {
         const fetchSavedCustomField = async () => {
             try {
@@ -227,7 +219,6 @@ export default function RevenueBySourceChart() {
         fetchSavedCustomField();
     }, [user]);
 
-    // Fetch sales data when custom field or date range changes
     useEffect(() => {
         const fetchData = async () => {
             if (!selectedField) {
@@ -259,13 +250,9 @@ export default function RevenueBySourceChart() {
                 const orgID = (orgDoc.data() as OrgData)?.orgID;
                 const grantKey = (orgDoc.data() as OrgData)?.grantKey;
 
-                //console.log('Fetching with:', { orgID, grantKey, selectedField, dateRange });
-
                 if (orgID && grantKey) {
                     const options = await fetchCustomFieldOptions(orgID, grantKey, selectedField);
-                    //console.log('Got options:', options);
 
-                    // Create an array of all month queries we need to make
                     const allQueries = options.flatMap((option: string) => {
                         const monthQueries = dateRange.monthDates.map(startDate => {
                             const query = {
@@ -273,15 +260,11 @@ export default function RevenueBySourceChart() {
                                 startDate,
                                 endDate: getLastDayOfMonth(startDate)
                             };
-                            //console.log('Prepared query:', query);
                             return query;
                         });
                         return monthQueries;
                     });
 
-                    //console.log('All prepared queries:', allQueries);
-
-                    // Fetch data for each option and month combination
                     const allResults = await Promise.all(
                         allQueries.map((query: { option: string; startDate: string; endDate: string }) => 
                             fetchSalesData(
@@ -295,7 +278,6 @@ export default function RevenueBySourceChart() {
                         )
                     );
 
-                    // Process the results, now including metadata about which option and month each result is for
                     const processedData = processQueryResultForChart(
                         allResults.map((result, index) => ({
                             result,
@@ -304,7 +286,6 @@ export default function RevenueBySourceChart() {
                         }))
                     );
 
-                    //console.log('Setting chart data:', processedData);
                     setChartData(processedData);
                 }
             } catch (error) {
@@ -317,9 +298,6 @@ export default function RevenueBySourceChart() {
         fetchData();
     }, [selectedField, dateRange]);
 
-    //console.log('Rendering with chartData:', chartData);
-
-    // Add type-safe legend click handler
     const handleLegendClick = (data: Payload) => {
         setHiddenSeries(prev => ({
             ...prev,
@@ -353,19 +331,41 @@ export default function RevenueBySourceChart() {
                 ) : (
                     <ResponsiveContainer width="100%" height={400}>
                         <AreaChart data={chartData}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="month" />
+                            <XAxis 
+                                dataKey="month" 
+                                tickFormatter={(value, index) => {
+                                    if (isMobile && index % 2 !== 0) {
+                                        return '';
+                                    }
+                                    return value;
+                                }}
+                                stroke="#9CA3AF"
+                                tick={{ fill: '#333333' }}
+                                tickLine={{ stroke: '#9CA3AF' }}
+                            />
                             <YAxis 
-                                tickFormatter={(value) => `$${(value / 1000)}k`}
+                                tickFormatter={(value) => `${(value / 1000)}K`}
+                                stroke="#9CA3AF"
+                                tick={{ fill: '#333333' }}
+                                tickLine={{ stroke: '#9CA3AF' }}
                             />
                             <Tooltip 
-                                formatter={(value, name) => [
-                                    `$${value.toLocaleString()}`, // Value formatting
-                                    name as string // Name of the series
-                                ]}
-                                itemSorter={(item) => {
-                                    // Sort by value in descending order (largest first)
-                                    return -(item.value as number);
+                                content={({ active, payload, label }) => {
+                                    if (active && payload && payload.length) {
+                                        return (
+                                            <Card className="custom-tooltip bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                                                <CardContent className="p-0">
+                                                    <p className="label font-semibold text-gray-700 mb-2">{label}</p>
+                                                    {payload.map((entry, index) => (
+                                                        <p key={index} className="font-medium mb-1" style={{ color: entry.color }}>
+                                                            {`${entry.name}: $${(Number(entry.value) / 1000).toFixed(0)}K`}
+                                                        </p>
+                                                    ))}
+                                                </CardContent>
+                                            </Card>
+                                        );
+                                    }
+                                    return null;
                                 }}
                             />
                             <Legend 
@@ -431,3 +431,4 @@ export default function RevenueBySourceChart() {
         </Card>
     );
 }
+

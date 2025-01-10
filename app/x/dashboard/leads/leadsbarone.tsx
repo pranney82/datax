@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, TooltipProps } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -20,6 +20,25 @@ type ChartDataType = {
     month: string;
     [key: string]: string | number;
 }
+
+interface CustomTooltipProps extends TooltipProps<number, string> {}
+
+const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip bg-white p-4 rounded-lg shadow-lg border border-gray-200">
+          <p className="label font-semibold mb-2">{`${label}`}</p>
+          {payload.map((entry, index) => (
+            <p key={`item-${index}`} className="flex justify-between items-center my-1">
+              <span className="capitalize mr-4" style={{ color: entry.color }}>{entry.name}</span>
+              <span className="font-medium">{entry.value}</span>
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
+};
 
 export default function ImprovedLeadsSourceChart() {
     const defaultData = [
@@ -130,15 +149,7 @@ export default function ImprovedLeadsSourceChart() {
                         <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                             <XAxis dataKey="month" stroke="#9CA3AF" tick={{ fill: '#333333' }} tickLine={{ stroke: '#9CA3AF' }} />
                             <YAxis stroke="#9CA3AF" tick={{ fill: '#333333' }} tickLine={{ stroke: '#9CA3AF' }} />
-                            <Tooltip 
-                                contentStyle={{
-                                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                                    border: 'none',
-                                    borderRadius: '12px',
-                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-                                }}
-                                labelStyle={{ fontWeight: 'bold', color: '#333' }}
-                            />
+                            <Tooltip content={<CustomTooltip />} />
                             <Legend 
                                 wrapperStyle={{ paddingTop: '20px' }}
                                 payload={

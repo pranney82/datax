@@ -21,10 +21,28 @@ interface StatusObject {
   [key: string]: number;
 }
 
+interface TransformedDataItem {
+  month: string;
+  approved: number;
+  denied: number;
+  draft: number;
+  pending: number;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    name: string;
+    value: number;
+    color: string;
+  }>;
+  label?: string;
+}
+
 export default function LeadsAreaChart() {
   const { block3StatusCounts } = useLeadsCount();
 
-  const transformedData = block3StatusCounts.map((item: Block3Item) => {
+  const transformedData: TransformedDataItem[] = block3StatusCounts.map((item: Block3Item) => {
     const statusObj: StatusObject = item.statusCounts.reduce((acc: StatusObject, curr: StatusCount) => {
       acc[curr.status] = curr.count;
       return acc;
@@ -38,7 +56,7 @@ export default function LeadsAreaChart() {
     };
   });
   
-  const statusColors = {
+  const statusColors: { [key: string]: string } = {
     'approved': '#FFD400', // Bright yellow (as requested)
     'denied': '#FF6B6B',   // Soft red
     'draft': '#4ECDC4',    // Teal
@@ -52,6 +70,23 @@ export default function LeadsAreaChart() {
       ...prev,
       [data.dataKey as string]: !prev[data.dataKey as string]
     }));
+  };
+
+  const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip bg-white p-4 rounded-lg shadow-lg border border-gray-200">
+          <p className="label font-semibold mb-2">{`${label}`}</p>
+          {payload.map((entry, index) => (
+            <p key={`item-${index}`} className="flex justify-between items-center my-1">
+              <span className="capitalize mr-4" style={{ color: entry.color }}>{entry.name}</span>
+              <span className="font-medium">{entry.value}</span>
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
   };
 
   return (
@@ -68,25 +103,18 @@ export default function LeadsAreaChart() {
             <XAxis
               dataKey="month"
               stroke="#9CA3AF"
-              tick={{ fill: '#333333' }} // Changed to a darker color
+              tick={{ fill: '#333333' }}
               tickLine={{ stroke: '#9CA3AF' }}
             />
             <YAxis
               stroke="#9CA3AF"
-              tick={{ fill: '#333333' }} // Changed to a darker color
+              tick={{ fill: '#333333' }}
               tickLine={{ stroke: '#9CA3AF' }}
             />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                border: 'none',
-                borderRadius: '8px',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-              }}
-            />
+            <Tooltip content={<CustomTooltip />} />
             <Legend
               onClick={handleLegendClick}
-              formatter={(value) => (
+              formatter={(value: string) => (
                 <span style={{
                   color: hiddenSeries[value] ? '#9CA3AF' : '#374151',
                   fontWeight: 'bold',
