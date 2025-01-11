@@ -21,7 +21,7 @@ interface QueryParams1 {
               [
                 [
                   "taskType",
-                  "name"
+                  "id"
                 ],
                 cfName2
               ],

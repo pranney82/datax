@@ -25,6 +25,7 @@ import {
   import { calQuery1 } from './calquery'
   import { db } from '@/lib/firebase'
   import Link from 'next/link'
+  import { TTSelector } from './ttselector'
   
 interface Task {
   id: string
@@ -50,6 +51,7 @@ export default function Calendar() {
   const [orgId, setOrgId] = useState<string | null>(null)
   const [grantKey, setGrantKey] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [taskID, setTaskID] = useState<string | null>(null) 
 
   const monthYear = currentDate.toLocaleString('default', { 
     month: 'long',
@@ -87,7 +89,7 @@ export default function Calendar() {
           setError('Organization settings not found')
           return
         }
-        
+        setTaskID(orgData.calTaskType)
         setOrgId(orgData.orgID)
         setGrantKey(orgData.grantKey)
       } catch (error) {
@@ -136,7 +138,7 @@ export default function Calendar() {
             "$": { "grantKey": grantKey },
             ...calQuery1({ 
               orgID: orgId,
-              cfName2: "001 Pay Phase",
+              cfName2: taskID || "",
               startDate,
               endDate
             })
@@ -156,10 +158,11 @@ export default function Calendar() {
       setTasks(fetchedTasks);
     } catch (error) {
       console.error('Error in fetchTasks:', error);
+      throw error;
     } finally {
       setLoading(false);
     }
-  }, [orgId, grantKey, currentDate]);
+  }, [orgId, grantKey, currentDate, taskID]);
 
   // Fetch tasks when month changes
   useEffect(() => {
@@ -337,6 +340,24 @@ export default function Calendar() {
     )
   }
 
+  const handleTaskTypeSelect = async (newTaskId: string) => {
+    setTaskID(newTaskId)
+    try {
+      setLoading(true)
+      if (!newTaskId) {
+        // If clearing the task type, clear the tasks
+        setTasks([])
+      } else {
+        // Otherwise fetch new tasks
+        await fetchTasks()
+      }
+    } catch (error) {
+      console.error('Error fetching tasks:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <main className="flex flex-col flex-1 p-0">
       {error && (
@@ -371,6 +392,7 @@ export default function Calendar() {
           <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
             <div className="flex items-center justify-between mb-6">
               <div className="flex">
+                <TTSelector onTaskTypeSelect={handleTaskTypeSelect} />
                 <Button
                   variant="outline"
                   className="gap-2"
