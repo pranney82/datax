@@ -96,8 +96,8 @@ export default function FeaturesPage() {
   const filteredAndSortedFeatures = useMemo(() => {
     return allFeatures
       .filter(feature => 
-        feature.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        feature.description.toLowerCase().includes(searchQuery.toLowerCase())
+        (feature.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        feature.description.toLowerCase().includes(searchQuery.toLowerCase()))
       )
       .sort((a, b) => {
         if (activeFeatures[a.title] === activeFeatures[b.title]) {

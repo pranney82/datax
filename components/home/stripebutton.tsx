@@ -38,8 +38,8 @@ const StripePaymentButton: React.FC<StripePaymentButtonProps> = ({ priceId, clas
       const data = await response.json();
 
       if (data.url) {
-        // Redirect to Stripe Checkout
-        window.location.href = data.url;
+        // Open Stripe Checkout in a new window
+        window.open(data.url, '_blank', 'noopener,noreferrer');
       } else {
         console.error("Error creating Stripe Checkout session:", data.error);
         alert("Failed to redirect to Stripe Checkout.");

@@ -12,7 +12,7 @@ import { doc } from "firebase/firestore";
 import { getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/lib/context/auth-context";
-
+import FeatureProtect from "@/components/admin/featureProtect";
 export default function Leads() {
   const { user } = useAuth()  
   const { setBlock4Metrics, dateRange } = useLeadsCount()
@@ -289,6 +289,7 @@ export default function Leads() {
         : '$0.00'
 
     return (
+    <FeatureProtect featureName="Leads Dashboard">
     <div className="flex flex-col gap-4">
         {/* Top row */}
         <div className="grid auto-rows-min gap-4 md:grid-cols-5">
@@ -322,5 +323,6 @@ export default function Leads() {
             </div>
         </div>
     </div>
+    </FeatureProtect>
     );
 }

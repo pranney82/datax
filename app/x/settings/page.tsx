@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import { doc, getDoc, updateDoc } from "firebase/firestore"
+import { doc, getDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import {
   Breadcrumb,
@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/context/auth-context"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import Link from "next/link"
 
 type Organization = {
   id: string;
@@ -30,6 +31,8 @@ type JTMembership = {
   organization: {
     id: string;
     name: string;
+    subscriptionStatus: string;
+    subscriptionType: string;
   };
 };
 
@@ -40,6 +43,9 @@ export default function SettingsPage() {
   const [settings, setSettings] = useState({
     jtgrantkey: '',
     jtorgid: '',
+    dataxorgid: '',
+    subscriptionStatus: '',
+    subscriptionType: '',
     enableNotifications: false,
     enableAutoSync: false,
     enableDarkMode: false,
@@ -72,13 +78,31 @@ export default function SettingsPage() {
 
       const orgData = orgDoc.data()
       
+      // Search stripedata collection for matching orgID
+      const stripeQuery = query(
+        collection(db, 'stripedata'),
+        where('orgID', '==', userData.org)
+      )
+      
+      const stripeSnapshot = await getDocs(stripeQuery)
+      let subscriptionStatus = 'free'
+      let subscriptionType = 'free'
+      
+      if (!stripeSnapshot.empty) {
+        const stripeData = stripeSnapshot.docs[0].data()
+        subscriptionStatus = stripeData.subscriptionStatus || 'error'
+        subscriptionType = stripeData.tier || 'error'
+      }
+
       setSettings(prev => ({
         ...prev,
         jtgrantkey: orgData.grantKey || '',
         jtorgid: orgData.orgID || '',
+        dataxorgid: userData.org || '',
+        subscriptionStatus,
+        subscriptionType,
         // Keep other settings as is
       }))
-
     }
 
     fetchSettings()
@@ -314,6 +338,35 @@ export default function SettingsPage() {
                 />
               </div>
             </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Billing</CardTitle>
+              <CardDescription>
+                Manage your billing information
+              </CardDescription>
+                <div className="space-y-2">
+                  <div className="text-sm py-2">
+                    Subscription Status: <span className="font-semibold">{settings.subscriptionStatus}</span>
+                  </div>
+                  <div className="text-sm py-2">
+                    Subscription Type: <span className="font-semibold">{settings.subscriptionType}</span>
+                  </div>
+                </div>
+                {settings.subscriptionStatus === 'error' && (
+                  <div className="text-sm py-2">
+                    <span className="font-semibold text-red-500">Error fetching subscription data</span>
+                  </div>
+                )}
+                {settings.subscriptionStatus === 'free' ? (
+                  <Link href={process.env.NEXT_PUBLIC_APP_URL + '/pricing'}>
+                    <Button className="w-full">Upgrade to PRO</Button>
+                  </Link>
+                ) : (
+                  <Button className="w-full" onClick={() => window.open('https://billing.stripe.com/p/login/7sIdSU6y5g7f2WI7ss', '_blank')}>Manage Subscription</Button>
+                )}
+              
+            </CardHeader>
           </Card>
         </div>
       </div>

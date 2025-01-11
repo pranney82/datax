@@ -26,7 +26,8 @@ import {
   import { db } from '@/lib/firebase'
   import Link from 'next/link'
   import { TTSelector } from './ttselector'
-  
+  import FeatureProtect from '@/components/admin/featureProtect'
+
 interface Task {
   id: string
   name: string
@@ -126,7 +127,7 @@ export default function Calendar() {
       const startDate = formatDateForAPI(firstDay);
       const endDate = formatDateForAPI(lastDay);
 
-      console.log('Date Range:', { startDate, endDate });
+      //console.log('Date Range:', { startDate, endDate });
 
       const response = await fetch('/api/jtfetch', {
         method: 'POST',
@@ -153,7 +154,7 @@ export default function Calendar() {
       }
 
       const data = await response.json();
-      console.log('API Response:', data);
+      //console.log('API Response:', data);
       const fetchedTasks = data?.organization?.tasks?.nodes || [];
       setTasks(fetchedTasks);
     } catch (error) {
@@ -300,7 +301,7 @@ export default function Calendar() {
     }
 
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4">        
         {filteredInvoices
           .sort((a, b) => parseTaskDate(a.startDate).getTime() - parseTaskDate(b.startDate).getTime())
           .map(task => (
@@ -359,147 +360,152 @@ export default function Calendar() {
   }
 
   return (
-    <main className="flex flex-col flex-1 p-0">
-      {error && (
-        <div className="p-4 bg-red-100 text-red-700 rounded-md m-4">
-          {error}
-        </div>
-      )}
-      
-      {loading ? (
-        <div className="flex items-center justify-center p-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-        </div>
-      ) : (
-        <>
-          <header className="flex h-16 shrink-0 items-center gap-2">
-            <div className="flex items-center gap-2 px-4">
-              <SidebarTrigger className="-ml-1" />
-              <Separator orientation="vertical" className="mr-2 h-4" />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="/x/toolbox">Toolbox</BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>Calendar</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-            </div>
-          </header>
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex">
-                <TTSelector onTaskTypeSelect={handleTaskTypeSelect} />
-                <Button
-                  variant="outline"
-                  className="gap-2"
-                  onClick={() => setIsCalendarView(!isCalendarView)}
-                  >
-                  {isCalendarView ? (
-                    <>
-                      <List className="h-4 w-4" />
-                      <span>List View</span>
-                    </>
-                  ) : (
-                    <>
-                      <LayoutGrid className="h-4 w-4" />
-                      <span>Calendar View</span>
-                    </>
-                  )}
-                </Button>
+    
+      <main className="flex flex-col flex-1 p-0">
+        {error && (
+          <div className="p-4 bg-red-100 text-red-700 rounded-md m-4">
+            {error}
+          </div>
+        )}
+        
+        {loading ? (
+          <div className="flex items-center justify-center p-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          </div>
+        ) : (
+          <>
+            <header className="flex h-16 shrink-0 items-center gap-2">
+              <div className="flex items-center gap-2 px-4">
+                <SidebarTrigger className="-ml-1" />
+                <Separator orientation="vertical" className="mr-2 h-4" />
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem className="hidden md:block">
+                      <BreadcrumbLink href="/x/toolbox">Toolbox</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator className="hidden md:block" />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>Calendar</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
               </div>
-              <div className="flex items-center gap-4">
-                <button 
-                  className="p-2 hover:bg-gray-100 rounded-full"
-                  onClick={handlePreviousMonth}
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <div className="flex flex-col items-center">
-                  <h2 className="text-2xl font-semibold">{monthYear}</h2>
-                  <h3 className="text-sm text-gray-500">
-                    ${getMonthlyTotal().toLocaleString()}
-                  </h3>
+            </header>
+            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex">
+                  <TTSelector onTaskTypeSelect={handleTaskTypeSelect} />
+                  <Button
+                    variant="outline"
+                    className="gap-2"
+                    onClick={() => setIsCalendarView(!isCalendarView)}
+                    >
+                    {isCalendarView ? (
+                      <>
+                        <List className="h-4 w-4" />
+                        <span>List View</span>
+                      </>
+                    ) : (
+                      <>
+                        <LayoutGrid className="h-4 w-4" />
+                        <span>Calendar View</span>
+                      </>
+                    )}
+                  </Button>
                 </div>
-                <button 
-                  className="p-2 hover:bg-gray-100 rounded-full"
-                  onClick={handleNextMonth}
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" className="gap-2">
-                  <Plus className="w-4 h-4" />
-                  <span>Add Task <Badge variant="secondary">Coming Soon</Badge></span>
-                </Button>
-              </div>
-            </div>
-            
-
-            {/* Conditional render based on view type */}
-            {isCalendarView ? (
-              <div className="grid grid-cols-8 gap-2">
-                {weekDays.map((day) => (
-                  <div key={day} className="text-center font-medium text-gray-500 py-2">
-                    {day}
+                <div className="flex items-center gap-4">
+                  <button 
+                    className="p-2 hover:bg-gray-100 rounded-full"
+                    onClick={handlePreviousMonth}
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <div className="flex flex-col items-center">
+                    <h2 className="text-2xl font-semibold">{monthYear}</h2>
+                    <h3 className="text-sm text-gray-500">
+                      ${getMonthlyTotal().toLocaleString()}
+                    </h3>
                   </div>
-                ))}
-                {generateCalendarDays()}
+                  <button 
+                    className="p-2 hover:bg-gray-100 rounded-full"
+                    onClick={handleNextMonth}
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" className="gap-2">
+                    <Plus className="w-4 h-4" />
+                    <span>Add Task <Badge variant="secondary">Coming Soon</Badge></span>
+                  </Button>
+                </div>
               </div>
-            ) : (
-              generateListView()
-            )}
-          </div>
-        </>
-      )}
-      
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-semibold">
-              {selectedTask?.name}
-            </DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <div className="text-sm text-gray-500">
-                Due Date
-              </div>
-              <div className="font-medium">
-                {selectedTask?.startDate ? 
-                  parseTaskDate(selectedTask.startDate).toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  }) : ''
-                }
-              </div>
+              
+
+              {/* Conditional render based on view type */}
+              {isCalendarView ? (
+                <FeatureProtect featureName="Cash Flow Calendar">
+                <div className="grid grid-cols-8 gap-2">
+                  {weekDays.map((day) => (
+                    <div key={day} className="text-center font-medium text-gray-500 py-2">
+                      {day}
+                    </div>
+                  ))}
+                  {generateCalendarDays()}
+                </div>
+                </FeatureProtect>
+              ) : (
+                <FeatureProtect featureName="Cash Flow Calendar">
+                  {generateListView()}
+                </FeatureProtect>
+              )}
             </div>
-            <div className="grid gap-2">
-              <div className="text-sm text-gray-500">
-                Amount
+          </>
+        )}
+        
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-semibold">
+                {selectedTask?.name}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <div className="text-sm text-gray-500">
+                  Due Date
+                </div>
+                <div className="font-medium">
+                  {selectedTask?.startDate ? 
+                    parseTaskDate(selectedTask.startDate).toLocaleDateString('en-US', {
+                      weekday: 'long',
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    }) : ''
+                  }
+                </div>
               </div>
-              <div className="font-medium">
-                ${parseFloat(selectedTask?.description || '0').toLocaleString()}
+              <div className="grid gap-2">
+                <div className="text-sm text-gray-500">
+                  Amount
+                </div>
+                <div className="font-medium">
+                  ${parseFloat(selectedTask?.description || '0').toLocaleString()}
+                </div>
               </div>
+              <div className="grid gap-2">
+                <div className="text-sm text-gray-500">
+                  Job ID
+                </div>
+                <div className="font-medium">
+                  {selectedTask?.job.id}
+                </div>
+              </div>
+              {/* Add more invoice details as needed */}
             </div>
-            <div className="grid gap-2">
-              <div className="text-sm text-gray-500">
-                Job ID
-              </div>
-              <div className="font-medium">
-                {selectedTask?.job.id}
-              </div>
-            </div>
-            {/* Add more invoice details as needed */}
-          </div>
-        </DialogContent>
-      </Dialog>
-    </main>
+          </DialogContent>
+        </Dialog>
+      </main>
   )
 }

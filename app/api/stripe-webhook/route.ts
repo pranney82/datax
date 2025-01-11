@@ -66,7 +66,7 @@ async function handleNewSubscription(session: Stripe.Checkout.Session) {
 
 async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
   const db = getFirestore();
-  const customer = await stripe.customers.retrieve(subscription.customer as string);
+  
   const price = await stripe.prices.retrieve(subscription.items.data[0].price.id);
   const product = await stripe.products.retrieve(price.product as string);
 

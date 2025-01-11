@@ -23,7 +23,7 @@ import { useState, useEffect } from "react"
 import { db } from "@/lib/firebase"
 import { Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
+import FeatureProtect from "@/components/admin/featureProtect"
 interface Webhook {
   id: string
   url: string
@@ -100,6 +100,7 @@ export default function GMapCoverPhotoPage() {
   }, [orgId, grantKey])
 
   return (
+    
     <main className="flex flex-col flex-1 p-0">
       <header className="flex h-16 shrink-0 items-center gap-2">
         <div className="flex items-center gap-2 px-4">
@@ -118,10 +119,13 @@ export default function GMapCoverPhotoPage() {
           </Breadcrumb>
         </div>
       </header>
-
+      
       <div className="flex flex-col gap-8 p-6">
         <div>
           <h1 className="text-2xl font-semibold mb-6">Google Maps Job Cover Photo</h1>
+         
+          <div>
+          <FeatureProtect featureName="Google Maps Cover Photo">
           <div className="grid grid-cols-4 gap-4">
             <div className="col-span-2">
               <ModernDashboardCard 
@@ -163,10 +167,14 @@ export default function GMapCoverPhotoPage() {
             <div className="col-span-2">
               <SingleRun />
             </div>
-          </div>
-        </div>
+          </div>         
+       
 
         <CoverPhotoLogsTable />
+        </FeatureProtect>
+        </div>
+       
+        </div>
       </div>
     </main>
   )

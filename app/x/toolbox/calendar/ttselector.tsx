@@ -99,7 +99,7 @@ export function TTSelector({ onTaskTypeSelect }: TTSelectorProps) {
           name: node?.name || ''
         }))
 
-        console.log('Fetched task types:', types)
+        //console.log('Fetched task types:', types)
         
         setTaskTypes(types)
 
@@ -152,7 +152,7 @@ export function TTSelector({ onTaskTypeSelect }: TTSelectorProps) {
                     calTaskType: newTypeId,
                     calTaskTypeName: newTypeName
                   })
-                  console.log('Updated calendar task type in database')
+                  //console.log('Updated calendar task type in database')
                   onTaskTypeSelect(newTypeId)
                 } catch (error) {
                   console.error('Error updating calendar task type:', error)
