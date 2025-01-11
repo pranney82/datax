@@ -21,6 +21,7 @@ const Pricing = () => {
   const plans = [
     {
       name: 'FREE',
+      active: true,
       icon: <Star className="w-6 h-6 text-yellow-400" />,
       price: 0,
       monthlyPrice: 0,
@@ -39,6 +40,7 @@ const Pricing = () => {
     },
     {
       name: 'CORE',
+      active: true,
       icon: <Zap className="w-6 h-6 text-yellow-400" />,
       price: isAnnually ? 290 : 29,
       monthlyPrice: 29,
@@ -52,13 +54,14 @@ const Pricing = () => {
         'Cash Flow Calendar',
         'Support & Feature Requests',
       ],
-      priceId: isAnnually ? "price_1QVggE2LwdZLeKQfk2YRCDUV" : "price_1QVNq42LwdZLeKQfaXHHsMI6",
+      priceId: isAnnually ? "price_1QW3bD2LwdZLeKQfcfRhQ0LZ" : "price_1QW3bD2LwdZLeKQfcfRhQ0LZ",
       color: 'bg-gradient-to-br from-yellow-100 to-yellow-200',
       buttonColor: 'bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white transition-colors',
       popular: true,
     },
     {
       name: 'PRO (Coming Soon)',
+      active: false,
       icon: <Rocket className="w-6 h-6 text-yellow-400" />,
       price: isAnnually ? 1450 : 145,
       monthlyPrice: 145,
@@ -71,19 +74,52 @@ const Pricing = () => {
         'Dashboard Benchmarking',
         ' TV Dashboard',
       ],
-      priceId: isAnnually ? "price_1QVgfq2LwdZLeKQfIamPtpYN" : "price_1QVNqu2LwdZLeKQffZfNFRH4",
+      priceId: isAnnually ? "price_1QVggE2LwdZLeKQfk2YRCDUV" : "price_1QVNq42LwdZLeKQfaXHHsMI6",
       color: 'bg-gradient-to-br from-gray-100 to-gray-200',
       buttonColor: 'bg-black hover:bg-gray-800 text-white hover:text-yellow-400',
     },
   ];
 
   const SubscribeButton = ({ plan, className }: { plan: typeof plans[0], className?: string }) => {
-    return user ? (
-      <StripePaymentButton 
-        priceId={plan.priceId} 
-        className={`w-full py-4 text-lg font-bold rounded-xl ${className} transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center gap-2`}
-      />
-    ) : (
+    if (!plan.active) {
+      return (
+        <Button 
+          disabled
+          className={`w-full py-4 text-lg font-bold rounded-xl opacity-50 cursor-not-allowed ${className}`}
+        >
+          <Sparkles className="w-5 h-5" />
+          <span>Coming Soon</span>
+        </Button>
+      );
+    }
+
+    if (plan.price === 0) {
+      return (
+        <Button 
+          className={`w-full py-4 text-lg font-bold rounded-xl ${className}`}
+          onClick={() => {
+            if (!user) {
+              setAuthType('signup');
+              setShowAuthDialog(true);
+            }
+          }}
+        >
+          <Sparkles className="w-5 h-5" />
+          <span>{user ? 'Current Plan' : 'Get Started'}</span>
+        </Button>
+      );
+    }
+
+    if (user) {
+      return (
+        <StripePaymentButton 
+          priceId={plan.priceId} 
+          className={`w-full py-4 text-lg font-bold rounded-xl ${className}`}
+        />
+      );
+    }
+
+    return (
       <Button 
         className={`w-full py-4 text-lg font-bold rounded-xl ${className} transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center gap-2`}
         onClick={() => {

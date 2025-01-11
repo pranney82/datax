@@ -29,7 +29,7 @@ export async function POST(req: Request) {
       metadata: {
         uid: uid,
       },
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/x/settings`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
     });
 
