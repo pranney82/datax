@@ -15,10 +15,10 @@ interface FeatureCardProps {
   description: string
   href: string
   isPopular?: boolean
-  isActive: boolean
+  status: string
 }
 
-function FeatureCard({ title, description, href, isPopular, isActive }: FeatureCardProps) {
+function FeatureCard({ title, description, href, isPopular, status }: FeatureCardProps) {
   return (
     <Card className="bg-white border border-gray-200 rounded-lg overflow-hidden transition-all duration-200 ease-in-out hover:shadow-md hover:border-gray-300 flex flex-col">
       <div className="p-4 flex-grow">
@@ -32,12 +32,6 @@ function FeatureCard({ title, description, href, isPopular, isActive }: FeatureC
               <span className="border-b-2 border-gray-200 group-hover:border-gray-400 pb-1">{title}</span>
             </Link>
           </div>
-          <Badge 
-            variant={isActive ? "default" : "secondary"}
-            className={`${isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'} font-medium pointer-events-none ml-2 whitespace-nowrap`}
-          >
-            {isActive ? 'On' : 'Off'}
-          </Badge>
         </div>
       </div>
       <div className="bg-gray-50 p-4 text-sm text-gray-600">
@@ -51,6 +45,20 @@ function FeatureCard({ title, description, href, isPopular, isActive }: FeatureC
               <TrendingUp className="h-3 w-3 text-[#000]" /> Popular
             </Badge>
           )}
+          {status === "Coming Soon" && (
+            <Badge                
+              className="gap-1 bg-gray-100 text-gray-800 border-gray-200 font-semibold pointer-events-none ml-2 whitespace-nowrap"
+            >
+              {status}
+            </Badge>
+          )}
+          {status === "xxx" && (
+            <Badge                
+              className="gap-1 bg-[#ffd400] text-[#000] border-[#ffd400] font-semibold pointer-events-none ml-2 whitespace-nowrap"
+            >
+              Request!!
+            </Badge>
+          )}
         </div>
       </div>
     </Card>
@@ -59,12 +67,7 @@ function FeatureCard({ title, description, href, isPopular, isActive }: FeatureC
 
 export default function FeaturesPage() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [activeFeatures] = useState<Record<string, boolean>>({
-    "Cash Flow Calendar": true,
-    "Zillow Data Import": true,
-    "Google Maps Cover Photos": false,
-    "Print ToDos": false,
-  })
+ 
 
   const allFeatures = [
     {
@@ -72,24 +75,84 @@ export default function FeaturesPage() {
       description: "Track and manage your cash flow based on JobTread's calendar task types.",
       href: "/x/toolbox/calendar",
       isPopular: true,
+      status: "Active"
     },
     {
       title: "Zillow Data Import",
       description: "When a job is created, automatically import property data from Zillow and assign to custom fields.",
       href: "/x/toolbox/zillow",
       isPopular: true,
+      status: "Active"
     },
     {
       title: "Google Maps Cover Photos",
       description: "Automatically fetch Google Maps images and assign to Job Cover Photo.",
       href: "/x/toolbox/coverphoto",
-      isPopular: true,
+      isPopular: true,  
+      status: "Active"
+    },
+    {
+      title: "AI Agent",
+      description: "Define workflows inside of JobTread for your AI Agent to run automously.",
+      href: "#",
+      isPopular: false,
+      status: "Coming Soon"
+    },
+    {
+      title: "Voice to Estimate",
+      description: "Generate estimates for jobs using voice recordings and AI.",
+      href: "#",
+      isPopular: false,
+      status: "Coming Soon"
+    },
+    {
+      title: "Inventory Management",
+      description: "Track and manage your inventory inside of JobTread.",
+      href: "#",
+      isPopular: false,
+      status: "Coming Soon"
+    },
+    {
+      title: "Google Calendar Sync",
+      description: "Sync your JobTread calendar with Google Calendar, instantly both ways.",
+      href: "#",
+      isPopular: false,
+      status: "Coming Soon"
+    },
+    {
+      title: "Calendly Integration",
+      description: "Automatically sync your Calendly events to JobTread.",
+      href: "#",
+      isPopular: false,
+      status: "Coming Soon"
+    },
+    {
+      title: "Third Party Payment Processing",
+      description: "Integrate with more payment processors than what are avaialbe in JobTread, seamlessly.",
+      href: "#",
+      isPopular: false,
+      status: "Coming Soon"
+    },
+    {
+      title: "Print Calendar",
+      description: "Generate printable calendar for offline use.",
+      href: "#",
+      isPopular: false,
+      status: "Coming Soon"
     },
     {
       title: "Print ToDos",
       description: "Generate printable task lists for offline use.",
-      href: "/x/toolbox/print",
+      href: "#",
       isPopular: false,
+      status: "Coming Soon"
+    },
+    {
+      title: "Feature Request",
+      description: "Suggest a new feature for us to build.",
+      href: "/x",
+      isPopular: false,
+      status: "xxx"
     },
   ]
 
@@ -99,14 +162,7 @@ export default function FeaturesPage() {
         (feature.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         feature.description.toLowerCase().includes(searchQuery.toLowerCase()))
       )
-      .sort((a, b) => {
-        if (activeFeatures[a.title] === activeFeatures[b.title]) {
-          return 0;
-        }
-        return activeFeatures[a.title] ? -1 : 1;
-      });
-  }, [allFeatures, searchQuery, activeFeatures]);
-
+  }, [allFeatures, searchQuery]);
   return (
     <main className="flex flex-col flex-1 p-0">
       <header className="flex h-16 shrink-0 items-center gap-2">
@@ -145,7 +201,7 @@ export default function FeaturesPage() {
               description={feature.description}
               href={feature.href}
               isPopular={feature.isPopular}
-              isActive={activeFeatures[feature.title]}
+              status={feature.status}
             />
           ))}
         </div>

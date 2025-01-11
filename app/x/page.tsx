@@ -9,7 +9,6 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useAuth } from "@/lib/context/auth-context"
 import { getFirestore, doc, getDoc, addDoc, collection } from "firebase/firestore"
 import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
 import { InspirationQuote } from "@/components/ui/InspirationQuote"
 import Link from 'next/link'
 
