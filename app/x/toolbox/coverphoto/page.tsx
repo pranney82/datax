@@ -1,15 +1,5 @@
 'use client'
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Label } from "@/components/ui/label"
 import { SingleRun } from "./singlerun"
 import { CoverPhotoLogsTable } from "./cplogstable"
@@ -21,7 +11,7 @@ import { doc, getDoc } from "firebase/firestore"
 import { useAuth } from "@/lib/context/auth-context"
 import { useState, useEffect } from "react"
 import { db } from "@/lib/firebase"
-import { Loader2 } from "lucide-react"
+import { Loader2 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 
 interface Webhook {
@@ -100,74 +90,59 @@ export default function GMapCoverPhotoPage() {
   }, [orgId, grantKey])
 
   return (
-    <main className="flex flex-col flex-1 p-0">
-      <header className="flex h-16 shrink-0 items-center gap-2">
-        <div className="flex items-center gap-2 px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="/x/toolbox">Toolbox</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Google Maps Cover Photo</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-      </header>
+    <main className="flex-grow container mx-auto px-4 py-8">
+      <div className="space-y-8">
+        <header>
+          <h1 className="text-2xl font-bold mb-2">Google Maps Job Cover Photo</h1>
+          <p className="text-muted-foreground">Manage automatic cover photo updates for your jobs</p>
+        </header>
 
-      <div className="flex flex-col gap-8 p-6">
-        <div>
-          <h1 className="text-2xl font-semibold mb-6">Google Maps Job Cover Photo</h1>
-          <div className="grid grid-cols-4 gap-4">
-            <div className="col-span-2">
-              <ModernDashboardCard 
-                title="Automatic Cover Photo Updates"
-                description="Enable automatic cover photo creation on job creation. This will create a cover photo for each job created in JobTread using a static Google Streetview image.">
-                
-                <div className="flex flex-col space-y-2">
-                  <div className="flex justify-between items-center">
-                    <Label htmlFor="gmap-cover-photo">
-                      Webhook URL
-                    </Label>
-                  </div>
-                  <div className="flex w-full gap-2">
-                    <Input 
-                      className="w-full" 
-                      type="text" 
-                      id="webhook-url"
-                      value="https://winyourdata.com/api/coverphoto/2"
-                      disabled
-                    />
-                  </div>
-                  {isLoading ? (
-                    <Button disabled className="w-full">
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Loading...
-                    </Button>
-                  ) : error ? (
-                    <div className="text-sm text-red-600">{error}</div>
-                  ) : (
-                    <CreateWebhookButton 
-                      isConnected={webhookExists} 
-                      orgId={orgId} 
-                      grantKey={grantKey}
-                    />
-                  )}
-                </div>
-              </ModernDashboardCard>
+        <div className="grid gap-6 md:grid-cols-2">
+          <ModernDashboardCard 
+            title="Automatic Cover Photo Updates"
+            description="Enable automatic cover photo creation on job creation. This will create a cover photo for each job created in JobTread using a static Google Streetview image.">
+            
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="webhook-url" className="mb-1 block">
+                  Webhook URL
+                </Label>
+                <Input 
+                  className="w-full" 
+                  type="text" 
+                  id="webhook-url"
+                  value="https://winyourdata.com/api/coverphoto/2"
+                  disabled
+                />
+              </div>
+              {isLoading ? (
+                <Button disabled className="w-full">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Loading...
+                </Button>
+              ) : error ? (
+                <div className="text-sm text-red-600 p-2 bg-red-50 rounded">{error}</div>
+              ) : (
+                <CreateWebhookButton 
+                  isConnected={webhookExists} 
+                  orgId={orgId} 
+                  grantKey={grantKey}
+                />
+              )}
             </div>
-            <div className="col-span-2">
-              <SingleRun />
-            </div>
-          </div>
+          </ModernDashboardCard>
+
+          <ModernDashboardCard title="Single Run">
+            <SingleRun />
+          </ModernDashboardCard>
         </div>
 
-        <CoverPhotoLogsTable />
+        <section className="mt-12">
+          <h2 className="text-2xl font-semibold mb-4">Cover Photo Logs</h2>
+          <CoverPhotoLogsTable />
+        </section>
       </div>
     </main>
   )
-} 
+}
+

@@ -4,9 +4,6 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Zap, TrendingUp } from 'lucide-react'
 import Link from "next/link"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Input } from "@/components/ui/input"
 import { useState, useMemo } from "react"
 
@@ -108,36 +105,20 @@ export default function FeaturesPage() {
   }, [allFeatures, searchQuery, activeFeatures]);
 
   return (
-    <main className="flex flex-col flex-1 p-0">
-      <header className="flex h-16 shrink-0 items-center gap-2">
-        <div className="flex items-center gap-2 px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">Toolbox</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Dashboard</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
+    <div className="flex flex-col min-h-screen w-full max-w-full overflow-x-hidden">
+      <header className="bg-white border-b border-gray-200">
       </header>
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-        <div className="flex justify-between items-center gap-2">
-          <h1 className="text-2xl font-bold">Toolbox</h1>
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
+          <h2 className="text-2xl font-bold">Toolbox</h2>
           <Input
             placeholder="Search tools..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="max-w-xs"
+            className="w-full sm:max-w-xs"
           />
         </div>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredAndSortedFeatures.map((feature, index) => (
             <FeatureCard
               key={index}
@@ -149,8 +130,8 @@ export default function FeaturesPage() {
             />
           ))}
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   )
 }
 

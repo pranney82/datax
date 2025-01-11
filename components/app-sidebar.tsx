@@ -1,77 +1,118 @@
 "use client"
 
 import * as React from "react"
-import { BookOpen, Home, BarChart3, Settings2, Zap, LucideIcon } from 'lucide-react'
+import { Home, Settings2, SquareChevronLeft, SquareChevronRight, BarChart3, Zap, BookOpen } from 'lucide-react'
 
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarFooter,
+  useSidebar,
 } from "@/components/ui/sidebar"
 
-interface NavItem {
-  title: string;
-  url: string;
-  icon: LucideIcon;
-}
-
+// Updated data structure
 const data = {
   navMain: [
     {
-      title: "Home",
-      url: "/x",
+      title: "Getting Started",
       icon: Home,
-    },
-    {
-      title: "Dashboard",
-      url: "/x/dashboard",
-      icon: BarChart3,
-    },
-    {
-      title: "Toolbox",
-      url: "/x/toolbox",
-      icon: Zap,
-    },
-    {
-      title: "Library",
-      url: "/x/library/templates",
-      icon: BookOpen,
+      url: "/x",
+      items: [
+        {
+          title: "Home",
+          url: "/x",
+          icon: Home,
+        },
+        {
+          title: "Dashboard",
+          url: "/x/dashboard",
+          icon: BarChart3,
+        },
+        {
+          title: "Toolbox",
+          url: "/x/toolbox",
+          icon: Zap,
+        },
+        {
+          title: "Library",
+          url: "/x/library/templates",
+          icon: BookOpen,
+        },
+      ],
     },
   ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "/x/settings",
-      icon: Settings2,
-    }
-  ] as NavItem[]
-
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { toggleSidebar, open } = useSidebar()
+
   return (
-    <Sidebar {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              {/* Add your button content here */}
+              <a href="#">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <img src="/assets/icons/4.png" alt="Sidebar Icon" className="size-4" />
+                </div>
+                <div className="flex flex-col gap-0.5 leading-none">
+                  <span className="font-semibold">Documentation</span>
+                  <span className="">v1.0.0</span>
+                </div>
+              </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        {data.navMain.map((item) => (
+          <SidebarGroup key={item.title}>
+            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {item.items && item.items.map((subItem, index) => (
+                  <SidebarMenuItem key={`${subItem.title}-${index}`}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={subItem.title}
+                    >
+                      <a href={subItem.url}>
+                        <subItem.icon className="size-5" />
+                        <span>{subItem.title}</span>
+                      </a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
       <SidebarFooter>
-       
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="Settings">
+              <a href="/x/settings">
+                <Settings2 className="size-4" />
+                <span>Settings</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={toggleSidebar} tooltip={open ? "Collapse sidebar" : "Expand sidebar"}>
+              {open ? <SquareChevronLeft className="size-4" /> : <SquareChevronRight className="size-4" />}
+              <span>{open ? "Collapse sidebar" : "Expand sidebar"}</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   )
