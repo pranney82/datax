@@ -6,11 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import CFDropdown from "@/components/cf-dropdown";
 import LeadsLostQuery from "./leadsLostQuery";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { MoreVertical } from 'lucide-react';
+
 
 export default function LeadsLost() {
     const [selectedField, setSelectedField] = useState("");
@@ -154,11 +157,21 @@ export default function LeadsLost() {
                                 tickFormatter={(value) => value.length > 30 ? `${value.substring(0, 30)}` : value}
                             />
                             <ChartTooltip 
-                                content={
-                                    <ChartTooltipContent 
-                                        labelClassName="text-sm sm:text-m"
-                                    />
-                                } 
+                                content={({ active, payload }) => {
+                                    if (active && payload && payload.length) {
+                                        return (
+                                            <div className="bg-background p-2 rounded-lg shadow-lg border">
+                                                <p className="text-foreground text-xs sm:text-sm">
+                                                    {payload[0].name}
+                                                </p>
+                                                <p className="text-muted-foreground text-xs sm:text-sm">
+                                                    {payload[0].value}
+                                                </p>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                }}
                             />
                             <Bar dataKey="count" radius={[0, 4, 4, 0]}>
                                 {data.map((entry, index) => (

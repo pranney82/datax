@@ -15,10 +15,11 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, KeyRound, Link } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/context/auth-context"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 
 type Organization = {
   id: string;
@@ -50,6 +51,9 @@ export default function SettingsPage() {
   // Add state for organizations
   const [organizations, setOrganizations] = useState<Organization[]>([])
   const [isLoadingOrgs, setIsLoadingOrgs] = useState(false)
+
+  // Add state for dialog
+  const [grantKeyDialogOpen, setGrantKeyDialogOpen] = useState(false)
 
   // Fetch user settings from Firestore
   useEffect(() => {
@@ -188,6 +192,9 @@ export default function SettingsPage() {
     }
   }, [settings.jtgrantkey])
 
+  // Add dialog handler
+  const gkDialog = () => setGrantKeyDialogOpen(true)
+
   return (
     <main className="flex flex-col flex-1 p-0">
       <header className="flex h-16 shrink-0 items-center gap-2">
@@ -224,6 +231,10 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+                  <Button variant="outline" className="w-full" onClick={gkDialog}>
+                    <KeyRound className="h-4 w-4" />
+                    <span>Retrieve API Grant Key</span>
+                  </Button>
               <div className="space-y-2">
                 <Label htmlFor="jobtread-api">JobTread API Grant Key</Label>
                 <div className="relative">
@@ -331,6 +342,30 @@ export default function SettingsPage() {
           </Card>
         </div>
       </div>
+
+      <Dialog open={grantKeyDialogOpen} onOpenChange={setGrantKeyDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>How to get your API Grant Key</DialogTitle>
+            <DialogDescription className="space-y-4 pt-4">
+              <p>1. Click the button below to open JobTread in a new window</p>
+              <p>2. We will automatically take you to the API Grant Settings page</p>
+              <p>3. Click "Add Grant to All Organizations"</p>
+              <p>4. Name it something like "DATAx Key," doesn't need to be exact. Create.</p>
+              <p>5. Copy the Grant Key and paste it back here</p>
+              
+              <Button 
+                 
+                className="w-full mt-4"
+                onClick={() => window.open('https://app.jobtread.com/settings/integrations/api/grants', '_blank')}
+              >
+                <KeyRound className="h-4 w-4 mr-2" />
+                Open JobTread API Settings
+              </Button>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </main>
   )
 }

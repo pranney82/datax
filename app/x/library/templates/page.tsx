@@ -123,7 +123,7 @@ export default function TemplatesPage() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="/library">Library</BreadcrumbLink>
+                <BreadcrumbLink>Library</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
