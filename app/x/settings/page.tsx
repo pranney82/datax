@@ -302,35 +302,10 @@ export default function SettingsPage() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Notifications</Label>
-                  <div className="text-sm text-muted-foreground">
-                    Receive notifications about updates and alerts
-                  </div>
-                </div>
-                <Switch
-                  checked={settings.enableNotifications}
-                  onCheckedChange={handleToggleChange('enableNotifications')}
-                />
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Auto Sync</Label>
-                  <div className="text-sm text-muted-foreground">
-                    Automatically sync data with external services
-                  </div>
-                </div>
-                <Switch
-                  checked={settings.enableAutoSync}
-                  onCheckedChange={handleToggleChange('enableAutoSync')}
-                />
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
                   <Label>Dark Mode</Label>
                   <div className="text-sm text-muted-foreground">
                     Enable dark mode for the interface
+                    <div className="text-xs text-muted-foreground">Coming Soon</div>
                   </div>
                 </div>
                 <Switch

@@ -2,12 +2,12 @@
 
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { PlusCircle, ExternalLink, Map, BarChart3, Zap, BookOpen, Settings2, Rocket } from 'lucide-react'
+import { PlusCircle, ExternalLink, Map, BarChart3, Zap, BookOpen, Settings2, Rocket, CheckCircle2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useAuth } from "@/lib/context/auth-context"
-import { getFirestore, doc, getDoc } from "firebase/firestore"
+import { getFirestore, doc, getDoc, addDoc, collection } from "firebase/firestore"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { InspirationQuote } from "@/components/ui/InspirationQuote"
@@ -33,6 +33,12 @@ export default function HomePage() {
   const { user } = useAuth();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [featureRequest, setFeatureRequest] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [isLoadingOrgs, setIsLoadingOrgs] = useState(false);
+  const [orgID, setOrgID] = useState('');
+  const [grantKey, setGrantKey] = useState('');
+  const [featureTitle, setFeatureTitle] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -42,6 +48,12 @@ export default function HomePage() {
       const userDoc = await getDoc(doc(db, 'users', user.uid));
       if (userDoc.exists()) {
         setUserData(userDoc.data() as UserData);
+      }
+      const orgId = userDoc.data()?.org;
+      const orgDoc = await getDoc(doc(db, 'orgs', orgId));
+      if (orgDoc.exists()) {
+        setOrgID(orgDoc.data()?.orgID);
+        setGrantKey(orgDoc.data()?.grantKey);
       }
     };
 
@@ -71,11 +83,83 @@ export default function HomePage() {
     }
   ]
 
-  const handleFeatureRequestSubmit = (e: React.FormEvent) => {
+  const handleFeatureRequestSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Feature request submitted:', featureRequest);
-    setFeatureRequest('');
+    
+    if (!user?.email || !featureTitle.trim() || !featureRequest.trim()) {
+      console.error('Missing required fields');
+      return;
+    }
+
+    try {
+      const db = getFirestore();
+      await addDoc(collection(db, 'featureRequests'), {
+        email: user.email,
+        title: featureTitle,
+        description: featureRequest,
+        createdAt: new Date(),
+        status: 'new'
+      });
+
+      setFeatureTitle('');
+      setFeatureRequest('');
+      
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    } catch (error) {
+      console.error('Error submitting feature request:', error);
+    }
   };
+
+  const orgLookUp = async () => {
+    if (!grantKey) {
+      console.error('Missing grantKey')
+      return null
+    }
+
+    setIsLoadingOrgs(true)
+    try {
+      const response = await fetch('/api/jtfetch', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: {
+            "$": { "grantKey": grantKey },
+              "organization": {
+                "$": {
+                  "id": orgID
+                },
+                "id": {},
+                "name": {}
+              }
+          }
+        })
+      })
+    
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      const org = data?.organization?.name
+      
+      setCompanyName(org)
+
+      return data
+    } catch (error) {
+      console.error('Error fetching query:', error)
+      return null
+    } finally {
+      setIsLoadingOrgs(false)
+    }
+  }
+
+  useEffect(() => {
+    orgLookUp();
+  }, [orgID, grantKey]);
 
   const greeting = userData?.name || user?.displayName ? `Welcome, ${userData?.name || user?.displayName}!` : 'Welcome to your dashboard!';
 
@@ -85,11 +169,19 @@ export default function HomePage() {
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ml-1 hover:bg-[#fff] rounded-full transition-colors duration-200" />
         </div>
-      </header> 
+      </header>
+      
+      {showSuccess && (
+        <div className="fixed top-4 right-4 flex items-center gap-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50 animate-fade-in-down">
+          <CheckCircle2 className="w-5 h-5" />
+          <span>Feature request submitted successfully!</span>
+        </div>
+      )}
+      
       <div className="flex flex-1 flex-col gap-4 p-6 pt-4 animate-fadeIn">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-[#333]">Company Name Here</h1>
+            <h1 className="text-3xl font-bold text-[#333]">{isLoadingOrgs ? 'Loading...' : companyName}</h1>
             <p className="text-lg text-[#555]">{greeting}</p>
           </div>
         </div>
@@ -154,8 +246,15 @@ export default function HomePage() {
             </CardHeader>
             <CardContent className="pt-4">
               <form onSubmit={handleFeatureRequestSubmit} className="space-y-4">
+                <input
+                  type="text"
+                  placeholder="Feature name"
+                  value={featureTitle}
+                  onChange={(e) => setFeatureTitle(e.target.value)}
+                  className="w-full px-3 py-2 border-2 border-[#e0e0e0] rounded-md focus:border-[#ffd400] focus:ring-[#ffd400] transition-all duration-200"
+                />
                 <Textarea
-                  placeholder="What feature would you like to see?"
+                  placeholder="Describe the feature you'd like to see..."
                   value={featureRequest}
                   onChange={(e) => setFeatureRequest(e.target.value)}
                   className="min-h-[100px] border-2 border-[#e0e0e0] focus:border-[#ffd400] focus:ring-[#ffd400] transition-all duration-200"
@@ -168,7 +267,12 @@ export default function HomePage() {
                     <Map className="w-4 h-4" />
                     View our roadmap <ExternalLink className="w-4 h-4" />
                   </Link>
-                  <Button type="submit" className="bg-[#ffd400] text-[#333] hover:bg-[#ffd400]/80 transition-colors duration-200">Submit Request</Button>
+                  <Button 
+                    type="submit" 
+                    className="bg-[#ffd400] text-[#333] hover:bg-[#ffd400]/80 transition-colors duration-200"
+                  >
+                    Submit Request
+                  </Button>
                 </div>
               </form>
             </CardContent>
