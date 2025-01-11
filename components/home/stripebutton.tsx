@@ -1,6 +1,9 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { getAuth } from "firebase/auth";
+import { doc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { getDoc } from "firebase/firestore";
 
 interface StripePaymentButtonProps {
   priceId: string;
@@ -18,12 +21,18 @@ const StripePaymentButton: React.FC<StripePaymentButtonProps> = ({ priceId, clas
     
     try {
       const uid = currentUser.uid;
+      const userDocRef = doc(db, 'users', uid);
+      const userDoc = await getDoc(userDocRef);
+      const userData = userDoc.data();
+      const orgID = userData?.org;
+
+
       const idToken = await currentUser.getIdToken();
       const email = currentUser.email;
       const response = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId, uid, idToken, email }),
+        body: JSON.stringify({ priceId, uid, idToken, email, orgID }),
       });
 
       const data = await response.json();
