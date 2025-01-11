@@ -39,6 +39,8 @@ export default function HomePage() {
   const [grantKey, setGrantKey] = useState('');
   const [featureTitle, setFeatureTitle] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [confirmationMessage, setConfirmationMessage] = useState<string>('');
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -105,7 +107,12 @@ export default function HomePage() {
       setFeatureRequest('');
       
       setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
+      setConfirmationMessage('Feature request submitted successfully!');
+      
+      setTimeout(() => {
+        setShowSuccess(false);
+        setConfirmationMessage('');
+      }, 3000);
     } catch (error) {
       console.error('Error submitting feature request:', error);
     }
@@ -275,6 +282,11 @@ export default function HomePage() {
                   </Button>
                 </div>
               </form>
+              {confirmationMessage && (
+                <div className="mt-4 p-4 bg-green-100 text-green-700 rounded-lg">
+                  {confirmationMessage}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
