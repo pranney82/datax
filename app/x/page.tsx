@@ -41,7 +41,6 @@ export default function HomePage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState<string>('');
 
-
   useEffect(() => {
     const fetchUserData = async () => {
       if (!user?.uid) return;
@@ -76,7 +75,7 @@ export default function HomePage() {
     {
       id: '2',
       title: 'DATAx is live!',
-      content: "DATAx is live! Available to all JOBTREAD users starting today. We're excited to see how you use it.",
+      content: "DATAx is live! Available to all JOBTREAD users starting today!",
       date: 'Jan 7 2025',
       author: {
         name: 'Mike Peters',
@@ -200,7 +199,7 @@ export default function HomePage() {
         <div className="grid gap-6 md:grid-cols-2">
           <Card className="md:col-span-1 shadow-md hover:shadow-lg transition-shadow duration-200">
             <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
-              <CardTitle className="text-xl">Company Updates</CardTitle>
+              <CardTitle className="text-xl">DATAx Updates</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <div className="space-y-6">
@@ -253,19 +252,28 @@ export default function HomePage() {
             </CardHeader>
             <CardContent className="pt-4">
               <form onSubmit={handleFeatureRequestSubmit} className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Feature name"
-                  value={featureTitle}
-                  onChange={(e) => setFeatureTitle(e.target.value)}
-                  className="w-full px-3 py-2 border-2 border-[#e0e0e0] rounded-md focus:border-[#ffd400] focus:ring-[#ffd400] transition-all duration-200"
-                />
-                <Textarea
-                  placeholder="Describe the feature you'd like to see..."
-                  value={featureRequest}
-                  onChange={(e) => setFeatureRequest(e.target.value)}
-                  className="min-h-[100px] border-2 border-[#e0e0e0] focus:border-[#ffd400] focus:ring-[#ffd400] transition-all duration-200"
-                />
+                <div className="space-y-2">
+                  <label htmlFor="featureTitle" className="block text-sm font-medium text-gray-700">Feature name</label>
+                  <input
+                    id="featureTitle"
+                    type="text"
+                    placeholder="Feature name"
+                    value={featureTitle}
+                    onChange={(e) => setFeatureTitle(e.target.value)}
+                    className="w-full px-3 py-2 bg-white border-2 border-[#e0e0e0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:border-[#ffd400] transition-all duration-200"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="featureDescription" className="block text-sm font-medium text-gray-700">Feature description</label>
+                  <textarea
+                    id="featureDescription"
+                    placeholder="Describe the feature you'd like to see..."
+                    value={featureRequest}
+                    onChange={(e) => setFeatureRequest(e.target.value)}
+                    rows={4}
+                    className="w-full px-3 py-2 bg-white border-2 border-[#e0e0e0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:border-[#ffd400] transition-all duration-200 resize-none"
+                  />
+                </div>
                 <div className="flex justify-between items-center">
                   <Link 
                     href="/roadmap" 
