@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST!, {
+//in dev use test key STRIPE_SECRET_KEY_TEST
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-12-18.acacia',
 });
 
@@ -9,10 +10,10 @@ export const runtime = 'nodejs'
 
 export async function POST(req: Request) {
   try {
-    const { priceId, uid, email } = await req.json();
+    const { priceId, uid, email, orgID } = await req.json();
 
-    if (!priceId || !uid || !email) {
-      return NextResponse.json({ error: 'Price ID, UID, and email are required' }, { status: 400 });
+    if (!priceId || !uid || !email || !orgID) {
+      return NextResponse.json({ error: 'Price ID, UID, email, and orgID are required' }, { status: 400 });
     }
 
     // Create a Stripe Checkout session
@@ -28,8 +29,9 @@ export async function POST(req: Request) {
       customer_email: email,
       metadata: {
         uid: uid,
+        orgID: orgID,
       },
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/x/settings`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
     });
 

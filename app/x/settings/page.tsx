@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import { doc, getDoc, updateDoc } from "firebase/firestore"
+import { doc, getDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import {
   Breadcrumb,
@@ -15,10 +15,12 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, KeyRound } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/context/auth-context"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import Link from "next/link"
 
 type Organization = {
   id: string;
@@ -29,6 +31,8 @@ type JTMembership = {
   organization: {
     id: string;
     name: string;
+    subscriptionStatus: string;
+    subscriptionType: string;
   };
 };
 
@@ -39,6 +43,9 @@ export default function SettingsPage() {
   const [settings, setSettings] = useState({
     jtgrantkey: '',
     jtorgid: '',
+    dataxorgid: '',
+    subscriptionStatus: '',
+    subscriptionType: '',
     enableNotifications: false,
     enableAutoSync: false,
     enableDarkMode: false,
@@ -50,6 +57,9 @@ export default function SettingsPage() {
   // Add state for organizations
   const [organizations, setOrganizations] = useState<Organization[]>([])
   const [isLoadingOrgs, setIsLoadingOrgs] = useState(false)
+
+  // Add state for dialog
+  const [grantKeyDialogOpen, setGrantKeyDialogOpen] = useState(false)
 
   // Fetch user settings from Firestore
   useEffect(() => {
@@ -68,13 +78,31 @@ export default function SettingsPage() {
 
       const orgData = orgDoc.data()
       
+      // Search stripedata collection for matching orgID
+      const stripeQuery = query(
+        collection(db, 'stripedata'),
+        where('orgID', '==', userData.org)
+      )
+      
+      const stripeSnapshot = await getDocs(stripeQuery)
+      let subscriptionStatus = 'free'
+      let subscriptionType = 'free'
+      
+      if (!stripeSnapshot.empty) {
+        const stripeData = stripeSnapshot.docs[0].data()
+        subscriptionStatus = stripeData.subscriptionStatus || 'error'
+        subscriptionType = stripeData.tier || 'error'
+      }
+
       setSettings(prev => ({
         ...prev,
         jtgrantkey: orgData.grantKey || '',
         jtorgid: orgData.orgID || '',
+        dataxorgid: userData.org || '',
+        subscriptionStatus,
+        subscriptionType,
         // Keep other settings as is
       }))
-
     }
 
     fetchSettings()
@@ -188,6 +216,9 @@ export default function SettingsPage() {
     }
   }, [settings.jtgrantkey])
 
+  // Add dialog handler
+  const gkDialog = () => setGrantKeyDialogOpen(true)
+
   return (
     <main className="flex flex-col flex-1 p-0">
       <header className="flex h-16 shrink-0 items-center gap-2">
@@ -224,6 +255,10 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+                  <Button variant="outline" className="w-full" onClick={gkDialog}>
+                    <KeyRound className="h-4 w-4" />
+                    <span>Retrieve API Grant Key</span>
+                  </Button>
               <div className="space-y-2">
                 <Label htmlFor="jobtread-api">JobTread API Grant Key</Label>
                 <div className="relative">
@@ -291,35 +326,10 @@ export default function SettingsPage() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Notifications</Label>
-                  <div className="text-sm text-muted-foreground">
-                    Receive notifications about updates and alerts
-                  </div>
-                </div>
-                <Switch
-                  checked={settings.enableNotifications}
-                  onCheckedChange={handleToggleChange('enableNotifications')}
-                />
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Auto Sync</Label>
-                  <div className="text-sm text-muted-foreground">
-                    Automatically sync data with external services
-                  </div>
-                </div>
-                <Switch
-                  checked={settings.enableAutoSync}
-                  onCheckedChange={handleToggleChange('enableAutoSync')}
-                />
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
                   <Label>Dark Mode</Label>
                   <div className="text-sm text-muted-foreground">
                     Enable dark mode for the interface
+                    <div className="text-xs text-muted-foreground">Coming Soon</div>
                   </div>
                 </div>
                 <Switch
@@ -329,8 +339,61 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Billing</CardTitle>
+              <CardDescription>
+                Manage your billing information
+              </CardDescription>
+                <div className="space-y-2">
+                  <div className="text-sm py-2">
+                    Subscription Status: <span className="font-semibold">{settings.subscriptionStatus}</span>
+                  </div>
+                  <div className="text-sm py-2">
+                    Subscription Type: <span className="font-semibold">{settings.subscriptionType}</span>
+                  </div>
+                </div>
+                {settings.subscriptionStatus === 'error' && (
+                  <div className="text-sm py-2">
+                    <span className="font-semibold text-red-500">Error fetching subscription data</span>
+                  </div>
+                )}
+                {settings.subscriptionStatus === 'free' ? (
+                  <Link href={process.env.NEXT_PUBLIC_APP_URL + '/pricing'}>
+                    <Button className="w-full">Upgrade to PRO</Button>
+                  </Link>
+                ) : (
+                  <Button className="w-full" onClick={() => window.open('https://billing.stripe.com/p/login/7sIdSU6y5g7f2WI7ss', '_blank')}>Manage Subscription</Button>
+                )}
+              
+            </CardHeader>
+          </Card>
         </div>
       </div>
+
+      <Dialog open={grantKeyDialogOpen} onOpenChange={setGrantKeyDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>How to get your API Grant Key</DialogTitle>
+            <DialogDescription className="space-y-4 pt-4">
+              <p>1. Click the button below to open JobTread in a new window</p>
+              <p>2. We will automatically take you to the API Grant Settings page</p>
+              <p>3. Click &quot;Add Grant to All Organizations&quot;</p>
+              <p>4. Name it something like &quot;DATAx Key,&quot; doesn&apos;t need to be exact. Create.</p>
+              <p>5. Copy the Grant Key and paste it back here</p>
+              
+              <Button 
+                 
+                className="w-full mt-4"
+                onClick={() => window.open('https://app.jobtread.com/settings/integrations/api/grants', '_blank')}
+              >
+                <KeyRound className="h-4 w-4 mr-2" />
+                Open JobTread API Settings
+              </Button>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </main>
   )
 }

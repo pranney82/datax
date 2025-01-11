@@ -29,6 +29,103 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST!, {
   typescript: true
 });
 
+async function handleNewSubscription(session: Stripe.Checkout.Session) {
+  const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+  let productName = 'Unknown';
+  let priceId = '';
+
+  if (lineItems.data.length > 0) {
+    priceId = lineItems.data[0].price?.id || '';
+    if (priceId) {
+      const price = await stripe.prices.retrieve(priceId);
+      const product = await stripe.products.retrieve(price.product as string);
+      productName = product.name;
+      console.log("Product Name:", productName);
+    }
+  }
+
+  const db = getFirestore();
+  await db.collection('stripedata').doc(session.id).set({
+    orgID: session.metadata?.orgID || '',
+    customerId: session.customer,
+    customerEmail: session.customer_email,
+    subscriptionStatus: 'active',
+    tier: productName,
+    priceId: priceId,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    sessionId: session.id,
+    amount: session.amount_total,
+    currency: session.currency,
+    productDetails: {
+      name: productName,
+      priceId: priceId
+    }
+  });
+}
+
+async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
+  const db = getFirestore();
+  
+  const price = await stripe.prices.retrieve(subscription.items.data[0].price.id);
+  const product = await stripe.products.retrieve(price.product as string);
+
+  // Find the existing subscription document
+  const querySnapshot = await db.collection('stripedata')
+    .where('customerId', '==', subscription.customer)
+    .limit(1)
+    .get();
+
+  if (!querySnapshot.empty) {
+    const docRef = querySnapshot.docs[0].ref;
+    await docRef.update({
+      subscriptionStatus: subscription.status,
+      tier: product.name,
+      priceId: price.id,
+      updatedAt: new Date(),
+      amount: subscription.items.data[0].price.unit_amount,
+      currency: subscription.currency,
+      productDetails: {
+        name: product.name,
+        priceId: price.id
+      }
+    });
+  }
+}
+
+async function handleSubscriptionCancellation(subscription: Stripe.Subscription) {
+  const db = getFirestore();
+  const querySnapshot = await db.collection('stripedata')
+    .where('customerId', '==', subscription.customer)
+    .limit(1)
+    .get();
+
+  if (!querySnapshot.empty) {
+    const docRef = querySnapshot.docs[0].ref;
+    await docRef.update({
+      subscriptionStatus: 'cancelled',
+      updatedAt: new Date(),
+    });
+  }
+}
+
+async function handleFailedPayment(invoice: Stripe.Invoice) {
+  const db = getFirestore();
+  const querySnapshot = await db.collection('stripedata')
+    .where('customerId', '==', invoice.customer)
+    .limit(1)
+    .get();
+
+  if (!querySnapshot.empty) {
+    const docRef = querySnapshot.docs[0].ref;
+    await docRef.update({
+      subscriptionStatus: 'past_due',
+      updatedAt: new Date(),
+      lastFailedPayment: new Date(),
+    });
+  }
+}
+
 export async function POST(req: NextRequest) {
   console.log('Webhook endpoint hit!');
   
@@ -66,58 +163,41 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object as Stripe.Checkout.Session;
-      console.log("Processing checkout session:", session.id);
-
-      // Get product details
-      const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
-      let productName = 'Unknown';
-      let priceId = '';
-
-      if (lineItems.data.length > 0) {
-        priceId = lineItems.data[0].price?.id || '';
-        if (priceId) {
-          const price = await stripe.prices.retrieve(priceId);
-          const product = await stripe.products.retrieve(price.product as string);
-          productName = product.name;
-          console.log("Product Name:", productName);
-        }
-      }
-
-      const db = getFirestore();
-      try {
-        console.log("Attempting to save to Firestore...");
-        await db.collection('stripedata').doc(session.id).set({
-          customerId: session.customer,
-          customerEmail: session.customer_email,
-          subscriptionStatus: 'active',
-          tier: productName,
-          priceId: priceId,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          sessionId: session.id,
-          amount: session.amount_total,
-          currency: session.currency,
-          productDetails: {
-            name: productName,
-            priceId: priceId
-          }
+    switch (event.type) {
+      case "checkout.session.completed":
+        const session = event.data.object as Stripe.Checkout.Session;
+        await handleNewSubscription(session);
+        return NextResponse.json({ 
+          message: "New subscription processed successfully",
+          sessionId: session.id
         });
-        console.log("Successfully saved to Firestore!");
-      } catch (dbError) {
-        console.error("Firestore save error:", dbError);
-        throw dbError;
-      }
 
-      return NextResponse.json({ 
-        message: "Subscription processed and saved successfully",
-        sessionId: session.id,
-        productName: productName
-      });
-    } else {
-      console.log(`Unhandled event type: ${event.type}`);
-      return NextResponse.json({ message: "Unhandled event type" }, { status: 200 });
+      case "customer.subscription.updated":
+        const subscription = event.data.object as Stripe.Subscription;
+        await handleSubscriptionUpdate(subscription);
+        return NextResponse.json({ 
+          message: "Subscription updated successfully"
+        });
+
+      case "customer.subscription.deleted":
+        const cancelledSub = event.data.object as Stripe.Subscription;
+        await handleSubscriptionCancellation(cancelledSub);
+        return NextResponse.json({ 
+          message: "Subscription cancelled successfully"
+        });
+
+      case "invoice.payment_failed":
+        const invoice = event.data.object as Stripe.Invoice;
+        await handleFailedPayment(invoice);
+        return NextResponse.json({ 
+          message: "Failed payment handled successfully"
+        });
+
+      default:
+        console.log(`Unhandled event type: ${event.type}`);
+        return NextResponse.json({ 
+          message: "Unhandled event type" 
+        }, { status: 200 });
     }
   } catch (err: Error | unknown) {
     console.error("Error processing webhook:", (err as Error).message);

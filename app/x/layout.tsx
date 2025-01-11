@@ -23,9 +23,9 @@ export default function RootLayout({
       <ThemeProvider
           attribute="class"
           defaultTheme="light"
-          enableSystem={false}
+          enableSystem
           disableTransitionOnChange
-        >
+        > 
             <SidebarProvider>
                 <AppSidebar />
               <SidebarInset className="flex-1">
@@ -44,7 +44,7 @@ export default function RootLayout({
           <ThemeProvider
           attribute="class"
           defaultTheme="light"
-          enableSystem={false}
+          enableSystem
           disableTransitionOnChange
         >
             <SidebarProvider>

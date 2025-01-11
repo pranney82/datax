@@ -24,6 +24,7 @@ import { CreateWebhookButton } from "./zwebhook"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import FeatureProtect from "@/components/admin/featureProtect"
 
 interface Webhook {
   url: string
@@ -102,70 +103,74 @@ export default function ZillowPage() {
   
   
   return (
-    <main className="flex flex-col flex-1 p-0">
-      <header className="flex h-16 shrink-0 items-center gap-2">
-        <div className="flex items-center gap-2 px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="/x/toolbox">Toolbox</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Zillow Integration</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-      </header>
-
-      <div className="flex flex-col gap-8 p-6">
-        <div>
-          <h1 className="text-2xl font-semibold mb-6">Zillow Data Import</h1>
-          <div className="grid grid-cols-2 gap-6">
-          <ModernDashboardCard 
-                title="Automatic Zillow Data"
-                description="Enable automatic Zillow data import on job creation. This will create a Zestimate and Zillow URL for each job created in JobTread.">
-                
-                <div className="flex flex-col space-y-2">
-                  <div className="flex justify-between items-center">
-                    <Label htmlFor="gmap-cover-photo">
-                      Webhook URL
-                    </Label>
-                  </div>
-                  <div className="flex w-full gap-2">
-                    <Input 
-                      className="w-full" 
-                      type="text" 
-                      id="webhook-url"
-                      value="https://winyourdata.com/api/zillow"
-                      disabled
-                    />
-                  </div>
-                  {isLoading ? (
-                    <Button disabled className="w-full">
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Loading...
-                    </Button>
-                  ) : error ? (
-                    <div className="text-sm text-red-600">{error}</div>
-                  ) : (
-                    <CreateWebhookButton 
-                      isConnected={webhookExists} 
-                      orgId={orgId} 
-                      grantKey={grantKey}
-                    />
-                  )}
-                </div>
-              </ModernDashboardCard>
-            <SingleRun />
-            <Card3 />
-            <Card4 />
+    
+      <main className="flex flex-col flex-1 p-0">
+        <header className="flex h-16 shrink-0 items-center gap-2">
+          <div className="flex items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="/x/toolbox">Toolbox</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Zillow Integration</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
           </div>
-        </div>        
-      </div>
-    </main>
+        </header>
+
+        <div className="flex flex-col gap-8 p-6">
+          <div>
+            <h1 className="text-2xl font-semibold mb-6">Zillow Data Import</h1>
+            <FeatureProtect featureName="Zillow Data Import">
+            <div className="grid grid-cols-2 gap-6">
+            <ModernDashboardCard 
+                  title="Automatic Zillow Data"
+                  description="Enable automatic Zillow data import on job creation. This will create a Zestimate and Zillow URL for each job created in JobTread.">
+                  
+                  <div className="flex flex-col space-y-2">
+                    <div className="flex justify-between items-center">
+                      <Label htmlFor="gmap-cover-photo">
+                        Webhook URL
+                      </Label>
+                    </div>
+                    <div className="flex w-full gap-2">
+                      <Input 
+                        className="w-full" 
+                        type="text" 
+                        id="webhook-url"
+                        value="https://winyourdata.com/api/zillow"
+                        disabled
+                      />
+                    </div>
+                    {isLoading ? (
+                      <Button disabled className="w-full">
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Loading...
+                      </Button>
+                    ) : error ? (
+                      <div className="text-sm text-red-600">{error}</div>
+                    ) : (
+                      <CreateWebhookButton 
+                        isConnected={webhookExists} 
+                        orgId={orgId} 
+                        grantKey={grantKey}
+                      />
+                    )}
+                  </div>
+                </ModernDashboardCard>
+              <SingleRun />
+              <Card3 />
+              <Card4 />
+            </div>
+            </FeatureProtect>
+          </div>        
+        </div>
+      </main>
+    
   )
 }
