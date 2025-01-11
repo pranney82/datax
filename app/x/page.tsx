@@ -33,6 +33,7 @@ export default function HomePage() {
   const { user } = useAuth();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [featureRequest, setFeatureRequest] = useState('');
+  const [confirmationMessage, setConfirmationMessage] = useState('');
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -73,7 +74,11 @@ export default function HomePage() {
 
   const handleFeatureRequestSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Feature request submitted:', featureRequest);
+    const subject = encodeURIComponent('Feature Request on X');
+    const body = encodeURIComponent(featureRequest);
+    const mailtoLink = `mailto:contractorcto@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = mailtoLink;
+    setConfirmationMessage('We have received your feature request. Thank you for helping make DATAx better!');
     setFeatureRequest('');
   };
 
@@ -168,9 +173,16 @@ export default function HomePage() {
                     <Map className="w-4 h-4" />
                     View our roadmap <ExternalLink className="w-4 h-4" />
                   </Link>
-                  <Button type="submit" className="bg-[#ffd400] text-[#333] hover:bg-[#ffd400]/80 transition-colors duration-200">Submit Request</Button>
+                  <Button type="submit" className="bg-[#ffd400] text-[#333] hover:bg-[#ffd400]/80 transition-colors duration-200">
+                    Submit Request
+                  </Button>
                 </div>
               </form>
+              {confirmationMessage && (
+                <div className="mt-4 p-4 bg-green-100 text-green-700 rounded-lg">
+                  {confirmationMessage}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

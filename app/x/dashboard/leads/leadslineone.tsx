@@ -1,25 +1,10 @@
 "use client"
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLeadsCount } from "@/lib/hooks/use-leads-count";
 import { Payload } from 'recharts/types/component/DefaultLegendContent';
-
-interface StatusCount {
-  status: string;
-  count: number;
-}
-
-interface Block3Item {
-  start: string;
-  end: string;
-  statusCounts: StatusCount[];
-}
-
-interface StatusObject {
-  [key: string]: number;
-}
 
 interface TransformedDataItem {
   month: string;
@@ -29,18 +14,36 @@ interface TransformedDataItem {
   pending: number;
 }
 
-interface CustomTooltipProps {
-  active?: boolean;
-  payload?: Array<{
-    name: string;
-    value: number;
-    color: string;
-  }>;
-  label?: string;
+interface Block3Item {
+  start: string;
+  statusCounts: StatusCount[];
 }
+
+interface StatusCount {
+  status: string;
+  count: number;
+}
+
+interface StatusObject {
+  [key: string]: number;
+}
+
+// ... (keep all the existing interfaces)
 
 export default function LeadsAreaChart() {
   const { block3StatusCounts } = useLeadsCount();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768); // Adjust this breakpoint as needed
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const transformedData: TransformedDataItem[] = block3StatusCounts.map((item: Block3Item) => {
     const statusObj: StatusObject = item.statusCounts.reduce((acc: StatusObject, curr: StatusCount) => {
@@ -57,10 +60,10 @@ export default function LeadsAreaChart() {
   });
   
   const statusColors: { [key: string]: string } = {
-    'approved': '#FFD400', // Bright yellow (as requested)
-    'denied': '#FF6B6B',   // Soft red
-    'draft': '#4ECDC4',    // Teal
-    'pending': '#45B7D1'   // Sky blue
+    'approved': '#FFD400',
+    'denied': '#FF6B6B',
+    'draft': '#4ECDC4',
+    'pending': '#45B7D1'
   };
 
   const [hiddenSeries, setHiddenSeries] = useState<{ [key: string]: boolean }>({});
@@ -72,6 +75,12 @@ export default function LeadsAreaChart() {
     }));
   };
 
+  interface CustomTooltipProps {
+    active?: boolean;
+    payload?: any[];
+    label?: string;
+  }
+  
   const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
@@ -105,6 +114,7 @@ export default function LeadsAreaChart() {
               stroke="#9CA3AF"
               tick={{ fill: '#333333' }}
               tickLine={{ stroke: '#9CA3AF' }}
+              interval={isMobile ? 1 : 0} // Show every other tick on mobile
             />
             <YAxis
               stroke="#9CA3AF"
