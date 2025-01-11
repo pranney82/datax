@@ -13,18 +13,6 @@ import { getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/lib/context/auth-context";
 
-type QueryResponse = {
-    scope?: {
-        connection?: {
-          ["Amount:sum"]?: number;
-          ["Amount:avg"]?: number;
-          ["Amount:min"]?: number;
-          ["Amount:max"]?: number;
-          count?: number;
-        }
-      }
-}
-
 export default function Leads() {
   const { user } = useAuth()  
   const { setBlock4Metrics, dateRange } = useLeadsCount()

@@ -15,7 +15,7 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Eye, EyeOff, KeyRound, Link } from "lucide-react"
+import { Eye, EyeOff, KeyRound } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/context/auth-context"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -325,8 +325,8 @@ export default function SettingsPage() {
             <DialogDescription className="space-y-4 pt-4">
               <p>1. Click the button below to open JobTread in a new window</p>
               <p>2. We will automatically take you to the API Grant Settings page</p>
-              <p>3. Click "Add Grant to All Organizations"</p>
-              <p>4. Name it something like "DATAx Key," doesn't need to be exact. Create.</p>
+              <p>3. Click &quot;Add Grant to All Organizations&quot;</p>
+              <p>4. Name it something like &quot;DATAx Key,&quot; doesn&apos;t need to be exact. Create.</p>
               <p>5. Copy the Grant Key and paste it back here</p>
               
               <Button 
