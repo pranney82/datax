@@ -1,9 +1,9 @@
 "use client"
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Area } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLeadsCount } from "@/lib/hooks/use-leads-count";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/lib/context/auth-context";
@@ -14,11 +14,43 @@ interface ChartData {
     target: number;
 }
 
+interface CustomTooltipProps {
+    active?: boolean;
+    payload?: Array<{
+        name: string;
+        value: number;
+    }>;
+    label?: string;
+}
+
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="custom-tooltip bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                <p className="label font-semibold text-gray-700">{`${label}`}</p>
+                {payload.map((pld, index) => (
+                    <p key={index} className={`${pld.name === 'Actual Revenue' ? 'text-yellow-500' : 'text-black'} font-medium`}>
+                        {`${pld.name}: $${(pld.value / 10000).toFixed(0)}K`}
+                    </p>
+                ))}
+            </div>
+        );
+    }
+    return null;
+};
+
 export default function RevenueChart() {
     const { block4MonthlyMetrics, salesTarget, setSalesTarget } = useLeadsCount();
     const { user } = useAuth();
+    const [isMobile, setIsMobile] = useState(false);
 
-    // Keep the useEffect to fetch initial value
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     useEffect(() => {
         async function fetchSalesTarget() {
             if (!user?.uid) return;
@@ -30,7 +62,7 @@ export default function RevenueChart() {
                 if (userOrg) {
                     const orgDoc = await getDoc(doc(db, "orgs", userOrg));
                     const target = orgDoc.data()?.salesTarget || 0;
-                    setSalesTarget(target); // Use store's setSalesTarget
+                    setSalesTarget(target);
                 }
             } catch (error) {
                 console.error("Error fetching sales target:", error);
@@ -38,14 +70,10 @@ export default function RevenueChart() {
         }
 
         fetchSalesTarget();
-    }, [user]);
+    }, [user, setSalesTarget]);
 
-    // Transform data for the chart
-    const data: ChartData[] = block4MonthlyMetrics.map((metric, index) => {
-        // Calculate cumulative target
+    const chartData: ChartData[] = block4MonthlyMetrics.map((metric, index) => {
         const cumulativeTarget = salesTarget * (index + 1);
-        
-        // Calculate cumulative actual revenue by summing all months up to current index
         const cumulativeActual = block4MonthlyMetrics
             .slice(0, index + 1)
             .reduce((sum, m) => sum + (m.metrics.amountSum || 0), 0);
@@ -64,32 +92,84 @@ export default function RevenueChart() {
             </CardHeader>
             <CardContent>
                 <ResponsiveContainer width="100%" height={400}>
-                    <LineChart data={data}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
+                    <LineChart 
+                        data={chartData}
+                        margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
+                    >
+                        <XAxis 
+                            dataKey="month" 
+                            tickFormatter={(value, index) => {
+                                if (isMobile && index % 2 !== 0) {
+                                    return '';
+                                }
+                                return value;
+                            }}
+                            stroke="#9CA3AF"
+                            tick={{ fill: '#333333' }}
+                            tickLine={{ stroke: '#9CA3AF' }}
+                        />
                         <YAxis 
-                            tickFormatter={(value) => `$${(value / 1000)}k`}
+                            tickFormatter={(value) => `${(value / 10000).toFixed(0)}K`}
+                            stroke="#9CA3AF"
+                            tick={{ fill: '#333333' }}
+                            tickLine={{ stroke: '#9CA3AF' }}
                         />
-                        <Tooltip 
-                            formatter={(value) => [`$${value.toLocaleString()}`, undefined]}
+                        <Tooltip content={<CustomTooltip />} />
+                        <Legend 
+                            verticalAlign="bottom" 
+                            height={36}
+                            iconType="circle"
                         />
-                        <Legend />
+                        <defs>
+                            <linearGradient id="actualGradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#FFD400" stopOpacity={0.8}/>
+                                <stop offset="95%" stopColor="#FFD400" stopOpacity={0}/>
+                            </linearGradient>
+                        </defs>
+                        <Area 
+                            type="monotone" 
+                            dataKey="actual" 
+                            stroke="#FFD400" 
+                            fillOpacity={1}
+                            fill="url(#actualGradient)"
+                        />
                         <Line 
                             type="monotone" 
                             dataKey="actual" 
-                            stroke="#2563eb" 
-                            strokeWidth={2}
+                            stroke="#FFD400" 
+                            strokeWidth={3}
                             name="Actual Revenue"
-                            dot={{ r: 4 }}
+                            dot={{ r: 6, fill: "#FFD400", strokeWidth: 2, stroke: "#FFFFFF" }}
+                            activeDot={{ r: 8, fill: "#FFD400", strokeWidth: 2, stroke: "#FFFFFF" }}
                         />
                         <Line 
                             type="monotone" 
                             dataKey="target" 
-                            stroke="#dc2626" 
+                            stroke="#000000" 
                             strokeWidth={2}
-                            strokeDasharray="5 5"
                             name="Target Revenue"
-                            dot={{ r: 4 }}
+                            dot={(props: { cx?: number; cy?: number }) => {
+                                const { cx = 0, cy = 0 } = props;
+                                return (
+                                    <path
+                                        d={`M${cx-4},${cy} L${cx},${cy-4} L${cx+4},${cy} L${cx},${cy+4} Z`}
+                                        fill="#FFFFFF"
+                                        stroke="#000000"
+                                        strokeWidth={2}
+                                    />
+                                );
+                            }}
+                            activeDot={(props: { cx?: number; cy?: number }) => {
+                                const { cx = 0, cy = 0 } = props;
+                                return (
+                                    <path
+                                        d={`M${cx-6},${cy} L${cx},${cy-6} L${cx+6},${cy} L${cx},${cy+6} Z`}
+                                        fill="#FFFFFF"
+                                        stroke="#000000"
+                                        strokeWidth={2}
+                                    />
+                                );
+                            }}
                         />
                     </LineChart>
                 </ResponsiveContainer>
@@ -97,3 +177,4 @@ export default function RevenueChart() {
         </Card>
     );
 }
+

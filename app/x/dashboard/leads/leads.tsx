@@ -56,10 +56,10 @@ export default function Leads() {
                 <LeadsBarOne />
             </div>
             <div className="md:col-span-3">
-                <LeadsLost />
+                <LeadsPie />
             </div>
             <div className="md:col-span-3">
-                <LeadsPie />
+                <LeadsLost />
             </div>
         </div>
     </div>
