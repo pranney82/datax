@@ -23,9 +23,7 @@ type ChartDataType = {
     [key: string]: string | number;
 }
 
-interface CustomTooltipProps extends TooltipProps<number, string> {}
-
-const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
+const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
       <div className="custom-tooltip bg-white p-4 rounded-lg shadow-lg border border-gray-200" style={{ opacity: 1 }}>
@@ -161,7 +159,7 @@ export default function ImprovedLeadsSourceChart() {
                             <Tooltip content={<CustomTooltip />} />
                             <Legend 
                                 wrapperStyle={{ paddingTop: '20px' }}
-                                formatter={(value, entry, index) => (
+                                formatter={(value) => (
                                     <span style={{ color: '#333333' }}>{value}</span>
                                 )}
                                 payload={
@@ -227,3 +225,4 @@ export default function ImprovedLeadsSourceChart() {
     );
 }
 
+    

@@ -13,7 +13,16 @@ import LeadsPieQuery from "./leadspiequery"
 import { auth, db } from "@/lib/firebase"
 import { doc, getDoc, updateDoc } from "firebase/firestore"
 
-const CustomizedAxisTick = ({ x, y, payload, fontSize }: any) => {
+interface CustomizedAxisTickProps {
+  x: number;
+  y: number;
+  payload: {
+    value: string;
+  };
+  fontSize: number;
+}
+
+const CustomizedAxisTick: React.FC<CustomizedAxisTickProps> = ({ x, y, payload, fontSize }) => {
   const words = payload.value.split(' ');
   const lineHeight = fontSize * 1.2;
   const yOffset = words.length > 1 ? -lineHeight / 2 : 0;
@@ -179,7 +188,7 @@ export default function SimpleRadarChart() {
                 />
                 <PolarAngleAxis 
                   dataKey="subject" 
-                  tick={<CustomizedAxisTick fontSize={getFontSize()} />}
+                  tick={(props) => <CustomizedAxisTick {...props} fontSize={getFontSize()} />}
                   tickLine={false}
                   stroke="hsl(var(--muted-foreground))"
                 />

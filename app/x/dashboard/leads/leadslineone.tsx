@@ -28,8 +28,6 @@ interface StatusObject {
   [key: string]: number;
 }
 
-// ... (keep all the existing interfaces)
-
 export default function LeadsAreaChart() {
   const { block3StatusCounts } = useLeadsCount();
   const [isMobile, setIsMobile] = useState(false);
@@ -77,7 +75,11 @@ export default function LeadsAreaChart() {
 
   interface CustomTooltipProps {
     active?: boolean;
-    payload?: any[];
+    payload?: Array<{
+      name: string;
+      value: number;
+      color: string;
+    }>;
     label?: string;
   }
   
