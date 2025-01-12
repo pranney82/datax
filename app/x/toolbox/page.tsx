@@ -150,7 +150,7 @@ export default function FeaturesPage() {
     {
       title: "Feature Request",
       description: "Suggest a new feature for us to build.",
-      href: "/x",
+      href: "/x#feature-request",
       isPopular: false,
       status: "xxx"
     },
