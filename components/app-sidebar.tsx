@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Home, Settings2, SquareChevronLeft, SquareChevronRight, BarChart3, Zap, BookOpen } from 'lucide-react'
+import { Home, Settings2, SquareChevronLeft, SquareChevronRight, BarChart3, Zap, BookOpen, Landmark } from 'lucide-react'
 
 import {
   Sidebar,
@@ -17,6 +17,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { NavUser } from "./nav-user"
+import { useUserStore } from "@/lib/stores/user-store"
 
 // Updated data structure
 const data = {
@@ -51,7 +52,6 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { toggleSidebar, open } = useSidebar()
 
   return (

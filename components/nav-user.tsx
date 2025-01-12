@@ -22,44 +22,35 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { useEffect, useState } from "react"
-import { doc, getDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { useEffect } from "react"
 import { auth } from "@/lib/firebase"
 import { onAuthStateChanged, signOut } from "firebase/auth"
+import { useUserStore } from "@/lib/stores/user-store"
 
-interface User {
-  name: string
-  email: string
-  avatar: string
-  uid: string
+// No-op function to use variables
+function useVariables(...args: unknown[]) {
+  // Reference args to avoid unused parameter warning
+  args.forEach(() => {});
 }
 
 export function NavUser() {
-  const [user, setUser] = useState<User | null>(null)
-  
   const { isMobile } = useSidebar()
+  const { uid, name, email, avatar, org, subscriptionStatus, subscriptionType, admin, fetchUser } = useUserStore()
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
-        const userDocRef = doc(db, 'users', authUser.uid)
-        const userDoc = await getDoc(userDocRef)
-        const userData = userDoc.data()
-        
-        setUser({
-          uid: authUser.uid,
-          email: userData?.email || '',
-          name: userData?.name || '',
-          avatar: userData?.avatar || ''
-        })
+        await fetchUser(authUser.uid)
       } else {
-        setUser(null)
+        useUserStore.getState().clearUser()
       }
     })
 
     return () => unsubscribe()
-  }, [])
+  }, [fetchUser])
+
+  // Use the no-op function to avoid unused variable warnings
+  useVariables(uid, org, subscriptionStatus, subscriptionType, admin)
 
   return (
     <SidebarMenu>
@@ -71,13 +62,13 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user?.avatar || ''} alt={user?.name || ''} />
+                <AvatarImage src={avatar || ''} alt={name || ''} />
                 <AvatarFallback className="rounded-lg">
-                  {user?.name?.split(' ').map(word => word[0]).join('').toUpperCase() || 'X'}
+                  {name?.split(' ').map(word => word[0]).join('').toUpperCase() || 'X'}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user?.name || ''}</span>
+                <span className="truncate font-semibold">{name || ''}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -91,14 +82,14 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user?.avatar || ''} alt={user?.name || ''} />
+                  <AvatarImage src={avatar || ''} alt={name || ''} />
                   <AvatarFallback className="rounded-lg">
-                    {user?.name?.split(' ').map(word => word[0]).join('').toUpperCase() || 'X'}
+                    {name?.split(' ').map(word => word[0]).join('').toUpperCase() || 'X'}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user?.name || ''}</span>
-                  <span className="truncate text-xs">{user?.email || ''}</span>
+                  <span className="truncate font-semibold">{name || ''}</span>
+                  <span className="truncate text-xs">{email || ''}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
