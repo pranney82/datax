@@ -253,23 +253,25 @@ export default function Calendar() {
               </span>
               {dayTasks.map(task => (
                 <div
-                  key={task.id}
+                  key={task?.id || 'unknown'}
                   onClick={() => {
-                    setSelectedTask({
-                      id: task.id || "",
-                      name: task.name || "",
-                      description: task.description || "",
-                      startDate: task.startDate || "",
-                      job: task.job || { id: "", name: "" }
-                    })
-                    setIsDialogOpen(true)
+                    if (task) {
+                      setSelectedTask({
+                        id: task.id || "",
+                        name: task.name || "Unnamed Task",
+                        description: task.description || "",
+                        startDate: task.startDate || "",
+                        job: task.job || { id: "", name: "" }
+                      });
+                      setIsDialogOpen(true);
+                    }
                   }}
                   className="bg-yellow-100 rounded p-1 text-xs hover:bg-yellow-200 transition-colors cursor-pointer"
                 >
-                  <div className="font-medium truncate">{task.name}</div>
-                  <div className="font-small text-gray-500">{task.job.name}</div>
+                  <div className="font-medium truncate">{task?.name || "Unnamed Task"}</div>
+                  <div className="font-small text-gray-500">{task?.job?.name || "No Job"}</div>
                   <div className="text-black">
-                    ${parseFloat(task.description).toLocaleString()}
+                    ${parseFloat(task?.description || '0').toLocaleString()}
                   </div>
                 </div>
               ))}
