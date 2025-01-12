@@ -25,7 +25,8 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST!, {
+//change to STRIPE_SECRET_KEY_TEST
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-12-18.acacia",
   typescript: true
 });
