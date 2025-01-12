@@ -6,12 +6,13 @@ import { db } from "@/lib/firebase"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Eye, EyeOff, KeyRound } from 'lucide-react'
+import { Eye, EyeOff, KeyRound, Sparkles, HelpCircle } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/context/auth-context"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import Link from "next/link"
+import { Textarea } from "@/components/ui/textarea"
 
 type Organization = {
   id: string;
@@ -49,6 +50,8 @@ export default function SettingsPage() {
   const [isLoadingOrgs, setIsLoadingOrgs] = useState(false)
 
   const [grantKeyDialogOpen, setGrantKeyDialogOpen] = useState(false)
+  const [supportDialogOpen, setSupportDialogOpen] = useState(false)
+  const [supportMessage, setSupportMessage] = useState('')
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -191,6 +194,16 @@ export default function SettingsPage() {
 
   const gkDialog = () => setGrantKeyDialogOpen(true)
 
+  const handleSupportSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    // Here you would typically send the support message to your backend
+    console.log('Support message submitted:', supportMessage)
+    // Reset the form and close the dialog
+    setSupportMessage('')
+    setSupportDialogOpen(false)
+    // You might want to show a success message to the user here
+  }
+
   return (
     <div className="flex-grow container mx-auto px-4 py-8">
       <div className="grid gap-6">
@@ -288,63 +301,114 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Billing</CardTitle>
-                <CardDescription>
-                  Manage your billing information
-                </CardDescription>
-                  <div className="space-y-2">
-                    <div className="text-sm py-2">
-                      Subscription Status: <span className="font-semibold">{settings.subscriptionStatus}</span>
-                    </div>
-                    <div className="text-sm py-2">
-                      Subscription Type: <span className="font-semibold">{settings.subscriptionType}</span>
-                    </div>
-                  </div>
-                  {settings.subscriptionStatus === 'error' && (
-                    <div className="text-sm py-2">
-                      <span className="font-semibold text-red-500">Error fetching subscription data</span>
-                    </div>
-                  )}
-                  {settings.subscriptionStatus === 'free' ? (
-                    <Link href={process.env.NEXT_PUBLIC_APP_URL + '/pricing'}>
-                      <Button className="w-full">Upgrade to PRO</Button>
-                    </Link>
-                  ) : (
-                    <Button className="w-full" onClick={() => window.open('https://billing.stripe.com/p/login/7sIdSU6y5g7f2WI7ss', '_blank')}>Manage Subscription</Button>
-                  )}
-                
-              </CardHeader>
-            </Card>
-          </div>
-        </div>
+            </CardContent>
+          </Card>
 
-        <Dialog open={grantKeyDialogOpen} onOpenChange={setGrantKeyDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>How to get your API Grant Key</DialogTitle>
-              <DialogDescription className="space-y-4 pt-4">
-                <p>1. Click the button below to open JobTread in a new window</p>
-                <p>2. We will automatically take you to the API Grant Settings page</p>
-                <p>3. Click &quot;Add Grant to All Organizations&quot;</p>
-                <p>4. Name it something like &quot;DATAx Key,&quot; doesn&apos;t need to be exact. Create.</p>
-                <p>5. Copy the Grant Key and paste it back here</p>
-                
-                <Button 
-                  className="w-full mt-4"
-                  onClick={() => window.open('https://app.jobtread.com/settings/integrations/api/grants', '_blank')}
+          <Card>
+            <CardHeader>
+              <CardTitle>Billing</CardTitle>
+              <CardDescription>
+                Manage your billing information
+              </CardDescription>
+              <div className="space-y-2">
+                <div className="text-sm py-2">
+                  Subscription Status: <span className="font-semibold">{settings.subscriptionStatus}</span>
+                </div>
+                <div className="text-sm py-2">
+                  Subscription Type: <span className="font-semibold">{settings.subscriptionType}</span>
+                </div>
+              </div>
+              {settings.subscriptionStatus === 'error' && (
+                <div className="text-sm py-2">
+                  <span className="font-semibold text-red-500">Error fetching subscription data</span>
+                </div>
+              )}
+              {settings.subscriptionStatus === 'free' ? (
+                <Link 
+                  href={process.env.NEXT_PUBLIC_APP_URL + '/pricing'}
+                  className="group flex items-center justify-center w-full px-2 py-1.5 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary-foreground hover:text-primary rounded-md transition-all duration-200 ease-in-out transform hover:scale-105"
                 >
-                  <KeyRound className="h-4 w-4 mr-2" />
-                  Open JobTread API Settings
+                  <span className="flex items-center justify-center">
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Upgrade to {' '}
+                    <span className="ml-1 text-xs bg-primary-foreground text-primary px-1.5 py-0.5 rounded-full transition-colors duration-200 group-hover:bg-[#ffd400] group-hover:text-[#000]">
+                      CORE
+                    </span>
+                  </span>
+                </Link>
+              ) : (
+                <Button className="w-full" onClick={() => window.open('https://billing.stripe.com/p/login/7sIdSU6y5g7f2WI7ss', '_blank')}>
+                  Manage Subscription
                 </Button>
-              </DialogDescription>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
+              )}
+            </CardHeader>
+          </Card>
+
+          <Card id="support">
+            <CardHeader>
+              <CardTitle>Support</CardTitle>
+              <CardDescription>
+                Get help with your account or report issues
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button onClick={() => setSupportDialogOpen(true)} className="w-full">
+                <HelpCircle className="h-4 w-4 mr-2" />
+                Contact Support
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
+
+      <Dialog open={grantKeyDialogOpen} onOpenChange={setGrantKeyDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>How to get your API Grant Key</DialogTitle>
+            <DialogDescription className="space-y-4 pt-4">
+              <p>1. Click the button below to open JobTread in a new window</p>
+              <p>2. We will automatically take you to the API Grant Settings page</p>
+              <p>3. Click &quot;Add Grant to All Organizations&quot;</p>
+              <p>4. Name it something like &quot;DATAx Key,&quot; doesn&apos;t need to be exact. Create.</p>
+              <p>5. Copy the Grant Key and paste it back here</p>
+              
+              <Button 
+                className="w-full mt-4"
+                onClick={() => window.open('https://app.jobtread.com/settings/integrations/api/grants', '_blank')}
+              >
+                <KeyRound className="h-4 w-4 mr-2" />
+                Open JobTread API Settings
+              </Button>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={supportDialogOpen} onOpenChange={setSupportDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Contact Support</DialogTitle>
+            <DialogDescription>
+              Please describe your issue or question. Our support team will get back to you as soon as possible.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSupportSubmit}>
+            <Textarea
+              value={supportMessage}
+              onChange={(e) => setSupportMessage(e.target.value)}
+              placeholder="Describe your issue here..."
+              className="min-h-[100px]"
+            />
+            <div className="mt-4 flex justify-end space-x-2">
+              <Button type="button" variant="outline" onClick={() => setSupportDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit">Submit</Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </div>
   )
 }
 
