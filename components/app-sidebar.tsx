@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { BookOpen, Home, BarChart3, Settings2, Zap, LucideIcon } from 'lucide-react'
+import { BookOpen, Home, BarChart3, Settings2, Zap, LucideIcon, Landmark } from 'lucide-react'
 
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
@@ -15,6 +15,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { NavUser } from "./nav-user"
+import { useUserStore } from "@/lib/stores/user-store"
 
 interface NavItem {
   title: string;
@@ -22,40 +23,47 @@ interface NavItem {
   icon: LucideIcon;
 }
 
-const data = {
-  navMain: [
-    {
-      title: "Home",
-      url: "/x",
-      icon: Home,
-    },
-    {
-      title: "Dashboard",
-      url: "/x/dashboard",
-      icon: BarChart3,
-    },
-    {
-      title: "Toolbox",
-      url: "/x/toolbox",
-      icon: Zap,
-    },
-    {
-      title: "Library",
-      url: "/x/library/templates",
-      icon: BookOpen,
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "/x/settings",
-      icon: Settings2,
-    }
-  ] as NavItem[]
-
-}
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { admin, isLoading } = useUserStore();
+  
+  const navItems = {
+    navMain: [
+      {
+        title: "Home",
+        url: "/x",
+        icon: Home,
+      },
+      {
+        title: "Dashboard",
+        url: "/x/dashboard",
+        icon: BarChart3,
+      },
+      {
+        title: "Toolbox",
+        url: "/x/toolbox",
+        icon: Zap,
+      },
+      {
+        title: "Library",
+        url: "/x/library/templates",
+        icon: BookOpen,
+      },
+      // Only include Admin after loading is complete
+      ...(!isLoading && admin === true ? [{
+        title: "Admin",
+        url: "/x/admin",
+        icon: Landmark,
+      }] : [])
+    ],
+    navSecondary: [
+      {
+        title: "Settings",
+        url: "/x/settings",
+        icon: Settings2,
+      }
+    ] as NavItem[]
+  }
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -68,11 +76,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={navItems.navMain} />
+        <NavSecondary items={navItems.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser /> 
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   )
