@@ -52,6 +52,35 @@ export function NavUser() {
   // Use the no-op function to avoid unused variable warnings
   useVariables(uid, org, subscriptionStatus, subscriptionType, admin)
 
+  const upgradeMenuItem = () => {
+    if (subscriptionStatus === 'active') {
+      return null
+    }
+    return (
+      <>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+      <DropdownMenuItem asChild>
+        <div className="group">
+          <Link 
+            href="/pricing" 
+            className="flex items-center justify-between w-full px-2 py-1.5 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary-foreground hover:text-primary rounded-md transition-all duration-200 ease-in-out transform hover:scale-105"
+          >
+            <span className="flex items-center">
+              <Sparkles className="mr-2 h-4 w-4" />
+              Upgrade to {' '}
+              <span className="ml-1 text-xs bg-primary-foreground text-primary px-1.5 py-0.5 rounded-full transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
+                CORE
+              </span>
+            </span>
+          </Link>
+          </div>
+        </DropdownMenuItem>
+      </DropdownMenuGroup>
+      </>
+    )
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -93,25 +122,7 @@ export function NavUser() {
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <div className="group">
-                  <Link 
-                    href="/pricing" 
-                    className="flex items-center justify-between w-full px-2 py-1.5 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary-foreground hover:text-primary rounded-md transition-all duration-200 ease-in-out transform hover:scale-105"
-                  >
-                    <span className="flex items-center">
-                      <Sparkles className="mr-2 h-4 w-4" />
-                      Upgrade to {' '}
-                      <span className="ml-1 text-xs bg-primary-foreground text-primary px-1.5 py-0.5 rounded-full transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
-                        CORE
-                      </span>
-                    </span>
-                  </Link>
-                </div>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
+            {upgradeMenuItem()}
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               {/* TODO: Add account settings */}
