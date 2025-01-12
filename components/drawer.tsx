@@ -13,12 +13,10 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useUserStore } from "@/lib/stores/user-store"
 
 export function DrawerDemo() {
-  const pathname = usePathname()
   const { name, avatar } = useUserStore()
 
   const drawerItems = [
