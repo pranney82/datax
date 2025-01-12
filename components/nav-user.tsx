@@ -1,11 +1,6 @@
 "use client"
 
-import {
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react"
+import { ChevronsUpDown, CreditCard, LogOut, Sparkles } from 'lucide-react'
 import Link from "next/link"
 import {
   Avatar,
@@ -109,19 +104,28 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                
-                  <Sparkles />
-                  <Link href="/pricing">
-                  Upgrade to Pro
-                </Link>
+              <DropdownMenuItem asChild>
+                <div className="group">
+                  <Link 
+                    href="/pricing" 
+                    className="flex items-center justify-between w-full px-2 py-1.5 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary-foreground hover:text-primary rounded-md transition-all duration-200 ease-in-out transform hover:scale-105"
+                  >
+                    <span className="flex items-center">
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      Upgrade to {' '}
+                      <span className="ml-1 text-xs bg-primary-foreground text-primary px-1.5 py-0.5 rounded-full transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
+                        CORE
+                      </span>
+                    </span>
+                  </Link>
+                </div>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               {/* TODO: Add account settings */}
               <DropdownMenuItem>
-                <CreditCard />
+                <CreditCard className="mr-2 h-4 w-4" />
                 <Link href="/x/settings">
                   Billing
                 </Link>
@@ -135,8 +139,9 @@ export function NavUser() {
                   e.preventDefault()
                   signOut(auth)
                 }}
+                className="flex items-center"
               >
-                <LogOut />
+                <LogOut className="mr-2 h-4 w-4" />
                 Log out
               </Link>
             </DropdownMenuItem>
@@ -146,3 +151,4 @@ export function NavUser() {
     </SidebarMenu>
   )
 }
+
