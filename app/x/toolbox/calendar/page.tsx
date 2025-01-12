@@ -256,11 +256,11 @@ export default function Calendar() {
                   key={task.id}
                   onClick={() => {
                     setSelectedTask({
-                      id: task.id,
-                      name: task.name,
-                      description: task.description,
-                      startDate: task.startDate,
-                      job: task.job
+                      id: task.id || "",
+                      name: task.name || "",
+                      description: task.description || "",
+                      startDate: task.startDate || "",
+                      job: task.job || { id: "", name: "" }
                     })
                     setIsDialogOpen(true)
                   }}
