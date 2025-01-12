@@ -232,7 +232,7 @@ const Pricing = () => {
         isOpen={showAuthDialog} 
         onClose={() => setShowAuthDialog(false)}
         defaultView={authType}
-        redirectPath="/pricing"
+        redirectPath="/x"
       />
     </section>
   );
