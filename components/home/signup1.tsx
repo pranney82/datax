@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { auth } from '@/lib/firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, AuthError } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, AuthError, sendPasswordResetEmail } from 'firebase/auth';
 import {
   Dialog,
   DialogContent,
@@ -157,6 +157,16 @@ export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }
     }
   }
 
+  const handlePasswordReset = async (email: string) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert('Password reset email sent. Please check your inbox.');
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+      form.setError('email', { message: 'Failed to send password reset email. Please try again.' });
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -226,6 +236,17 @@ export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }
             </Button>
           </form>
         </Form>
+        {!isSignUp && (
+          <div className="text-center text-sm mt-2">
+            <Button
+              variant="link"
+              className="p-0"
+              onClick={() => handlePasswordReset(form.getValues('email'))}
+            >
+              Forgot Password?
+            </Button>
+          </div>
+        )}
         <div className="text-center text-sm">
           <span className="text-muted-foreground">
             {isSignUp ? 'Already have an account?' : "Don't have an account?"}
