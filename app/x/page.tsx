@@ -1,11 +1,9 @@
 "use client";
 
-import React from 'react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PlusCircle, ExternalLink, Map, BarChart3, Zap, BookOpen, Settings2, Rocket, CheckCircle2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useAuth } from "@/lib/context/auth-context"
 import { getFirestore, doc, getDoc, addDoc, collection } from "firebase/firestore"
 import { Button } from "@/components/ui/button"
@@ -169,12 +167,8 @@ export default function HomePage() {
   const greeting = userData?.name || user?.displayName ? `Welcome, ${userData?.name || user?.displayName}!` : 'Welcome to your dashboard!';
 
   return (
-    <main className="flex flex-col flex-1 p-0 bg-[#f8f9fa] text-[#333]">
-      <header className="flex h-16 shrink-0 items-center gap-2 shadow">
-        <div className="flex items-center gap-2 px-4">
-          <SidebarTrigger className="-ml-1 hover:bg-[#fff] rounded-full transition-colors duration-200" />
-        </div>
-      </header>
+    <main className="flex-grow container mx-auto py-8">
+
       
       {showSuccess && (
         <div className="fixed top-4 right-4 flex items-center gap-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50 animate-fade-in-down">
@@ -242,7 +236,7 @@ export default function HomePage() {
             </CardContent>
           </Card>
 
-          <Card className="md:col-span-2 shadow-md hover:shadow-lg transition-shadow duration-200">
+          <Card id="feature-request" className="md:col-span-2 shadow-md hover:shadow-lg transition-shadow duration-200">
             <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
               <CardTitle className="flex items-center gap-2 text-xl">
                 <PlusCircle className="w-6 h-6 text-[#ffd400]" />

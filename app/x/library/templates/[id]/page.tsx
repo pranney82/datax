@@ -3,22 +3,13 @@
 import { doc, getDoc, updateDoc, increment } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Download } from "lucide-react"
+import { Download, Info } from 'lucide-react'
 import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface Template {
   id: string;
@@ -69,130 +60,131 @@ export default function TemplatePage({ params }: { params: { id: string } }) {
     fetchTemplate();
   }, [params.id]);
 
+  const handleDownload = async () => {
+    if (!template) return;
+
+    try {
+      const templateRef = doc(db, "library", params.id);
+      await updateDoc(templateRef, {
+        downloads: increment(1)
+      });
+      
+      setTemplate(prev => prev ? {
+        ...prev,
+        downloads: prev.downloads + 1
+      } : null);
+
+      const link = document.createElement('a');
+      link.href = template.csvFileURL;
+      link.target = '_blank';
+      link.download = template.csvFileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+    } catch (error) {
+      console.error("Error downloading template:", error);
+    }
+  };
+
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="container mx-auto px-4 py-8 animate-pulse">
+        <Skeleton className="h-12 w-3/4 mb-4" />
+        <Skeleton className="h-6 w-1/4 mb-8" />
+        <div className="grid gap-4 md:grid-cols-3">
+          <Skeleton className="h-64 md:col-span-2" />
+          <Skeleton className="h-64" />
+        </div>
+        <Skeleton className="h-40 w-40 mt-8" />
+      </div>
+    );
   }
 
   if (!template) {
-    return <div>Template not found</div>;
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <h1 className="text-2xl font-bold mb-4">Template not found</h1>
+        <p className="text-muted-foreground">The requested template could not be found. It may have been removed or you may have followed an invalid link.</p>
+      </div>
+    );
   }
 
   return (
-    <main className="flex flex-col flex-1 p-0">
-      <header className="flex h-16 shrink-0 items-center gap-2">
-        <div className="flex items-center gap-2 px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink>Library</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/x/library/templates">Templates</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{template.name}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-      </header>
-
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-        <div className="flex justify-between items-center gap-2">
+    <main className="flex-grow container mx-auto px-4 py-8">
+      <div className="flex flex-1 flex-col gap-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold">{template.name}</h1>
-            <Badge variant="outline" className="mt-2 capitalize">
+            <h1 className="text-3xl font-bold mb-2">{template.name}</h1>
+            <Badge variant="outline" className="text-sm capitalize">
               {template.type.replace('-', ' ')}
             </Badge>
           </div>
-          <Button onClick={async () => {
-            try {
-              // Increment the downloads counter in Firestore
-              const templateRef = doc(db, "library", params.id);
-              await updateDoc(templateRef, {
-                downloads: increment(1)
-              });
-              
-              // Update local state
-              setTemplate(prev => prev ? {
-                ...prev,
-                downloads: prev.downloads + 1
-              } : null);
-
-              // Create a temporary link and trigger download directly
-              const link = document.createElement('a');
-              link.href = template.csvFileURL;
-              link.target = '_blank';
-              link.download = template.csvFileName;
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-
-            } catch (error) {
-              console.error("Error downloading template:", error);
-            }
-          }}>
+          <Button 
+            onClick={handleDownload}
+            className="w-full sm:w-auto transition-all duration-300 ease-in-out hover:scale-105"
+          >
             <Download className="mr-2 h-4 w-4" />
             Download Template
           </Button>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card className="md:col-span-2">           
+        <div className="grid gap-6 md:grid-cols-3">
+          <Card className="md:col-span-2 transition-all duration-300 ease-in-out hover:shadow-lg">           
             <CardHeader>
-              <CardTitle>Description</CardTitle>
+              <CardTitle className="flex items-center">
+                <Info className="mr-2 h-5 w-5" />
+                Description
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <p className="text-muted-foreground">
-                    {template.desc}
-                  </p>
-                </div>
-              </div>
+              <p className="text-muted-foreground leading-relaxed">
+                {template.desc}
+              </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="transition-all duration-300 ease-in-out hover:shadow-lg">
             <CardHeader>
-              <CardTitle>Template Info</CardTitle>
+              <CardTitle className="flex items-center">
+                <Info className="mr-2 h-5 w-5" />
+                Template Info
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Type</span>
-                  <span className="font-medium capitalize">{template.type.replace('-', ' ')}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Downloads</span>
-                  <span className="font-medium">{template.downloads}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Created At</span>
-                  <span className="font-medium">{template.createdAt}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Created By</span>
-                  <span className="font-medium">{template.author}</span>
-                </div>
+              <div className="space-y-3">
+                {[
+                  { label: "Type", value: template.type.replace('-', ' ') },
+                  { label: "Downloads", value: template.downloads },
+                  { label: "Created At", value: template.createdAt },
+                  { label: "Created By", value: template.author },
+                ].map((item, index) => (
+                  <div key={index} className="flex justify-between items-center py-1 border-b last:border-b-0">
+                    <span className="text-muted-foreground">{item.label}</span>
+                    <span className="font-medium capitalize">{item.value}</span>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
         </div>
-        <div className="w-fit">
-          <Image 
-            src={template.imageURL} 
-            alt={template.name} 
-            width={150} 
-            height={150} 
-            className="rounded-lg hover:opacity-90 transition-opacity cursor-pointer"
-            style={{ objectFit: 'cover' }}
-            onClick={() => setImageOpen(true)}
-          />
+
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold mb-4">Preview</h2>
+          <div className="relative group cursor-pointer overflow-hidden rounded-lg w-fit">
+            <Image 
+              src={template.imageURL} 
+              alt={template.name} 
+              width={300} 
+              height={300} 
+              className="rounded-lg transition-all duration-300 ease-in-out group-hover:scale-105"
+              style={{ objectFit: 'cover' }}
+              onClick={() => setImageOpen(true)}
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+              <span className="text-white opacity-0 group-hover:opacity-100 transition-all duration-300">Click to enlarge</span>
+            </div>
+          </div>
         </div>
 
         <Dialog open={imageOpen} onOpenChange={setImageOpen}>
@@ -202,7 +194,7 @@ export default function TemplatePage({ params }: { params: { id: string } }) {
               alt={template.name}
               width={800}
               height={800}
-              className="w-full h-auto"
+              className="w-full h-auto rounded-lg"
               style={{ objectFit: 'contain' }}
             />
           </DialogContent>
@@ -210,4 +202,5 @@ export default function TemplatePage({ params }: { params: { id: string } }) {
       </div>
     </main>
   );
-} 
+}
+
