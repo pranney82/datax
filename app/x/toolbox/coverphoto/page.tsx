@@ -13,7 +13,7 @@ import { useState, useEffect } from "react"
 import { db } from "@/lib/firebase"
 import { Loader2 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-
+import FeatureProtect from "@/components/admin/featureProtect"
 interface Webhook {
   id: string
   url: string
@@ -141,6 +141,7 @@ export default function GMapCoverPhotoPage() {
           <h2 className="text-2xl font-semibold mb-4">Cover Photo Logs</h2>
           <CoverPhotoLogsTable />
         </section>
+
       </div>
     </main>
   )

@@ -16,6 +16,7 @@ import {
   SidebarFooter,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { NavUser } from "./nav-user"
 
 // Updated data structure
 const data = {
@@ -112,6 +113,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+
       </SidebarFooter>
     </Sidebar>
   )

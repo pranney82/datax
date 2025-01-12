@@ -5,17 +5,31 @@ import { useState, useCallback, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { getDoc, doc } from 'firebase/firestore'
-import { useAuth } from "@/lib/context/auth-context"
-import { calQuery1 } from './calquery'
-import { db } from '@/lib/firebase'
-import Link from 'next/link'
-import { TTSelector } from './ttselector'
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+  } from "@/components/ui/breadcrumb"
+  import { Separator } from "@/components/ui/separator"
+  import { SidebarTrigger } from "@/components/ui/sidebar"
+  import { Button } from "@/components/ui/button"
+  import { Badge } from "@/components/ui/badge"
+  import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+  } from "@/components/ui/dialog"
+  import { getDoc, doc } from 'firebase/firestore'
+  import { useAuth } from "@/lib/context/auth-context"
+  import { calQuery1 } from './calquery'
+  import { db } from '@/lib/firebase'
+  import Link from 'next/link'
+  import { TTSelector } from './ttselector'
+  import FeatureProtect from '@/components/admin/featureProtect'
+
 
 interface Task {
   id: string
@@ -109,7 +123,7 @@ export default function Calendar() {
       const startDate = formatDateForAPI(firstDay);
       const endDate = formatDateForAPI(lastDay);
 
-      console.log('Date Range:', { startDate, endDate });
+      //console.log('Date Range:', { startDate, endDate });
 
       const response = await fetch('/api/jtfetch', {
         method: 'POST',
@@ -136,7 +150,7 @@ export default function Calendar() {
       }
 
       const data = await response.json();
-      console.log('API Response:', data);
+      //console.log('API Response:', data);
       const fetchedTasks = data?.organization?.tasks?.nodes || [];
       setTasks(fetchedTasks);
     } catch (error) {
@@ -276,7 +290,7 @@ export default function Calendar() {
     }
 
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4">        
         {filteredInvoices
           .sort((a, b) => parseTaskDate(a.startDate).getTime() - parseTaskDate(b.startDate).getTime())
           .map(task => (
@@ -435,7 +449,27 @@ export default function Calendar() {
                   }) : ''
                 }
               </div>
+              
+
+              {/* Conditional render based on view type */}
+              {isCalendarView ? (
+                <FeatureProtect featureName="Cash Flow Calendar">
+                <div className="grid grid-cols-8 gap-2">
+                  {weekDays.map((day) => (
+                    <div key={day} className="text-center font-medium text-gray-500 py-2">
+                      {day}
+                    </div>
+                  ))}
+                  {generateCalendarDays()}
+                </div>
+                </FeatureProtect>
+              ) : (
+                <FeatureProtect featureName="Cash Flow Calendar">
+                  {generateListView()}
+                </FeatureProtect>
+              )}
             </div>
+
             <div className="grid gap-2">
               <div className="text-xs sm:text-sm text-gray-500">
                 Amount
@@ -450,7 +484,9 @@ export default function Calendar() {
               </div>
               <div className="font-medium text-sm sm:text-base">
                 {selectedTask?.job.id}
+
               </div>
+              {/* Add more invoice details as needed */}
             </div>
           </div>
         </DialogContent>

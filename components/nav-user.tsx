@@ -122,7 +122,7 @@ export function NavUser() {
               {/* TODO: Add account settings */}
               <DropdownMenuItem>
                 <CreditCard />
-                <Link href="https://billing.stripe.com/p/login/7sIdSU6y5g7f2WI7ss" target="_blank">
+                <Link href="/x/settings">
                   Billing
                 </Link>
               </DropdownMenuItem>
