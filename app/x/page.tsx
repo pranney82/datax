@@ -9,6 +9,7 @@ import { getFirestore, doc, getDoc, addDoc, collection } from "firebase/firestor
 import { Button } from "@/components/ui/button"
 import { InspirationQuote } from "@/components/ui/InspirationQuote"
 import Link from 'next/link'
+import { AuthDialog } from "@/components/home/signup1"
 
 interface CompanyUpdate {
   id: string
@@ -167,129 +168,138 @@ export default function HomePage() {
   const greeting = userData?.name || user?.displayName ? `Welcome, ${userData?.name || user?.displayName}!` : 'Welcome to your dashboard!';
 
   return (
-    <main className="flex-grow container mx-auto py-8">
-
-      
-      {showSuccess && (
-        <div className="fixed top-4 right-4 flex items-center gap-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50 animate-fade-in-down">
-          <CheckCircle2 className="w-5 h-5" />
-          <span>Feature request submitted successfully!</span>
-        </div>
+    <main className="flex-grow container mx-auto py-8 relative">
+      {!user && (
+        <AuthDialog 
+          isOpen={true}
+          onClose={() => {}}
+          defaultView="login"
+          redirectPath="/x"
+        />
       )}
-      
-      <div className="flex flex-1 flex-col gap-4 p-6 pt-4 animate-fadeIn">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-[#333]">{isLoadingOrgs ? 'Loading...' : companyName}</h1>
-            <p className="text-lg text-[#555]">{greeting}</p>
+
+      <div className={!user ? 'filter blur-sm pointer-events-none' : ''}>
+        {showSuccess && (
+          <div className="fixed top-4 right-4 flex items-center gap-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50 animate-fade-in-down">
+            <CheckCircle2 className="w-5 h-5" />
+            <span>Feature request submitted successfully!</span>
           </div>
-        </div>
+        )}
+        
+        <div className="flex flex-1 flex-col gap-4 p-6 pt-4 animate-fadeIn">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h1 className="text-3xl font-bold text-[#333]">{isLoadingOrgs ? 'Loading...' : companyName}</h1>
+              <p className="text-lg text-[#555]">{greeting}</p>
+            </div>
+          </div>
 
-        <div className="mb-6">
-          <InspirationQuote />
-        </div>
+          <div className="mb-6">
+            <InspirationQuote />
+          </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card className="md:col-span-1 shadow-md hover:shadow-lg transition-shadow duration-200">
-            <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
-              <CardTitle className="text-xl">DATAx Updates</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-4">
-              <div className="space-y-6">
-                {companyUpdates.map((update) => (
-                  <div key={update.id} className="flex gap-4 items-start hover:bg-[#f0f0f0] p-2 rounded-lg transition-colors duration-200">
-                    <Avatar className="border-2 border-[#e0e0e0]">
-                      <AvatarImage src={update.author.avatar} alt={`Avatar of ${update.author.name}`} />
-                      <AvatarFallback className="bg-[#ffd400] text-[#333]">
-                        <Rocket className="w-4 h-4" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="space-y-1">
-                      <h3 className="font-medium leading-none text-lg text-[#333]">{update.title}</h3>
-                      <p className="text-sm text-[#555]">{update.content}</p>
-                      <p className="text-xs text-[#777]">{update.date}</p>
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card className="md:col-span-1 shadow-md hover:shadow-lg transition-shadow duration-200">
+              <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
+                <CardTitle className="text-xl">DATAx Updates</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <div className="space-y-6">
+                  {companyUpdates.map((update) => (
+                    <div key={update.id} className="flex gap-4 items-start hover:bg-[#f0f0f0] p-2 rounded-lg transition-colors duration-200">
+                      <Avatar className="border-2 border-[#e0e0e0]">
+                        <AvatarImage src={update.author.avatar} alt={`Avatar of ${update.author.name}`} />
+                        <AvatarFallback className="bg-[#ffd400] text-[#333]">
+                          <Rocket className="w-4 h-4" />
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="space-y-1">
+                        <h3 className="font-medium leading-none text-lg text-[#333]">{update.title}</h3>
+                        <p className="text-sm text-[#555]">{update.content}</p>
+                        <p className="text-xs text-[#777]">{update.date}</p>
+                      </div>
                     </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-md hover:shadow-lg transition-shadow duration-200">
+              <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
+                <CardTitle className="text-xl">Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { icon: BarChart3, label: 'Dashboard', href: '/x/dashboard' },
+                    { icon: Zap, label: 'Toolbox', href: '/x/toolbox' },
+                    { icon: BookOpen, label: 'Library', href: '/x/library/templates' },
+                    { icon: Settings2, label: 'Settings', href: '/x/settings' }
+                  ].map((action, index) => (
+                    <Link key={index} href={action.href} className="p-4 border-2 border-[#e0e0e0] rounded-lg hover:bg-[#ffd400] hover:text-[#333] flex flex-col items-center gap-2 transition-all duration-200 group">
+                      <action.icon className="w-8 h-8 text-[#ffd400] group-hover:text-[#333] group-hover:scale-110 transition-all duration-200" />
+                      <span className="text-sm font-medium">{action.label}</span>
+                    </Link>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card id="feature-request" className="md:col-span-2 shadow-md hover:shadow-lg transition-shadow duration-200">
+              <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <PlusCircle className="w-6 h-6 text-[#ffd400]" />
+                  Feature Requests
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <form onSubmit={handleFeatureRequestSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <label htmlFor="featureTitle" className="block text-sm font-medium text-gray-700">Feature name</label>
+                    <input
+                      id="featureTitle"
+                      type="text"
+                      placeholder="Feature name"
+                      value={featureTitle}
+                      onChange={(e) => setFeatureTitle(e.target.value)}
+                      className="w-full px-3 py-2 bg-white border-2 border-[#e0e0e0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:border-[#ffd400] transition-all duration-200"
+                    />
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-md hover:shadow-lg transition-shadow duration-200">
-            <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
-              <CardTitle className="text-xl">Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-4">
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { icon: BarChart3, label: 'Dashboard', href: '/x/dashboard' },
-                  { icon: Zap, label: 'Toolbox', href: '/x/toolbox' },
-                  { icon: BookOpen, label: 'Library', href: '/x/library/templates' },
-                  { icon: Settings2, label: 'Settings', href: '/x/settings' }
-                ].map((action, index) => (
-                  <Link key={index} href={action.href} className="p-4 border-2 border-[#e0e0e0] rounded-lg hover:bg-[#ffd400] hover:text-[#333] flex flex-col items-center gap-2 transition-all duration-200 group">
-                    <action.icon className="w-8 h-8 text-[#ffd400] group-hover:text-[#333] group-hover:scale-110 transition-all duration-200" />
-                    <span className="text-sm font-medium">{action.label}</span>
-                  </Link>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card id="feature-request" className="md:col-span-2 shadow-md hover:shadow-lg transition-shadow duration-200">
-            <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
-              <CardTitle className="flex items-center gap-2 text-xl">
-                <PlusCircle className="w-6 h-6 text-[#ffd400]" />
-                Feature Requests
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-4">
-              <form onSubmit={handleFeatureRequestSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <label htmlFor="featureTitle" className="block text-sm font-medium text-gray-700">Feature name</label>
-                  <input
-                    id="featureTitle"
-                    type="text"
-                    placeholder="Feature name"
-                    value={featureTitle}
-                    onChange={(e) => setFeatureTitle(e.target.value)}
-                    className="w-full px-3 py-2 bg-white border-2 border-[#e0e0e0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:border-[#ffd400] transition-all duration-200"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="featureDescription" className="block text-sm font-medium text-gray-700">Feature description</label>
-                  <textarea
-                    id="featureDescription"
-                    placeholder="Describe the feature you'd like to see..."
-                    value={featureRequest}
-                    onChange={(e) => setFeatureRequest(e.target.value)}
-                    rows={4}
-                    className="w-full px-3 py-2 bg-white border-2 border-[#e0e0e0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:border-[#ffd400] transition-all duration-200 resize-none"
-                  />
-                </div>
-                <div className="flex justify-between items-center">
-                  <Link 
-                    href="/roadmap" 
-                    className="text-sm text-[#555] hover:text-[#ffd400] flex items-center gap-1 transition-colors duration-200"
-                  >
-                    <Map className="w-4 h-4" />
-                    View our roadmap <ExternalLink className="w-4 h-4" />
-                  </Link>
-                  <Button 
-                    type="submit" 
-                    className="bg-[#ffd400] text-[#333] hover:bg-[#ffd400]/80 transition-colors duration-200"
-                  >
-                    Submit Request
-                  </Button>
-                </div>
-              </form>
-              {confirmationMessage && (
-                <div className="mt-4 p-4 bg-green-100 text-green-700 rounded-lg">
-                  {confirmationMessage}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                  <div className="space-y-2">
+                    <label htmlFor="featureDescription" className="block text-sm font-medium text-gray-700">Feature description</label>
+                    <textarea
+                      id="featureDescription"
+                      placeholder="Describe the feature you'd like to see..."
+                      value={featureRequest}
+                      onChange={(e) => setFeatureRequest(e.target.value)}
+                      rows={4}
+                      className="w-full px-3 py-2 bg-white border-2 border-[#e0e0e0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:border-[#ffd400] transition-all duration-200 resize-none"
+                    />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <Link 
+                      href="/roadmap" 
+                      className="text-sm text-[#555] hover:text-[#ffd400] flex items-center gap-1 transition-colors duration-200"
+                    >
+                      <Map className="w-4 h-4" />
+                      View our roadmap <ExternalLink className="w-4 h-4" />
+                    </Link>
+                    <Button 
+                      type="submit" 
+                      className="bg-[#ffd400] text-[#333] hover:bg-[#ffd400]/80 transition-colors duration-200"
+                    >
+                      Submit Request
+                    </Button>
+                  </div>
+                </form>
+                {confirmationMessage && (
+                  <div className="mt-4 p-4 bg-green-100 text-green-700 rounded-lg">
+                    {confirmationMessage}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </main>

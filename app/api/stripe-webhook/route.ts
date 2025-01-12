@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { initializeApp, getApps, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
+import axios from 'axios';
 
 // Change this initialization to check for required env vars
 if (!process.env.NEXT_PUBLIC_FIREBASE_PRIVATE_KEY || 
@@ -29,6 +30,44 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST!, {
   typescript: true
 });
 
+async function notifyDiscordPayment(session: Stripe.Checkout.Session, productName: string) {
+  const webhookUrl = process.env.DISCORD_WEBHOOK_URL_MONEY;
+  if (!webhookUrl) return;
+
+  try {
+    const message = {
+      username: 'DATAx Money Bot',
+      embeds: [{
+        title: '💰 New Payment Received!',
+        color: 0x00ff00,
+        fields: [
+          {
+            name: 'Product',
+            value: productName,
+            inline: true
+          },
+          {
+            name: 'Amount',
+            value: `$${(session.amount_total! / 100).toFixed(2)} ${session.currency?.toUpperCase()}`,
+            inline: true
+          },
+          {
+            name: 'Customer',
+            value: session.customer_email || 'No email provided',
+            inline: true
+          }
+        ],
+        timestamp: new Date().toISOString()
+      }]
+    };
+
+    await axios.post(webhookUrl, message);
+  } catch (error) {
+    console.error('Failed to send Discord payment notification:', error);
+    // Don't throw - we don't want to interrupt payment processing if notification fails
+  }
+}
+
 async function handleNewSubscription(session: Stripe.Checkout.Session) {
   const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
   let productName = 'Unknown';
@@ -43,6 +82,8 @@ async function handleNewSubscription(session: Stripe.Checkout.Session) {
       console.log("Product Name:", productName);
     }
   }
+
+  await notifyDiscordPayment(session, productName);
 
   const db = getFirestore();
   await db.collection('stripedata').doc(session.id).set({

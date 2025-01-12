@@ -1,7 +1,16 @@
 import axios from 'axios';
 import { execSync } from 'child_process';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-const webhookURL = 'https://discord.com/api/webhooks/1310829737119060041/Xurf4fvJDxPxd5PmyN9nxK0_OsSpa_L_eAc_015GRq9OGhvkvlQanuR7tQo0i7KiD4';
+// Get the directory path of the current module
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Load .env.local file specifically
+dotenv.config({ path: join(__dirname, '.env.local') });
+
+const webhookURL = process.env.DISCORD_WEBHOOK_URL_SERVER;
 
 const getLastCommitMessage = () => {
   try {
@@ -25,6 +34,9 @@ const notify = async () => {
   };
 
   try {
+    if (!webhookURL) {
+      throw new Error('Discord webhook URL is not defined');
+    }
     await axios.post(webhookURL, message);
     console.log('Notification sent to Discord!');
   } catch (error) {

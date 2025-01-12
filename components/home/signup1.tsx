@@ -39,6 +39,24 @@ interface AuthDialogProps {
   redirectPath?: string;
 }
 
+const notifyDiscord = async (userData: { email: string, name?: string }) => {
+  try {
+    await fetch('/api/discord-notify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        type: 'new-user',
+        data: userData
+      }),
+    });
+  } catch (error) {
+    console.error('Failed to send Discord notification:', error);
+    // Don't throw - we don't want to interrupt signup if notification fails
+  }
+};
+
 export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }: AuthDialogProps) {
   const router = useRouter();
   const [isSignUp, setIsSignUp] = useState(defaultView === 'signup');
@@ -98,6 +116,12 @@ export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }
           tier: 'free',
           updatedAt: new Date(),
           org: orgRef.id  // Reference to the org document
+        });
+
+        // Notify Discord about the new user
+        await notifyDiscord({
+          email: values.email,
+          name: values.name
         });
       } else {
         await signInWithEmailAndPassword(auth, values.email, values.password);
