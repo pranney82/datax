@@ -30,7 +30,7 @@ export function BottomMenu() {
                 }`}
               >
                 <item.icon className={`h-6 w-6 ${isActive ? 'text-[#ffd400]' : 'text-gray-500'}`} />
-                <span className={`text-xs mt-1 ${isActive ? 'text-[#ffd400] font-semibold' : 'text-gray-500'}`}>
+                <span className={`text-xs mt-1 ${isActive ? 'text-black font-semibold' : 'text-gray-500'}`}>
                   {item.label}
                 </span>
                 {isActive && (

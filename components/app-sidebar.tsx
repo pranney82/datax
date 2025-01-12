@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Home, Settings2, SquareChevronLeft, SquareChevronRight, BarChart3, Zap, BookOpen, Landmark } from 'lucide-react'
+import { Home, Settings2, SquareChevronLeft, SquareChevronRight, BarChart3, Zap, BookOpen, Landmark, HelpCircle } from 'lucide-react'
 
 import {
   Sidebar,
@@ -24,42 +24,43 @@ export function AppSidebar(props: React.ComponentPropsWithoutRef<typeof Sidebar>
   const { isLoading, admin } = useUserStore()
 
   // Updated data structure
-const data = {
-  navMain: [
-    {
-      title: "Data Made Easy",
-      icon: Home,
-      url: "/x",
-      items: [
-        {
-          title: "Home",
-          url: "/x",
-          icon: Home,
-        },
-        {
-          title: "Dashboard",
-          url: "/x/dashboard",
-          icon: BarChart3,
-        },
-        {
-          title: "Toolbox",
-          url: "/x/toolbox",
-          icon: Zap,
-        },
-        {
-          title: "Library",
-          url: "/x/library/templates",
-          icon: BookOpen,
-        }, // Only include Admin after loading is complete
-        ...(!isLoading && admin === true ? [{
-          title: "Admin",
-          url: "/x/admin",
-          icon: Landmark,
-        }] : [])
-      ],
-    },
-  ],
-}
+  const data = {
+    navMain: [
+      {
+        title: "Data Made Easy",
+        icon: Home,
+        url: "/x",
+        items: [
+          {
+            title: "Home",
+            url: "/x",
+            icon: Home,
+          },
+          {
+            title: "Dashboard",
+            url: "/x/dashboard",
+            icon: BarChart3,
+          },
+          {
+            title: "Toolbox",
+            url: "/x/toolbox",
+            icon: Zap,
+          },
+          {
+            title: "Library",
+            url: "/x/library/templates",
+            icon: BookOpen,
+          },
+          // Only include Admin after loading is complete
+          ...(!isLoading && admin === true ? [{
+            title: "Admin",
+            url: "/x/admin",
+            icon: Landmark,
+          }] : [])
+        ],
+      },
+    ],
+  }
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -105,6 +106,14 @@ const data = {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="Support">
+              <a href="/x/settings/#support">
+                <HelpCircle className="size-4" />
+                <span>Support</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip="Settings">
               <a href="/x/settings">
