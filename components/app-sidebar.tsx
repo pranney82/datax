@@ -19,7 +19,11 @@ import {
 import { NavUser } from "./nav-user"
 import { useUserStore } from "@/lib/stores/user-store"
 
-// Updated data structure
+export function AppSidebar(props: React.ComponentPropsWithoutRef<typeof Sidebar>) {
+  const { toggleSidebar, open } = useSidebar()
+  const { isLoading, admin } = useUserStore()
+
+  // Updated data structure
 const data = {
   navMain: [
     {
@@ -46,13 +50,16 @@ const data = {
           title: "Library",
           url: "/x/library/templates",
           icon: BookOpen,
-        },
+        }, // Only include Admin after loading is complete
+        ...(!isLoading && admin === true ? [{
+          title: "Admin",
+          url: "/x/admin",
+          icon: Landmark,
+        }] : [])
       ],
     },
   ],
 }
-
-  const { toggleSidebar, open } = useSidebar()
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -113,7 +120,7 @@ const data = {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   )

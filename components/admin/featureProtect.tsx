@@ -1,48 +1,53 @@
 'use client';
 
-import { useAuth } from '@/lib/context/auth-context';
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { useUserStore } from '@/lib/stores/user-store';
 
 interface FeatureProtectProps {
   children: React.ReactNode;
-  featureName: string; // Add this to show which feature is locked
+  featureName: string;
 }
 
 export default function FeatureProtect({ children, featureName }: FeatureProtectProps) {
-  const { user } = useAuth();
-  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
-  const [subscriptionTier, setSubscriptionTier] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { uid, org, subscriptionStatus: storeSubStatus, subscriptionType: storeSubType } = useUserStore();
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(storeSubStatus || null);
+  const [subscriptionTier, setSubscriptionTier] = useState<string | null>(storeSubType || null);
+  const [isLoading, setIsLoading] = useState(!storeSubStatus);
 
   useEffect(() => {
+    // If we already have subscription data in the store, don't fetch again
+    if (storeSubStatus && storeSubType) {
+      setSubscriptionStatus(storeSubStatus);
+      setSubscriptionTier(storeSubType);
+      setIsLoading(false);
+      return;
+    }
+
     const fetchSubscriptionStatus = async () => {
-      if (!user?.uid) return;
+      if (!uid || !org) return;
 
       try {
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        const userData = userDoc.data();
-        
         // Search stripedata collection for matching orgID
         const stripeQuery = query(
           collection(db, 'stripedata'),
-          where('orgID', '==', userData?.org)
+          where('orgID', '==', org)
         );
       
         const stripeSnapshot = await getDocs(stripeQuery);
-        let subscriptionStatus = 'free';
-        let subscriptionType = 'free';
+        let status = 'free';
+        let type = 'free';
         
         if (!stripeSnapshot.empty) {
           const stripeData = stripeSnapshot.docs[0].data();
-          subscriptionStatus = stripeData.subscriptionStatus || 'error';
-          subscriptionType = stripeData.tier || 'error';
+          status = stripeData.subscriptionStatus || 'error';
+          type = stripeData.tier || 'error';
         }
         
-        setSubscriptionStatus(subscriptionStatus);
-        setSubscriptionTier(subscriptionType);
+        setSubscriptionStatus(status);
+        setSubscriptionTier(type);
       } catch (error) {
         console.error('Error fetching subscription status:', error);
       } finally {
@@ -51,9 +56,9 @@ export default function FeatureProtect({ children, featureName }: FeatureProtect
     };
 
     fetchSubscriptionStatus();
-  }, [user]);
+  }, [uid, org, storeSubStatus, storeSubType]);
 
-  if (isLoading || !user) {
+  if (isLoading || !uid) {
     return children;
   }
 
@@ -62,12 +67,10 @@ export default function FeatureProtect({ children, featureName }: FeatureProtect
   if (!hasAccess) {
     return (
       <div className="relative min-h-full">
-        {/* Blurred content */}
         <div className="blur-sm pointer-events-none">
           {children}
         </div>
 
-        {/* Overlay with upgrade prompt */}
         <div className="fixed top-64 left-0 right-0 flex justify-center">
           <div className="text-center space-y-4 p-8 rounded-lg bg-background/95 shadow-lg max-w-md mx-auto">
             <h2 className="text-2xl font-bold">Premium Feature</h2>

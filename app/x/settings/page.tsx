@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { doc, getDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore"
 import { db } from "@/lib/firebase"
-import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -101,11 +100,6 @@ export default function SettingsPage() {
     setUnsavedChanges(true)
   }
 
-  const handleToggleChange = (key: string) => (checked: boolean) => {
-    setSettings(prev => ({ ...prev, [key]: checked }))
-    setUnsavedChanges(true)
-  }
-
   const handleSave = async () => {
     if (!userId) {
       alert('User not authenticated')
@@ -198,161 +192,159 @@ export default function SettingsPage() {
   const gkDialog = () => setGrantKeyDialogOpen(true)
 
   return (
-    <main className="flex-grow container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-semibold">Settings</h1>
-        <Button 
-          onClick={handleSave}
-          disabled={!unsavedChanges}
-        >
-          Save Changes
-        </Button>
-      </div>
+    <div className="flex-grow container mx-auto px-4 py-8">
+      <div className="grid gap-6">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-2xl font-semibold">Settings</h1>
+          <Button onClick={handleSave} disabled={!unsavedChanges}>
+            Save Changes
+          </Button>
+        </div>
 
-      <div className="grid gap-6 max-w-2xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>API Keys</CardTitle>
-            <CardDescription>
-              Configure your JobTread API credentials
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button variant="outline" className="w-full" onClick={gkDialog}>
-              <KeyRound className="h-4 w-4 mr-2" />
-              <span>Retrieve API Grant Key</span>
-            </Button>
-            <div className="space-y-2">
-              <Label htmlFor="jobtread-api">JobTread API Grant Key</Label>
-              <div className="relative">
-                <Input
-                  id="jobtread-api"
-                  type={showGrantKey ? "text" : "password"}
-                  value={settings.jtgrantkey}
-                  onChange={handleInputChange('jtgrantkey')}
-                  placeholder="Enter your JobTread API Grant Key"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowGrantKey(!showGrantKey)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
-                  {showGrantKey ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="jobtread-org">JobTread Organization</Label>
-              <Select
-                value={settings.jtorgid}
-                onValueChange={(value) => {
-                  setSettings(prev => ({ ...prev, jtorgid: value }))
-                  setUnsavedChanges(true)
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select an organization" />
-                </SelectTrigger>
-                <SelectContent>
-                  {isLoadingOrgs ? (
-                    <SelectItem value="loading" disabled>
-                      Loading organizations...
-                    </SelectItem>
-                  ) : organizations.length > 0 ? (
-                    organizations.map((org) => (
-                      <SelectItem key={org.id} value={org.id}>
-                        {org.name}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <SelectItem value="none" disabled>
-                      No organizations found
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>General Settings</CardTitle>
-            <CardDescription>
-              Configure general application settings
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>Dark Mode</Label>
-                <div className="text-sm text-muted-foreground">
-                  Enable dark mode for the interface
-                  <div className="text-xs text-muted-foreground">Coming Soon</div>
+        <div className="grid gap-6 max-w-2xl">
+          <Card>
+            <CardHeader>
+              <CardTitle>API Keys</CardTitle>
+              <CardDescription>
+                Configure your JobTread API credentials
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button variant="outline" className="w-full" onClick={gkDialog}>
+                <KeyRound className="h-4 w-4 mr-2" />
+                <span>Retrieve API Grant Key</span>
+              </Button>
+              <div className="space-y-2">
+                <Label htmlFor="jobtread-api">JobTread API Grant Key</Label>
+                <div className="relative">
+                  <Input
+                    id="jobtread-api"
+                    type={showGrantKey ? "text" : "password"}
+                    value={settings.jtgrantkey}
+                    onChange={handleInputChange('jtgrantkey')}
+                    placeholder="Enter your JobTread API Grant Key"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowGrantKey(!showGrantKey)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showGrantKey ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
                 </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="jobtread-org">JobTread Organization</Label>
+                <Select
+                  value={settings.jtorgid}
+                  onValueChange={(value) => {
+                    setSettings(prev => ({ ...prev, jtorgid: value }))
+                    setUnsavedChanges(true)
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select an organization" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {isLoadingOrgs ? (
+                      <SelectItem value="loading" disabled>
+                        Loading organizations...
+                      </SelectItem>
+                    ) : organizations.length > 0 ? (
+                      organizations.map((org) => (
+                        <SelectItem key={org.id} value={org.id}>
+                          {org.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="none" disabled>
+                        No organizations found
+                      </SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
               </div>
             </CardContent>
           </Card>
+
           <Card>
             <CardHeader>
-              <CardTitle>Billing</CardTitle>
+              <CardTitle>General Settings</CardTitle>
               <CardDescription>
-                Manage your billing information
+                Configure general application settings
               </CardDescription>
-                <div className="space-y-2">
-                  <div className="text-sm py-2">
-                    Subscription Status: <span className="font-semibold">{settings.subscriptionStatus}</span>
-                  </div>
-                  <div className="text-sm py-2">
-                    Subscription Type: <span className="font-semibold">{settings.subscriptionType}</span>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Dark Mode</Label>
+                  <div className="text-sm text-muted-foreground">
+                    Enable dark mode for the interface
+                    <div className="text-xs text-muted-foreground">Coming Soon</div>
                   </div>
                 </div>
-                {settings.subscriptionStatus === 'error' && (
-                  <div className="text-sm py-2">
-                    <span className="font-semibold text-red-500">Error fetching subscription data</span>
+              </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Billing</CardTitle>
+                <CardDescription>
+                  Manage your billing information
+                </CardDescription>
+                  <div className="space-y-2">
+                    <div className="text-sm py-2">
+                      Subscription Status: <span className="font-semibold">{settings.subscriptionStatus}</span>
+                    </div>
+                    <div className="text-sm py-2">
+                      Subscription Type: <span className="font-semibold">{settings.subscriptionType}</span>
+                    </div>
                   </div>
-                )}
-                {settings.subscriptionStatus === 'free' ? (
-                  <Link href={process.env.NEXT_PUBLIC_APP_URL + '/pricing'}>
-                    <Button className="w-full">Upgrade to PRO</Button>
-                  </Link>
-                ) : (
-                  <Button className="w-full" onClick={() => window.open('https://billing.stripe.com/p/login/7sIdSU6y5g7f2WI7ss', '_blank')}>Manage Subscription</Button>
-                )}
-              
-            </CardHeader>
-          </Card>
+                  {settings.subscriptionStatus === 'error' && (
+                    <div className="text-sm py-2">
+                      <span className="font-semibold text-red-500">Error fetching subscription data</span>
+                    </div>
+                  )}
+                  {settings.subscriptionStatus === 'free' ? (
+                    <Link href={process.env.NEXT_PUBLIC_APP_URL + '/pricing'}>
+                      <Button className="w-full">Upgrade to PRO</Button>
+                    </Link>
+                  ) : (
+                    <Button className="w-full" onClick={() => window.open('https://billing.stripe.com/p/login/7sIdSU6y5g7f2WI7ss', '_blank')}>Manage Subscription</Button>
+                  )}
+                
+              </CardHeader>
+            </Card>
+          </div>
         </div>
 
+        <Dialog open={grantKeyDialogOpen} onOpenChange={setGrantKeyDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>How to get your API Grant Key</DialogTitle>
+              <DialogDescription className="space-y-4 pt-4">
+                <p>1. Click the button below to open JobTread in a new window</p>
+                <p>2. We will automatically take you to the API Grant Settings page</p>
+                <p>3. Click &quot;Add Grant to All Organizations&quot;</p>
+                <p>4. Name it something like &quot;DATAx Key,&quot; doesn&apos;t need to be exact. Create.</p>
+                <p>5. Copy the Grant Key and paste it back here</p>
+                
+                <Button 
+                  className="w-full mt-4"
+                  onClick={() => window.open('https://app.jobtread.com/settings/integrations/api/grants', '_blank')}
+                >
+                  <KeyRound className="h-4 w-4 mr-2" />
+                  Open JobTread API Settings
+                </Button>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       </div>
-
-      <Dialog open={grantKeyDialogOpen} onOpenChange={setGrantKeyDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>How to get your API Grant Key</DialogTitle>
-            <DialogDescription className="space-y-4 pt-4">
-              <p>1. Click the button below to open JobTread in a new window</p>
-              <p>2. We will automatically take you to the API Grant Settings page</p>
-              <p>3. Click &quot;Add Grant to All Organizations&quot;</p>
-              <p>4. Name it something like &quot;DATAx Key,&quot; doesn&apos;t need to be exact. Create.</p>
-              <p>5. Copy the Grant Key and paste it back here</p>
-              
-              <Button 
-                className="w-full mt-4"
-                onClick={() => window.open('https://app.jobtread.com/settings/integrations/api/grants', '_blank')}
-              >
-                <KeyRound className="h-4 w-4 mr-2" />
-                Open JobTread API Settings
-              </Button>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-    </main>
   )
 }
 

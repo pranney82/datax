@@ -18,8 +18,8 @@ import { usePathname } from 'next/navigation'
 
 const drawerItems = [
   { icon: Settings2, label: 'Settings', href: '/x/settings' },
-  { icon: User, label: 'Profile', href: '/x/profile' },
-  { icon: HelpCircle, label: 'Help & Support', href: '/x/help' },
+  { icon: User, label: 'Profile', href: '/x/settings' },
+  { icon: HelpCircle, label: 'Help & Support', href: '#' },
   { icon: Lightbulb, label: 'Feature Request', href: '/x#feature-request' },
 ]
 

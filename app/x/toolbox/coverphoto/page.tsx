@@ -96,7 +96,7 @@ export default function GMapCoverPhotoPage() {
           <h1 className="text-2xl font-bold mb-2">Google Maps Job Cover Photo</h1>
           <p className="text-muted-foreground">Manage automatic cover photo updates for your jobs</p>
         </header>
-
+        <FeatureProtect featureName="Google Maps Job Cover Photo">
         <div className="grid gap-6 md:grid-cols-2">
           <ModernDashboardCard 
             title="Automatic Cover Photo Updates"
@@ -141,7 +141,7 @@ export default function GMapCoverPhotoPage() {
           <h2 className="text-2xl font-semibold mb-4">Cover Photo Logs</h2>
           <CoverPhotoLogsTable />
         </section>
-
+        </FeatureProtect>
       </div>
     </main>
   )

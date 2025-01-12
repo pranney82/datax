@@ -64,34 +64,57 @@ interface UserData {
   updatedAt: string
 }
 
+interface OrgData {
+  grantKey?: string
+  [key: string]: unknown
+}
+
 const ITEMS_PER_PAGE = 10
 
 export default function UsersPage() {
   const [users, setUsers] = useState<UserData[]>([])
+  const [orgs, setOrgs] = useState<Record<string, OrgData>>({})
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState("")
-  const [sortField, setSortField] = useState<keyof UserData>("name")
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
+  const [sortField, setSortField] = useState<keyof UserData>("createdAt")
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc")
   const [userToDelete, setUserToDelete] = useState<UserData | null>(null)
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchData = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "users"))
-        const userData = querySnapshot.docs.map(doc => ({
+        const usersSnapshot = await getDocs(collection(db, "users"))
+        const userData = usersSnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         })) as UserData[]
         setUsers(userData)
+
+        const uniqueOrgIds = Array.from(new Set(userData.map(user => user.org)))
+        const orgsData: Record<string, OrgData> = {}
+        
+        await Promise.all(
+          uniqueOrgIds.map(async (orgId) => {
+            if (orgId) {
+              const orgDoc = await getDocs(collection(db, "orgs"))
+              const orgData = orgDoc.docs.find(doc => doc.id === orgId)
+              if (orgData) {
+                orgsData[orgId] = orgData.data() as OrgData
+              }
+            }
+          })
+        )
+        
+        setOrgs(orgsData)
       } catch (error) {
-        console.error("Error fetching users:", error)
+        console.error("Error fetching data:", error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchUsers()
+    fetchData()
   }, [])
 
   const handleSort = (field: keyof UserData) => {
@@ -182,6 +205,9 @@ export default function UsersPage() {
                 <TableHead onClick={() => handleSort("org")} className="cursor-pointer">
                   Organization <ArrowUpDown className="inline h-4 w-4" />
                 </TableHead>
+                <TableHead>
+                  Grant Key
+                </TableHead>
                 <TableHead onClick={() => handleSort("subscriptionStatus")} className="cursor-pointer">
                   Status <ArrowUpDown className="inline h-4 w-4" />
                 </TableHead>
@@ -213,6 +239,7 @@ export default function UsersPage() {
                     <TableCell>{user.name}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.org}</TableCell>
+                    <TableCell>{orgs[user.org]?.grantKey || 'No key'}</TableCell>
                     <TableCell>{user.subscriptionStatus}</TableCell>
                     <TableCell>{user.tier}</TableCell>
                     <TableCell>

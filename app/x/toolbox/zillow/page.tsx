@@ -2,11 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { doc, getDoc } from "firebase/firestore"
-import { Loader2 } from 'lucide-react'
-
 import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import ModernDashboardCard from "@/components/dash-card"
 import { SingleRun } from "./singlerun"
 import { Card3 } from "./card3"
@@ -98,6 +94,7 @@ export default function ZillowPage() {
   return (
     <main className="flex-grow container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-8">Zillow Data Import</h1>
+      <FeatureProtect featureName="Zillow Data Import">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <ModernDashboardCard 
           title="Automatic Zillow Data"
@@ -136,6 +133,7 @@ export default function ZillowPage() {
         <Card3 />
         <Card4 />
       </div>
+      </FeatureProtect>
     </main>
 
   )
