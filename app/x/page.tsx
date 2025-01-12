@@ -236,7 +236,7 @@ export default function HomePage() {
             </CardContent>
           </Card>
 
-          <Card className="md:col-span-2 shadow-md hover:shadow-lg transition-shadow duration-200">
+          <Card id="feature-request" className="md:col-span-2 shadow-md hover:shadow-lg transition-shadow duration-200">
             <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
               <CardTitle className="flex items-center gap-2 text-xl">
                 <PlusCircle className="w-6 h-6 text-[#ffd400]" />

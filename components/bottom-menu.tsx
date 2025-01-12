@@ -1,15 +1,15 @@
 "use client"
 
-import { Home, BarChart3, Zap, BookOpen, Settings2 } from 'lucide-react'
+import { Home, BarChart3, Zap, BookOpen } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { DrawerDemo } from './drawer'
 
 const menuItems = [
   { icon: Home, label: 'Home', href: '/x' },
   { icon: BarChart3, label: 'Dashboard', href: '/x/dashboard' },
   { icon: Zap, label: 'Toolbox', href: '/x/toolbox' },
   { icon: BookOpen, label: 'Library', href: '/x/library/templates' },
-  { icon: Settings2, label: 'Settings', href: '/x/settings' },
 ]
 
 export function BottomMenu() {
@@ -40,6 +40,9 @@ export function BottomMenu() {
             </li>
           )
         })}
+        <li className="relative flex-1">
+          <DrawerDemo />
+        </li>
       </ul>
     </nav>
   )

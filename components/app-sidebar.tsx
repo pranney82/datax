@@ -21,7 +21,7 @@ import {
 const data = {
   navMain: [
     {
-      title: "Getting Started",
+      title: "Data Made Easy",
       icon: Home,
       url: "/x",
       items: [
@@ -61,11 +61,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton size="lg" asChild>
               <a href="#">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <img src="/assets/icons/4.png" alt="Sidebar Icon" className="size-4" />
+                  <img src="/assets/icons/0.png" alt="Sidebar Icon" className="size-8" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">Documentation</span>
-                  <span className="">v1.0.0</span>
+                  <span className="font-semibold">DATAx</span>
                 </div>
               </a>
             </SidebarMenuButton>
