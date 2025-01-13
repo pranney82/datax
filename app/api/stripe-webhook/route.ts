@@ -172,7 +172,8 @@ export async function POST(req: NextRequest) {
   console.log('Webhook endpoint hit!');
   
   const sig = req.headers.get("stripe-signature");
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET_CONSOLE;
+  //change to CONSOLE for local testing
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!sig || !webhookSecret) {
     return NextResponse.json(
