@@ -37,6 +37,7 @@ interface FAQItem {
   question: string;
   answer: string;
   videoUrl?: string;
+  thumbnailUrl: string;
 }
 
 export default function HomePage() {
@@ -51,6 +52,7 @@ export default function HomePage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState<string>('');
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
+  const [openItem, setOpenItem] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -99,22 +101,26 @@ export default function HomePage() {
     {
       question: "What does DATAx do?",
       answer: "Using the JOBTREAD API and your existing data, we create dashboards, charts, custom integrations, and automations—all while ensuring your data remains secure and unchanged.",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      videoUrl: "https://www.youtube.com/embed/MOTNo9iD84I",
+      thumbnailUrl: "/assets/thumbnails/1.png"
     },    
     {
-      question: "How does DATAx work?",
-      answer: "Getting started is easy! Simply enter your JOBTREAD grant key, and you’re all set. From there, you can explore your dashboard, enable custom integrations, and unlock a variety of powerful features!",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      question: "How does it work?",
+      answer: "Getting started is easy! Simply enter your JOBTREAD grant key, and you're all set. From there, you can explore your dashboard, enable custom integrations, and unlock a variety of powerful features!",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      thumbnailUrl: "/assets/thumbnails/2.png"
     },
     {
       question: "Will DATAx mess up my JOBTREAD data?",
-      answer: "No, your JOBTREAD data is completely safe and secure from any changes. JOBTREAD’s API gives companies like ours access to view your data without altering it in any way.",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      answer: "No, your JOBTREAD data is completely safe and secure from any changes. JOBTREAD's API gives companies like ours access to view your data without altering it in any way.",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      thumbnailUrl: "/assets/thumbnails/3.png"
     },
     {
       question: "Won't JOBTREAD develop these features?",
       answer: "JOBTREAD is laser-focused on building the ultimate construction management platform. Some of our epic features are beyond their current scope, so we've crafted them here to supercharge your workflow!",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      thumbnailUrl: "/assets/thumbnails/4.png"
     }
   ]
 
@@ -204,10 +210,16 @@ export default function HomePage() {
   const greeting = userData?.name || user?.displayName ? `Welcome, ${userData?.name || user?.displayName}!` : 'Welcome to your dashboard!';
 
   const toggleVideo = (videoUrl: string) => {
-    if (playingVideo === videoUrl) {
+    setPlayingVideo(prevUrl => prevUrl === videoUrl ? null : videoUrl);
+  };
+
+  const handleAccordionChange = (value: string | undefined) => {
+    if (value === openItem) {
+      setOpenItem(null);
       setPlayingVideo(null);
     } else {
-      setPlayingVideo(videoUrl);
+      setOpenItem(value || null);
+      setPlayingVideo(null);
     }
   };
 
@@ -250,7 +262,7 @@ export default function HomePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
-              <Accordion type="single" collapsible className="w-full">
+              <Accordion type="single" collapsible className="w-full" value={openItem || undefined} onValueChange={handleAccordionChange}>
                 {faqItems.map((item, index) => (
                   <AccordionItem key={index} value={`item-${index}`}>
                     <AccordionTrigger className="text-left text-lg font-medium text-[#333]">{item.question}</AccordionTrigger>
@@ -259,27 +271,34 @@ export default function HomePage() {
                       {item.videoUrl && (
                         <div className="relative w-full aspect-video rounded-lg overflow-hidden">
                           {playingVideo === item.videoUrl ? (
-                            <video
-                              src={item.videoUrl}
-                              controls
-                              autoPlay
-                              className="w-full h-full object-cover"
-                              onEnded={() => setPlayingVideo(null)}
-                            >
-                              Your browser does not support the video tag.
-                            </video>
+                            <iframe
+                              key={playingVideo}
+                              src={`${item.videoUrl}?autoplay=1`}
+                              title={`Video for ${item.question}`}
+                              className="w-full h-full"
+                              allowFullScreen
+                              allow="autoplay"
+                            ></iframe>
                           ) : (
-                            <>
+                            <div className="relative w-full h-full">
+                              <img
+                                src={item.thumbnailUrl}
+                                alt={`Thumbnail for ${item.question}`}
+                                className="w-full h-full object-cover"
+                              />
                               <div className="absolute inset-0 flex items-center justify-center">
                                 <button
-                                  onClick={() => toggleVideo(item.videoUrl!)}
-                                  className="bg-[#ffd400] text-[#333] rounded-full p-3 hover:bg-[#ffd400]/80 transition-colors duration-200"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    toggleVideo(item.videoUrl!);
+                                  }}
+                                  className="bg-white/80 text-[#ffd400] rounded-full p-4 hover:bg-white hover:text-[#ffd400] transition-all duration-200 shadow-lg"
                                   aria-label={`Play video about ${item.question}`}
                                 >
-                                  <Play className="w-6 h-6" />
+                                  <Play className="w-8 h-8" />
                                 </button>
                               </div>
-                            </>
+                            </div>
                           )}
                         </div>
                       )}
