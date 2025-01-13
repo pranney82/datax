@@ -1,6 +1,6 @@
 'use client';
 
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -27,27 +27,42 @@ export default function FeatureProtect({ children, featureName }: FeatureProtect
     }
 
     const fetchSubscriptionStatus = async () => {
+      
       if (!uid || !org) return;
 
       try {
-        // Search stripedata collection for matching orgID
-        const stripeQuery = query(
-          collection(db, 'stripedata'),
-          where('orgID', '==', org)
-        );
-      
-        const stripeSnapshot = await getDocs(stripeQuery);
-        let status = 'free';
-        let type = 'free';
-        
-        if (!stripeSnapshot.empty) {
-          const stripeData = stripeSnapshot.docs[0].data();
-          status = stripeData.subscriptionStatus || 'error';
-          type = stripeData.tier || 'error';
+        console.log("fetchSubscriptionStatus try");
+        // Fetch stripeCustomerId from users collection
+        const stripeCustomerIdDoc = await getDocs(collection(db, 'users', uid));
+        if (stripeCustomerIdDoc.empty) {
+          console.error('No user document found');
+          return;
         }
         
-        setSubscriptionStatus(status);
-        setSubscriptionTier(type);
+        const stripeCustomerId = stripeCustomerIdDoc.docs[0].data().stripeCustomerId;
+        if (!stripeCustomerId) {
+          console.error('No stripeCustomerId found');
+          return;
+        }
+        
+        const stripeDocRef = doc(db, 'stripedata', stripeCustomerId);
+        const stripeDoc = await getDoc(stripeDocRef);
+
+        if (stripeDoc.exists()) {
+          const stripeData = stripeDoc.data();
+          let status = 'free';
+          let type = 'free';
+          
+          if (!stripeData.empty) {
+            status = stripeData.subscriptionStatus || 'error';
+            type = stripeData.tier || 'error';
+          }
+          
+          setSubscriptionStatus(status);
+          setSubscriptionTier(type);
+        } else {
+          console.error('No document found for the given stripeCustomerId');
+        }
       } catch (error) {
         console.error('Error fetching subscription status:', error);
       } finally {
@@ -63,6 +78,9 @@ export default function FeatureProtect({ children, featureName }: FeatureProtect
   }
 
   const hasAccess = subscriptionStatus === 'active' && subscriptionTier === 'CORE';
+  console.log("hasAccess: ", hasAccess);
+  console.log("subscriptionStatus: ", subscriptionStatus);
+  console.log("subscriptionTier: ", subscriptionTier);
 
   if (!hasAccess) {
     return (

@@ -26,7 +26,7 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 //change to STRIPE_SECRET_KEY_TEST
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST!, {
   apiVersion: "2024-12-18.acacia",
   typescript: true
 });
@@ -87,7 +87,10 @@ async function handleNewSubscription(session: Stripe.Checkout.Session) {
   await notifyDiscordPayment(session, productName);
 
   const db = getFirestore();
-  await db.collection('stripedata').doc(session.id).set({
+  const batch = db.batch();
+
+  const stripeDataRef = db.collection('stripedata').doc(session.id);
+  batch.set(stripeDataRef, {
     orgID: session.metadata?.orgID || '',
     customerId: session.customer,
     customerEmail: session.customer_email,
@@ -104,6 +107,17 @@ async function handleNewSubscription(session: Stripe.Checkout.Session) {
       priceId: priceId
     }
   });
+
+  if (session.metadata?.uid) {
+    const userRef = db.collection('users').doc(session.metadata.uid);
+    batch.update(userRef, {
+      stripeCustomerId: session.id
+    });
+  } else {
+    console.log("No uid found in metadata");
+  }
+
+  await batch.commit();
 }
 
 async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
@@ -173,7 +187,7 @@ export async function POST(req: NextRequest) {
   
   const sig = req.headers.get("stripe-signature");
   //change to CONSOLE for local testing
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET_CONSOLE;
 
   if (!sig || !webhookSecret) {
     return NextResponse.json(

@@ -7,10 +7,12 @@ import { getDoc } from "firebase/firestore";
 
 interface StripePaymentButtonProps {
   priceId: string;
+  uid: string;
+  email: string;
   className?: string;
 }
 
-const StripePaymentButton: React.FC<StripePaymentButtonProps> = ({ priceId, className }) => {
+const StripePaymentButton: React.FC<StripePaymentButtonProps> = ({ priceId, uid, email, className }) => {
   const handleCheckout = async () => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
@@ -20,7 +22,6 @@ const StripePaymentButton: React.FC<StripePaymentButtonProps> = ({ priceId, clas
     }
     
     try {
-      const uid = currentUser.uid;
       const userDocRef = doc(db, 'users', uid);
       const userDoc = await getDoc(userDocRef);
       const userData = userDoc.data();
@@ -28,7 +29,6 @@ const StripePaymentButton: React.FC<StripePaymentButtonProps> = ({ priceId, clas
 
 
       const idToken = await currentUser.getIdToken();
-      const email = currentUser.email;
       const response = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

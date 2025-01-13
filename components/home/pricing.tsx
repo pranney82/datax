@@ -114,6 +114,8 @@ const Pricing = () => {
       return (
         <StripePaymentButton 
           priceId={plan.priceId} 
+          uid={user.uid}
+          email={user.email || ''}
           className={`w-full py-4 text-lg font-bold rounded-xl ${className}`}
         />
       );
@@ -221,7 +223,10 @@ const Pricing = () => {
                   </ul>
                 </div>
                 <div className={`p-6 bg-white ${plan.popular ? 'md:p-8' : ''}`}>
-                  <SubscribeButton plan={plan} className={`${plan.buttonColor}`} />
+                  <SubscribeButton 
+                    plan={plan} 
+                    className={`${plan.buttonColor}`} 
+                  />
                 </div>
               </div>
             ))}
