@@ -26,7 +26,7 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 //change to STRIPE_SECRET_KEY_TEST
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST!, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-12-18.acacia",
   typescript: true
 });
@@ -187,7 +187,7 @@ export async function POST(req: NextRequest) {
   
   const sig = req.headers.get("stripe-signature");
   //change to CONSOLE for local testing
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET_CONSOLE;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!sig || !webhookSecret) {
     return NextResponse.json(
