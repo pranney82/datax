@@ -6,7 +6,7 @@ import { db } from "@/lib/firebase"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Eye, EyeOff, KeyRound, Zap, Sparkles, HelpCircle } from 'lucide-react'
+import { Eye, EyeOff, KeyRound, Sparkles, HelpCircle } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/context/auth-context"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"

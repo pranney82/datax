@@ -5,17 +5,17 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, ChevronUp, Lightbulb } from 'lucide-react'
 
 const faqData = {
-  title: "Unleash the Power of JobTread API",
+  title: "Unleash the Power of JOBTREAD API",
   subtitle: "Frequently Asked Questions",
   questions: [
     {
       question: "Won't JOBTREAD develop these features themselves?",
-      answer: "JobTread is laser-focused on building the ultimate construction management platform. Some of our epic features are beyond their current scope, so we've crafted them here to supercharge your workflow!",
+      answer: "JOBTREAD is laser-focused on building the ultimate construction management platform. Some of our epic features are beyond their current scope, so we've crafted them here to supercharge your workflow!",
       icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     },
     {
       question: "How is this different from what JOBTREAD offers?",
-      answer: "We're the turbo boost to JobTread's engine! Our custom integrations and solutions are more specialized and advanced than the standard JobTread offerings. These supercharged features are built on top of JobTread, allowing you to leverage your existing data with unprecedented power and flexibility!",
+      answer: "We're the turbo boost to JOBTREADS's engine! Our custom integrations and solutions are more specialized and advanced than the standard JOBTREAD offerings. These supercharged features are built on top of JOBTREAD, allowing you to leverage your existing data with unprecedented power and flexibility!",
       icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     },
     {
@@ -25,7 +25,7 @@ const faqData = {
     },
     {
       question: "What kind of features can DATAx build?",
-      answer: "In collaboration with the JOBTREAD team and DATAx users, we're constantly developing new features to enhance your JOBTREAD experience. From custom reports and dashboards to integrations with other software tools, the possibilities are endless!",
+      answer: "Our foucs is to build features for JOBTREAD users that are outside of JOBTREAD's scope. Zillow, Google Street, Calendly, Inventory are just a few examples. We're constantly developing new features through the JOBTREAD API, the possibilities are endless!",
       icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     },
     {

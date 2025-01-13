@@ -42,9 +42,9 @@ const reasons = [
     color: '#3B82F6',
   },
   {
-    title: 'JOBTREAD Companion',
+    title: 'Seamless JT Integration',
     description:
-      'Experience the power of a purpose-built companion app, developed in collaboration with the JOBTREAD team to perfectly complement your existing workflow.',
+      'Using the power of JOBTREAD API, DATAx can build powerful dashboards, charts, integrations and automations to improve or perfect your current workflow.',
     icon: Rocket,
     color: '#EF4444',
   },
@@ -115,7 +115,7 @@ const EpicFeatureSection = () => {
               Built by <span style={{ color: '#ffd400' }}>JOBTREAD</span> users, for <span style={{ color: '#ffd400' }}>JOBTREAD</span> users
             </h2>
             <p className="text-xl" style={{ color: '#000' }}>
-              Simply connect your JobTread account and get started—<span className="font-semibold" style={{ color: '#ffd400' }}>no hassle, just results.</span>
+              Simply connect your JOBTREAD account and get started—<span className="font-semibold" style={{ color: '#ffd400' }}>no hassle, just results.</span>
             </p>
           </motion.div>
         </motion.div>
