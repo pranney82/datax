@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
+import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 
 interface UserState {
