@@ -101,25 +101,25 @@ export default function HomePage() {
     {
       question: "What is DATAx?",
       answer: "Designed specicically for JOBTREAD users, we wanted to bridge the tech gap to bring dashboards, charts, along with specialty features, integrations, and automations to all JOBTREAD users.",
-      videoUrl: "https://youtu.be/54J9jKafVMc",
+      videoUrl: "https://www.youtube.com/embed/54J9jKafVMc",
       thumbnailUrl: "/assets/thumbnails/1.png"
     },    
     {
       question: "How does it work?",
-      answer: "Getting started is easy! Simply enter your JOBTREAD grant key, and you're all set. From there, you can explore your dashboard, enable specialty integrations, and unlock a variety of powerful features!",
-      videoUrl: "https://youtu.be/FiAXjvgV0Zc",
+      answer: "Getting started is easy! Simply enter your JOBTREAD grant key, and you're all set. From there, you can explore your dashboard, enable custom integrations, and unlock a variety of powerful features!",
+      videoUrl: "https://www.youtube.com/embed/FiAXjvgV0Zc",
       thumbnailUrl: "/assets/thumbnails/2.png"
     },
     {
       question: "Will DATAx mess up my JOBTREAD data?",
       answer: "No, your JOBTREAD data is completely safe and secure from any changes. JOBTREAD's API gives companies like ours access to view your data without altering it in any way.",
-      videoUrl: "https://youtu.be/yKPzpIU3sys",
+      videoUrl: "https://www.youtube.com/embed/yKPzpIU3sys",
       thumbnailUrl: "/assets/thumbnails/3.png"
     },
     {
       question: "Won't JOBTREAD develop these features?",
       answer: "JOBTREAD is laser-focused on building the ultimate construction management platform. We are here to supplement that with specialized features and dashboards.",
-      videoUrl: "https://youtu.be/Qcm4wsAnfwY",
+      videoUrl: "https://www.youtube.com/embed/Qcm4wsAnfwY",
       thumbnailUrl: "/assets/thumbnails/4.png"
     }
   ]
@@ -258,7 +258,7 @@ export default function HomePage() {
             <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
               <CardTitle className="flex items-center gap-2 text-xl">
                 <HeartHandshake className="w-6 h-6 text-[#ffd400]" />
-                DATAx FAQs?
+                What is DATAx?
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
