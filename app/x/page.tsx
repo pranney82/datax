@@ -40,14 +40,6 @@ interface FAQItem {
   thumbnailUrl: string;
 }
 
-interface SupportRequest {
-  email: string;
-  title: string;
-  description: string;
-  createdAt: Date;
-  status: 'new' | 'in-progress' | 'resolved';
-}
-
 export default function HomePage() {
   const { user } = useAuth();
   const [userData, setUserData] = useState<UserData | null>(null);
