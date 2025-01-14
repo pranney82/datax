@@ -16,42 +16,42 @@ const reasons = [
   {
     title: 'Built by JOBTREAD Users',
     description:
-      'With our experience as remodelers and JOBTREAD users, DATAx streamlines your operations with better data management and automation.',
+      'As JOBTREAD users ourselves, DATAx is built for maximum results enabling specialized integrations, automations and dashboards.',
     icon: Users,
     color: '#8B5CF6',
   },
   {
     title: 'Easy to Use',
     description:
-      'Simply enter your JOBTREAD login, and we\'ll handle the rest—no coding required. We\'ve managed the complexities so you can enjoy the benefits effortlessly.',
+      'Simply enter your JOBTREAD login, and we\'ll handle the rest—no coding required.',
     icon: Zap,
     color: '#FBBF24',
   },
   {
     title: 'Prebuilt Templates',
     description:
-      "Access a growing library of industry-leading dashboards, automations, and resources designed to supercharge your JOBTREAD experience.",
+      "Access a growing library of industry-leading dashboards, automations, and resources designed for your JOBTREAD.",
     icon: Target,
     color: '#10B981',
   },
   {
     title: 'Real Time Data',
     description:
-      'Your data syncs real time with every change that happens in JOBTREAD, ensuring you always have the most up-to-date information at your fingertips.',
+      'Your data syncs real time with every change that happens in JOBTREAD.',
     icon: Clock,
     color: '#3B82F6',
   },
   {
     title: 'Seamless JT Integration',
     description:
-      'Using the power of JOBTREAD API, DATAx can build powerful dashboards, charts, integrations and automations to improve or perfect your current workflow.',
+      'Leveraging JOBTREAD’s API, DATAx activates automations and integrations within their JOBTREAD account.',
     icon: Rocket,
     color: '#EF4444',
   },
   {
     title: 'Less Time Wrestling with Data',
     description:
-      'Bid farewell to endless spreadsheets and complex Zapier setups. Reclaim your time and focus on what truly matters - growing your business.',
+      'Bid farewell to endless spreadsheets and complex Zapier setups. Focus on what truly matters - growing your business.',
     icon: TrendingUp,
     color: '#6366F1',
   },
