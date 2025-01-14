@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { PlusCircle, ExternalLink, Map, BarChart3, Zap, BookOpen, Settings2, Rocket, CheckCircle2, Play, HeartHandshake } from 'lucide-react'
+import { PlusCircle, ExternalLink, Map, BarChart3, Zap, BookOpen, Settings2, Rocket, CheckCircle2, Play, HeartHandshake, LifeBuoy } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useAuth } from "@/lib/context/auth-context"
@@ -40,6 +40,14 @@ interface FAQItem {
   thumbnailUrl: string;
 }
 
+interface SupportRequest {
+  email: string;
+  title: string;
+  description: string;
+  createdAt: Date;
+  status: 'new' | 'in-progress' | 'resolved';
+}
+
 export default function HomePage() {
   const { user } = useAuth();
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -53,6 +61,8 @@ export default function HomePage() {
   const [confirmationMessage, setConfirmationMessage] = useState<string>('');
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
   const [openItem, setOpenItem] = useState<string | null>(null);
+  const [supportTitle, setSupportTitle] = useState('');
+  const [supportDescription, setSupportDescription] = useState('');
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -154,6 +164,39 @@ export default function HomePage() {
       }, 3000);
     } catch (error) {
       console.error('Error submitting feature request:', error);
+    }
+  };
+
+  const handleSupportSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!user?.email || !supportTitle.trim() || !supportDescription.trim()) {
+      console.error('Missing required fields');
+      return;
+    }
+
+    try {
+      const db = getFirestore();
+      await addDoc(collection(db, 'supportRequests'), {
+        email: user.email,
+        title: supportTitle,
+        description: supportDescription,
+        createdAt: new Date(),
+        status: 'new'
+      });
+
+      setSupportTitle('');
+      setSupportDescription('');
+      
+      setShowSuccess(true);
+      setConfirmationMessage('Support request submitted successfully!');
+      
+      setTimeout(() => {
+        setShowSuccess(false);
+        setConfirmationMessage('');
+      }, 3000);
+    } catch (error) {
+      console.error('Error submitting support request:', error);
     }
   };
 
@@ -408,6 +451,49 @@ export default function HomePage() {
                     {confirmationMessage}
                   </div>
                 )}
+              </CardContent>
+            </Card>
+
+            <Card id="support-request" className="md:col-span-2 shadow-md hover:shadow-lg transition-shadow duration-200">
+              <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <LifeBuoy className="w-6 h-6 text-[#ffd400]" />
+                  Support Request
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <form onSubmit={handleSupportSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <label htmlFor="supportTitle" className="block text-sm font-medium text-gray-700">Issue Title</label>
+                    <input
+                      id="supportTitle"
+                      type="text"
+                      placeholder="Brief description of the issue"
+                      value={supportTitle}
+                      onChange={(e) => setSupportTitle(e.target.value)}
+                      className="w-full px-3 py-2 bg-white border-2 border-[#e0e0e0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:border-[#ffd400] transition-all duration-200"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="supportDescription" className="block text-sm font-medium text-gray-700">Issue Description</label>
+                    <textarea
+                      id="supportDescription"
+                      placeholder="Please provide details about your issue..."
+                      value={supportDescription}
+                      onChange={(e) => setSupportDescription(e.target.value)}
+                      rows={4}
+                      className="w-full px-3 py-2 bg-white border-2 border-[#e0e0e0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:border-[#ffd400] transition-all duration-200 resize-none"
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <Button 
+                      type="submit" 
+                      className="bg-[#ffd400] text-[#333] hover:bg-[#ffd400]/80 transition-colors duration-200"
+                    >
+                      Submit Support Request
+                    </Button>
+                  </div>
+                </form>
               </CardContent>
             </Card>
           </div>
