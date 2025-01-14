@@ -10,32 +10,27 @@ const faqData = {
   questions: [
     {
       question: "What is JOBTREAD API",
-      answer: "JobTread’s open API allows developers (like DATAx, among others) to integrate its construction management features with other software, facilitating seamless data exchange and workflow automation.",
+      answer: "API is simply a computer language that allows developers (like DATAx) to connect software to each other. So we use the JOBTREAD API to create seamless data exchange and workflow automation for your JOBTREAD account.",
       icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     },
     {
       question: "Won't JOBTREAD develop these features themselves?",
-      answer: "JOBTREAD is laser-focused on building the ultimate construction management platform. Some of our epic features are beyond their current scope, so we've crafted them here to supercharge your workflow!",
-      icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
-    },
-    {
-      question: "How is this different from what JOBTREAD offers?",
-      answer: "Our specialized integrations give you more advanced functionality than the standard JOBTREAD offerings, which BTW are amazing.",
+      answer: "JOBTREAD is laser-focused on building the ultimate construction management platform. We are here to supplement that with specialized features and dashboards.",
       icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     },
     {
       question: "What is DATAx?",
-      answer: "Using the JOBTREAD API, we connect your data to our dashboards, specialized intergration and automation. Just connect and go!",
+      answer: "A software company only for JOBTREAD users that builds specialized features and dashboards so you don't have to. Just connect and go!",
       icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     },
     {
       question: "What kind of features can DATAx build?",
-      answer: "Our foucs is to build specialized features for JOBTREAD users that are outside of JOBTREAD's scope. Zillow, Google Street, Calendly, Inventory are just a few examples. We're constantly developing new features,the possibilities are endless!",
+      answer: "Our foucs is to build specialized features for JOBTREAD users that are outside of JOBTREAD's scope. Zillow, Google Street, Calendly, Inventory are just a few examples. We're constantly developing new features, the possibilities are endless!",
       icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     },
     {
       question: "How secure is the integration with JOBTREAD?",
-      answer: "Security is our top priority. Since are using the JOBTREAD API you can rest assured you data is safe and will NOT be changed by connecting to DATAx.",
+      answer: "Since we are using the JOBTREAD API you can rest assured your data is safe and will NOT be changed by connecting to DATAx.",
       icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     }
   ]
