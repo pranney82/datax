@@ -7,6 +7,14 @@ export const metadata: Metadata = {
   title: 'Win Your DATA',
   description: 'Insights and automation for serious contractors',
   metadataBase: new URL('https://winyourdata.com'),
+  images: [
+    {
+      url: '/assets/images/thumb.png',
+      width: 1200,
+      height: 630,
+      alt: 'Win Your DATA Logo',
+    },
+  ],
   openGraph: {
     title: 'Win Your DATA',
     description: 'Insights and automation for serious contractors',
