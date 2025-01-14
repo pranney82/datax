@@ -92,13 +92,13 @@ const About = () => {
               About Us
             </h1>
             <p className="mb-8 max-w-xl text-gray-700 lg:text-xl leading-relaxed">
-              At <strong>DATAx</strong>, we're contractors who are passionate about helping other contractors thrive through the power of technology.
+              At <strong>DATAx</strong>, we&apos;re contractors who are passionate about helping other contractors thrive through the power of technology.
               <br /><br />
               It all started with real-world problems. Peter built a dashboard to visualize his business stats using JobTread data, and when he shared it, others loved it so much he knew he had to make it available for more people. Meanwhile, Elliott created micro features to tackle cash flow projections and automate workflows in his own business. When his friends saw the impact, they wanted in too.
               <br /><br />
-              Together, we've combined our expertise to simplify data and empower you, the business owner. Our mission is simple: to give you more time to work on your business—not in spreadsheets.
+              Together, we&apos;ve combined our expertise to simplify data and empower you, the business owner. Our mission is simple: to give you more time to work on your business—not in spreadsheets.
               <br /><br />
-              Let's take your business to the next level, together.
+              Let&apos;s take your business to the next level, together.
             </p>
             <EpicRoadmapButton />
           </motion.div>
