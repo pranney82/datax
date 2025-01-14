@@ -100,13 +100,13 @@ export default function HomePage() {
   const faqItems: FAQItem[] = [
     {
       question: "What does DATAx do?",
-      answer: "Using the JOBTREAD API and your existing data, we create dashboards, charts, custom integrations, and automations—all while ensuring your data remains secure and unchanged.",
+      answer: "Using the JOBTREAD API and your existing data, we create dashboards, charts, specialty features integrations, and automations—all while ensuring your data remains secure and unchanged.",
       videoUrl: "https://www.youtube.com/embed/MOTNo9iD84I",
       thumbnailUrl: "/assets/thumbnails/1.png"
     },    
     {
       question: "How does it work?",
-      answer: "Getting started is easy! Simply enter your JOBTREAD grant key, and you're all set. From there, you can explore your dashboard, enable custom integrations, and unlock a variety of powerful features!",
+      answer: "Getting started is easy! Simply enter your JOBTREAD grant key, and you're all set. From there, you can explore your dashboard, enable specialty integrations, and unlock a variety of powerful features!",
       videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
       thumbnailUrl: "/assets/thumbnails/2.png"
     },
