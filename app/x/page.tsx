@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { PlusCircle, ExternalLink, Map, BarChart3, Zap, BookOpen, Settings2, Rocket, CheckCircle2 } from 'lucide-react'
+import { PlusCircle, ExternalLink, Map, BarChart3, Zap, BookOpen, Settings2, Rocket, CheckCircle2, Play, HeartHandshake } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useAuth } from "@/lib/context/auth-context"
@@ -10,6 +10,12 @@ import { Button } from "@/components/ui/button"
 import { InspirationQuote } from "@/components/ui/InspirationQuote"
 import Link from 'next/link'
 import { AuthDialog } from "@/components/home/signup1"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 interface CompanyUpdate {
   id: string
@@ -27,6 +33,13 @@ interface UserData {
   // Add other potential user data fields here
 }
 
+interface FAQItem {
+  question: string;
+  answer: string;
+  videoUrl?: string;
+  thumbnailUrl: string;
+}
+
 export default function HomePage() {
   const { user } = useAuth();
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -38,6 +51,8 @@ export default function HomePage() {
   const [featureTitle, setFeatureTitle] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState<string>('');
+  const [playingVideo, setPlayingVideo] = useState<string | null>(null);
+  const [openItem, setOpenItem] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -79,6 +94,33 @@ export default function HomePage() {
         name: 'Mike Peters',
         avatar: '/avatars/mike.jpg'
       }
+    }
+  ]
+
+  const faqItems: FAQItem[] = [
+    {
+      question: "What is DATAx?",
+      answer: "Designed specicically for JOBTREAD users, we wanted to bridge the tech gap to bring dashboards, charts, along with specialty features, integrations, and automations to all JOBTREAD users.",
+      videoUrl: "https://youtu.be/54J9jKafVMc",
+      thumbnailUrl: "/assets/thumbnails/1.png"
+    },    
+    {
+      question: "How does it work?",
+      answer: "Getting started is easy! Simply enter your JOBTREAD grant key, and you're all set. From there, you can explore your dashboard, enable specialty integrations, and unlock a variety of powerful features!",
+      videoUrl: "https://youtu.be/FiAXjvgV0Zc",
+      thumbnailUrl: "/assets/thumbnails/2.png"
+    },
+    {
+      question: "Will DATAx mess up my JOBTREAD data?",
+      answer: "No, your JOBTREAD data is completely safe and secure from any changes. JOBTREAD's API gives companies like ours access to view your data without altering it in any way.",
+      videoUrl: "https://youtu.be/yKPzpIU3sys",
+      thumbnailUrl: "/assets/thumbnails/3.png"
+    },
+    {
+      question: "Won't JOBTREAD develop these features?",
+      answer: "JOBTREAD is laser-focused on building the ultimate construction management platform. We are here to supplement that with specialized features and dashboards.",
+      videoUrl: "https://youtu.be/Qcm4wsAnfwY",
+      thumbnailUrl: "/assets/thumbnails/4.png"
     }
   ]
 
@@ -167,6 +209,20 @@ export default function HomePage() {
 
   const greeting = userData?.name || user?.displayName ? `Welcome, ${userData?.name || user?.displayName}!` : 'Welcome to your dashboard!';
 
+  const toggleVideo = (videoUrl: string) => {
+    setPlayingVideo(prevUrl => prevUrl === videoUrl ? null : videoUrl);
+  };
+
+  const handleAccordionChange = (value: string | undefined) => {
+    if (value === openItem) {
+      setOpenItem(null);
+      setPlayingVideo(null);
+    } else {
+      setOpenItem(value || null);
+      setPlayingVideo(null);
+    }
+  };
+
   return (
     <main className="flex-grow container mx-auto py-8 relative">
       {!user && (
@@ -198,7 +254,83 @@ export default function HomePage() {
             <InspirationQuote />
           </div>
 
+          <Card className="md:col-span-2 shadow-md hover:shadow-lg transition-shadow duration-200">
+            <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <HeartHandshake className="w-6 h-6 text-[#ffd400]" />
+                DATAx FAQs?
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-4">
+              <Accordion type="single" collapsible className="w-full" value={openItem || undefined} onValueChange={handleAccordionChange}>
+                {faqItems.map((item, index) => (
+                  <AccordionItem key={index} value={`item-${index}`}>
+                    <AccordionTrigger className="text-left text-lg font-medium text-[#333]">{item.question}</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="mb-4 text-base text-[#555]">{item.answer}</p>
+                      {item.videoUrl && (
+                        <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+                          {playingVideo === item.videoUrl ? (
+                            <iframe
+                              key={playingVideo}
+                              src={`${item.videoUrl}?autoplay=1`}
+                              title={`Video for ${item.question}`}
+                              className="w-full h-full"
+                              allowFullScreen
+                              allow="autoplay"
+                            ></iframe>
+                          ) : (
+                            <div className="relative w-full h-full">
+                              <img
+                                src={item.thumbnailUrl}
+                                alt={`Thumbnail for ${item.question}`}
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <button
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    toggleVideo(item.videoUrl!);
+                                  }}
+                                  className="bg-white/80 text-[#ffd400] rounded-full p-4 hover:bg-white hover:text-[#ffd400] transition-all duration-200 shadow-lg"
+                                  aria-label={`Play video about ${item.question}`}
+                                >
+                                  <Play className="w-8 h-8" />
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </CardContent>
+          </Card>
+
           <div className="grid gap-6 md:grid-cols-2">
+            <Card className="shadow-md hover:shadow-lg transition-shadow duration-200">
+              <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
+                <CardTitle className="text-xl">Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { icon: BarChart3, label: 'Dashboard', href: '/x/dashboard' },
+                    { icon: Zap, label: 'Toolbox', href: '/x/toolbox' },
+                    { icon: BookOpen, label: 'Library', href: '/x/library/templates' },
+                    { icon: Settings2, label: 'Settings', href: '/x/settings' }
+                  ].map((action, index) => (
+                    <Link key={index} href={action.href} className="p-4 border-2 border-[#e0e0e0] rounded-lg hover:bg-[#ffd400] hover:text-[#333] flex flex-col items-center gap-2 transition-all duration-200 group">
+                      <action.icon className="w-8 h-8 text-[#ffd400] group-hover:text-[#333] group-hover:scale-110 transition-all duration-200" />
+                      <span className="text-sm font-medium">{action.label}</span>
+                    </Link>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
             <Card className="md:col-span-1 shadow-md hover:shadow-lg transition-shadow duration-200">
               <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
                 <CardTitle className="text-xl">DATAx Updates</CardTitle>
@@ -219,27 +351,6 @@ export default function HomePage() {
                         <p className="text-xs text-[#777]">{update.date}</p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="shadow-md hover:shadow-lg transition-shadow duration-200">
-              <CardHeader className="bg-[#f0f0f0] text-[#333] rounded-t-lg">
-                <CardTitle className="text-xl">Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-4">
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { icon: BarChart3, label: 'Dashboard', href: '/x/dashboard' },
-                    { icon: Zap, label: 'Toolbox', href: '/x/toolbox' },
-                    { icon: BookOpen, label: 'Library', href: '/x/library/templates' },
-                    { icon: Settings2, label: 'Settings', href: '/x/settings' }
-                  ].map((action, index) => (
-                    <Link key={index} href={action.href} className="p-4 border-2 border-[#e0e0e0] rounded-lg hover:bg-[#ffd400] hover:text-[#333] flex flex-col items-center gap-2 transition-all duration-200 group">
-                      <action.icon className="w-8 h-8 text-[#ffd400] group-hover:text-[#333] group-hover:scale-110 transition-all duration-200" />
-                      <span className="text-sm font-medium">{action.label}</span>
-                    </Link>
                   ))}
                 </div>
               </CardContent>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu, X, Zap, Home, Info, Car, DollarSign, BarChart3, BookOpen, Map, BookDown } from 'lucide-react';
+import { Menu, X, Zap, Home, Info, Car, DollarSign, BarChart3, BookOpen, Map } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
@@ -42,11 +42,6 @@ const iconMap = {
   Info: <Info className="size-5 shrink-0" />,
   Car: <Car className="size-5 shrink-0" />,
   DollarSign: <DollarSign className="size-5 shrink-0" />,
-  BookDown: (
-    <div className="p-3 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
-      <BookDown className="size-8 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
-    </div>
-  ),
 };
 
 const Navbar1 = () => {
@@ -200,28 +195,6 @@ const Navbar1 = () => {
                                 </div>
                                 <p className="text-sm leading-snug text-gray-600 group-hover:text-black transition-colors duration-200 mt-1">
                                   See what&apos;s coming next
-                                </p>
-                              </div>
-                            </Link>
-                          </NavigationMenuLink>
-                        </li>
-
-                        <li>
-                          <NavigationMenuLink asChild>
-                            <Link
-                              href="/coverphoto"
-                              className={cn(
-                                'flex select-none gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
-                              )}
-                            >
-                              {iconMap.BookDown}
-
-                              <div>
-                                <div className="text-sm font-semibold">
-                                  Cover Photo Automation
-                                </div>
-                                <p className="text-sm leading-snug text-muted-foreground">
-                                  Automatically generate cover photos for your jobs
                                 </p>
                               </div>
                             </Link>
@@ -432,3 +405,4 @@ const Navbar1 = () => {
 };
 
 export default Navbar1;
+

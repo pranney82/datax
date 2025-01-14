@@ -16,42 +16,42 @@ const reasons = [
   {
     title: 'Built by JOBTREAD Users',
     description:
-      'With our experience as remodelers and JOBTREAD users, DATAx streamlines your operations with better data management and automation.',
+      'As JOBTREAD users ourselves, DATAx is built for maximum results enabling specialized integrations, automations and dashboards.',
     icon: Users,
     color: '#8B5CF6',
   },
   {
     title: 'Easy to Use',
     description:
-      'Simply enter your JOBTREAD login, and we\'ll handle the rest—no coding required. We\'ve managed the complexities so you can enjoy the benefits effortlessly.',
+      'Simply enter your JOBTREAD login, and we\'ll handle the rest—no coding required.',
     icon: Zap,
     color: '#FBBF24',
   },
   {
     title: 'Prebuilt Templates',
     description:
-      "Access a growing library of industry-leading dashboards, automations, and resources designed to supercharge your JOBTREAD experience.",
+      "Access a growing library of industry-leading dashboards, automations, and resources designed for your JOBTREAD.",
     icon: Target,
     color: '#10B981',
   },
   {
     title: 'Real Time Data',
     description:
-      'Your data syncs real time with every change that happens in JOBTREAD, ensuring you always have the most up-to-date information at your fingertips.',
+      'Your data syncs real time with every change that happens in JOBTREAD.',
     icon: Clock,
     color: '#3B82F6',
   },
   {
-    title: 'JOBTREAD Companion',
+    title: 'Seamless JT Integration',
     description:
-      'Experience the power of a purpose-built companion app, developed in collaboration with the JOBTREAD team to perfectly complement your existing workflow.',
+      'Leveraging JOBTREAD’s API, DATAx activates automations and integrations within their JOBTREAD account.',
     icon: Rocket,
     color: '#EF4444',
   },
   {
     title: 'Less Time Wrestling with Data',
     description:
-      'Bid farewell to endless spreadsheets and complex Zapier setups. Reclaim your time and focus on what truly matters - growing your business.',
+      'Bid farewell to endless spreadsheets and complex Zapier setups. Focus on what truly matters - growing your business.',
     icon: TrendingUp,
     color: '#6366F1',
   },
@@ -115,7 +115,7 @@ const EpicFeatureSection = () => {
               Built by <span style={{ color: '#ffd400' }}>JOBTREAD</span> users, for <span style={{ color: '#ffd400' }}>JOBTREAD</span> users
             </h2>
             <p className="text-xl" style={{ color: '#000' }}>
-              Simply connect your JobTread account and get started—<span className="font-semibold" style={{ color: '#ffd400' }}>no hassle, just results.</span>
+              Simply connect your JOBTREAD account and get started—<span className="font-semibold" style={{ color: '#ffd400' }}>no hassle, just results.</span>
             </p>
           </motion.div>
         </motion.div>

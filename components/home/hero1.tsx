@@ -24,7 +24,7 @@ const Hero1 = () => {
               Win Your DATA
             </h1>
             <p className="mb-8 max-w-xl text-[#fff] lg:text-xl">
-              Insights and automation for serious contractors
+              Done for you specialty features and dashboards
               <br /><br />
               ... no tech ability required
             </p>

@@ -5,32 +5,32 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, ChevronUp, Lightbulb } from 'lucide-react'
 
 const faqData = {
-  title: "Unleash the Power of JobTread API",
+  title: "Unleash the Power of JOBTREAD API",
   subtitle: "Frequently Asked Questions",
   questions: [
     {
-      question: "Won't JOBTREAD develop these features themselves?",
-      answer: "JobTread is laser-focused on building the ultimate construction management platform. Some of our epic features are beyond their current scope, so we've crafted them here to supercharge your workflow!",
+      question: "What is JOBTREAD API",
+      answer: "API is simply a computer language that allows developers (like DATAx) to connect software to each other. So we use the JOBTREAD API to create seamless data exchange and workflow automation for your JOBTREAD account.",
       icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     },
     {
-      question: "How is this different from what JOBTREAD offers?",
-      answer: "We're the turbo boost to JobTread's engine! Our custom integrations and solutions are more specialized and advanced than the standard JobTread offerings. These supercharged features are built on top of JobTread, allowing you to leverage your existing data with unprecedented power and flexibility!",
+      question: "Won't JOBTREAD develop these features themselves?",
+      answer: "JOBTREAD is laser-focused on building the ultimate construction management platform. We are here to supplement that with specialized features and dashboards.",
       icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     },
     {
       question: "What is DATAx?",
-      answer: "A software solution built specifically for JOBTREAD users that connects JOBTREAD to other software tools, enabling you to automate workflows, streamline processes, and unlock the full potential of your data.",
+      answer: "A software company only for JOBTREAD users that builds specialized features and dashboards so you don't have to. Just connect and go!",
       icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     },
     {
       question: "What kind of features can DATAx build?",
-      answer: "In collaboration with the JOBTREAD team and DATAx users, we're constantly developing new features to enhance your JOBTREAD experience. From custom reports and dashboards to integrations with other software tools, the possibilities are endless!",
+      answer: "Our foucs is to build specialized features for JOBTREAD users that are outside of JOBTREAD's scope. Zillow, Google Street, Calendly, Inventory are just a few examples. We're constantly developing new features, the possibilities are endless!",
       icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     },
     {
       question: "How secure is the integration with JOBTREAD?",
-      answer: "Security is our top priority. We use industry-standard encryption and security protocols to ensure your data is safe and secure. Our integration with JOBTREAD is seamless and secure, so you can trust that your data is in good hands.",
+      answer: "Since we are using the JOBTREAD API you can rest assured your data is safe and will NOT be changed by connecting to DATAx.",
       icon: <Lightbulb className="w-6 h-6 text-[#FFD400]" />
     }
   ]

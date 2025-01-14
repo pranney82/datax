@@ -37,11 +37,11 @@ const features = [
   },
   {
     title: 'Toolbox',
-    subtitle: "CUSTOM FEATURES FOR YOUR JOBTREAD",
+    subtitle: "SPECIALTY FEATURES FOR YOUR JOBTREAD",
     id: 'toolbox',
-    description: "Supercharge your workflow with our cutting-edge Toolbox—designed for JOBTREAD users, delivering custom, code-free solutions to boost productivity.",
+    description: "Supercharge your workflow with our cutting-edge Toolbox—designed for JOBTREAD users, delivering specialty, code-free solutions to boost productivity.",
     list: [
-      'Pre-built custom features',
+      'Pre-built specialty features',
       'Automations & Integrations',
       'Code free, just turn on'
     ],
