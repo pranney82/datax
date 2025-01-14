@@ -79,7 +79,7 @@ const EpicRoadmapButton = () => {
 
 const About = () => {
   return (
-    <section className="py-16 w-full bg-[#fff] overflow-hidden">
+    <section className="py-16 w-full bg-white overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
         <div className="grid items-center gap-12 lg:grid-cols-2 relative z-10">
           <motion.div 
@@ -88,15 +88,17 @@ const About = () => {
             transition={{ duration: 0.5 }}
             className="flex flex-col items-center text-center lg:items-start lg:text-left"
           >
-            <h1 className="my-6 text-pretty text-5xl font-bold lg:text-7xl text-[#ffd400] drop-shadow-md">
+            <h1 className="my-6 text-5xl font-bold lg:text-7xl text-[#ffd400] drop-shadow-md">
               About Us
             </h1>
             <p className="mb-8 max-w-xl text-gray-700 lg:text-xl leading-relaxed">
-              We&apos;re contractors passionate about helping other contractors
-              through technology. <br></br><br></br>DATAx is on a mission to make data simple.
-              <br></br><br></br>Through our partnership together we want to empower you as a
-              business owner to spend more time on your business and less on
-              spreadsheets.
+              At <strong>DATAx</strong>, we're contractors who are passionate about helping other contractors thrive through the power of technology.
+              <br /><br />
+              It all started with real-world problems. Peter built a dashboard to visualize his business stats using JobTread data, and when he shared it, others loved it so much he knew he had to make it available for more people. Meanwhile, Elliott created micro features to tackle cash flow projections and automate workflows in his own business. When his friends saw the impact, they wanted in too.
+              <br /><br />
+              Together, we've combined our expertise to simplify data and empower you, the business owner. Our mission is simple: to give you more time to work on your business—not in spreadsheets.
+              <br /><br />
+              Let's take your business to the next level, together.
             </p>
             <EpicRoadmapButton />
           </motion.div>
