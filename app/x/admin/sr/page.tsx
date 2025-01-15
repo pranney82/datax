@@ -48,7 +48,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
-interface FeatureRequest {
+interface SupportRequest {
   id: string
   title: string
   description: string
@@ -56,32 +56,32 @@ interface FeatureRequest {
   createdAt: { toDate: () => Date }
   userId: string
   email: string
-  votes: number
+  priority: string
 }
 
 const ITEMS_PER_PAGE = 10
 
-export default function FeatureRequestsPage() {
-  const [requests, setRequests] = useState<FeatureRequest[]>([])
+export default function SupportRequestsPage() {
+  const [requests, setRequests] = useState<SupportRequest[]>([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState("")
-  const [sortField, setSortField] = useState<keyof FeatureRequest>("createdAt")
+  const [sortField, setSortField] = useState<keyof SupportRequest>("createdAt")
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc")
-  const [requestToDelete, setRequestToDelete] = useState<FeatureRequest | null>(null)
-  const [requestToView, setRequestToView] = useState<FeatureRequest | null>(null)
+  const [requestToDelete, setRequestToDelete] = useState<SupportRequest | null>(null)
+  const [requestToView, setRequestToView] = useState<SupportRequest | null>(null)
 
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "featureRequests"))
+        const querySnapshot = await getDocs(collection(db, "supportRequests"))
         const requestData = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        })) as FeatureRequest[]
+        })) as SupportRequest[]
         setRequests(requestData)
       } catch (error) {
-        console.error("Error fetching feature requests:", error)
+        console.error("Error fetching support requests:", error)
       } finally {
         setLoading(false)
       }
@@ -90,7 +90,7 @@ export default function FeatureRequestsPage() {
     fetchRequests()
   }, [])
 
-  const handleSort = (field: keyof FeatureRequest) => {
+  const handleSort = (field: keyof SupportRequest) => {
     if (field === sortField) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc")
     } else {
@@ -129,11 +129,11 @@ export default function FeatureRequestsPage() {
     if (!requestToDelete) return
 
     try {
-      await deleteDoc(doc(db, "featureRequests", requestToDelete.id))
+      await deleteDoc(doc(db, "supportRequests", requestToDelete.id))
       setRequests(requests.filter(request => request.id !== requestToDelete.id))
       setRequestToDelete(null)
     } catch (error) {
-      console.error("Error deleting feature request:", error)
+      console.error("Error deleting support request:", error)
     }
   }
 
@@ -150,7 +150,7 @@ export default function FeatureRequestsPage() {
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
-                <BreadcrumbPage>Feature Requests</BreadcrumbPage>
+                <BreadcrumbPage>Support Requests</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -160,7 +160,7 @@ export default function FeatureRequestsPage() {
       <div className="flex flex-col gap-4 p-4">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            Feature Requests
+            Support Requests
             <Badge variant="outline" className="px-2 py-1 bg-gray-100 rounded-full">
               {requests.length}
             </Badge>
@@ -181,13 +181,13 @@ export default function FeatureRequestsPage() {
                   Title <ArrowUpDown className="inline h-4 w-4" />
                 </TableHead>
                 <TableHead onClick={() => handleSort("email")} className="cursor-pointer">
-                  Requested By <ArrowUpDown className="inline h-4 w-4" />
+                  Submitted By <ArrowUpDown className="inline h-4 w-4" />
                 </TableHead>
                 <TableHead onClick={() => handleSort("status")} className="cursor-pointer">
                   Status <ArrowUpDown className="inline h-4 w-4" />
                 </TableHead>
-                <TableHead onClick={() => handleSort("votes")} className="cursor-pointer">
-                  Votes <ArrowUpDown className="inline h-4 w-4" />
+                <TableHead onClick={() => handleSort("priority")} className="cursor-pointer">
+                  Priority <ArrowUpDown className="inline h-4 w-4" />
                 </TableHead>
                 <TableHead onClick={() => handleSort("createdAt")} className="cursor-pointer">
                   Created <ArrowUpDown className="inline h-4 w-4" />
@@ -198,14 +198,14 @@ export default function FeatureRequestsPage() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center">
+                  <TableCell colSpan={6} className="text-center">
                     Loading...
                   </TableCell>
                 </TableRow>
               ) : paginatedRequests.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center">
-                    No feature requests found
+                  <TableCell colSpan={6} className="text-center">
+                    No support requests found
                   </TableCell>
                 </TableRow>
               ) : (
@@ -214,7 +214,7 @@ export default function FeatureRequestsPage() {
                     <TableCell>{request.title}</TableCell>
                     <TableCell>{request.email}</TableCell>
                     <TableCell>{request.status}</TableCell>
-                    <TableCell>{request.votes}</TableCell>
+                    <TableCell>{request.priority}</TableCell>
                     <TableCell>
                       {request.createdAt && typeof request.createdAt.toDate === 'function' 
                         ? request.createdAt.toDate().toLocaleString()
@@ -284,7 +284,7 @@ export default function FeatureRequestsPage() {
           <DialogHeader>
             <DialogTitle>Are you absolutely sure?</DialogTitle>
             <DialogDescription>
-              This action cannot be undone. This will permanently delete the feature request
+              This action cannot be undone. This will permanently delete the support request
               <b>{requestToDelete?.title}</b> and remove it from our servers.
             </DialogDescription>
           </DialogHeader>
@@ -307,11 +307,11 @@ export default function FeatureRequestsPage() {
           <DialogHeader>
             <DialogTitle>{requestToView?.title}</DialogTitle>
             <div className="flex gap-2 items-center text-sm text-muted-foreground">
-              <span>Requested by {requestToView?.email}</span>
+              <span>Submitted by {requestToView?.email}</span>
               <span>•</span>
               <span>{requestToView?.createdAt?.toDate().toLocaleString()}</span>
               <span>•</span>
-              <span>{requestToView?.votes} votes</span>
+              <span>Priority: {requestToView?.priority}</span>
             </div>
           </DialogHeader>
           <div className="mt-4">
@@ -327,4 +327,4 @@ export default function FeatureRequestsPage() {
       </Dialog>
     </main>
   )
-}
+} 

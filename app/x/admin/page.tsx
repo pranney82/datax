@@ -97,6 +97,13 @@ export default function FeaturesPage() {
       href: "/x/admin/logs",
       isPopular: false,  
       status: "Active"
+    },
+    {
+      title: "Support Requests",
+      description: "View and manage support requests from users.",
+      href: "/x/admin/sr",
+      isPopular: false,
+      status: "Active"
     }
   ]
 
