@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { type, data } = body;
 
-    let message = {
+    const message = {
       username: 'DATAx Bot',
       embeds: [{}]
     };

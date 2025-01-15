@@ -136,7 +136,7 @@ export default function HomePage() {
 
     try {
       const db = getFirestore();
-      const docRef = await addDoc(collection(db, 'featureRequests'), {
+      await addDoc(collection(db, 'featureRequests'), {
         email: user.email,
         title: featureTitle,
         description: featureRequest,
