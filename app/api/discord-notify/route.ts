@@ -1,18 +1,29 @@
 import { NextResponse } from 'next/server';
 
-const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL_USERS;
+// Different webhook URLs for different types of notifications
+const DISCORD_WEBHOOK_URL_USERS = process.env.DISCORD_WEBHOOK_URL_USERS;
+const DISCORD_WEBHOOK_URL_FEATURES = process.env.DISCORD_WEBHOOK_URL_FEATURES;
+const DISCORD_WEBHOOK_URL_SUPPORT = process.env.DISCORD_WEBHOOK_URL_SUPPORT;
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { type, data } = body;
 
-    if (type === 'new-user') {
-      const message = {
-        username: 'DATAx Bot',
-        embeds: [{
+    let message = {
+      username: 'DATAx Bot',
+      embeds: [{}]
+    };
+
+    // Determine which webhook URL to use
+    let webhookUrl: string | undefined;
+
+    switch (type) {
+      case 'new-user':
+        webhookUrl = DISCORD_WEBHOOK_URL_USERS;
+        message.embeds[0] = {
           title: '🎉 New User Signup!',
-          color: 0x00ff00, // Green color
+          color: 0x00ff00, // Green
           fields: [
             {
               name: 'Name',
@@ -31,25 +42,92 @@ export async function POST(request: Request) {
             }
           ],
           timestamp: new Date().toISOString()
-        }]
-      };
+        };
+        break;
 
-      const response = await fetch(DISCORD_WEBHOOK_URL!, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-      });
+      case 'feature-request':
+        webhookUrl = DISCORD_WEBHOOK_URL_FEATURES;
+        message.embeds[0] = {
+          title: '💡 New Feature Request',
+          color: 0x0099ff, // Blue
+          fields: [
+            {
+              name: 'Feature Title',
+              value: data.title,
+              inline: false
+            },
+            {
+              name: 'Description',
+              value: data.description,
+              inline: false
+            },
+            {
+              name: 'Requested By',
+              value: data.email,
+              inline: true
+            },
+            {
+              name: 'Status',
+              value: data.status,
+              inline: true
+            }
+          ],
+          timestamp: new Date().toISOString()
+        };
+        break;
 
-      if (!response.ok) {
-        throw new Error(`Discord API responded with ${response.status}`);
-      }
+      case 'support-request':
+        webhookUrl = DISCORD_WEBHOOK_URL_SUPPORT;
+        message.embeds[0] = {
+          title: '🆘 New Support Request',
+          color: 0xff0000, // Red
+          fields: [
+            {
+              name: 'Issue Title',
+              value: data.title,
+              inline: false
+            },
+            {
+              name: 'Description',
+              value: data.description,
+              inline: false
+            },
+            {
+              name: 'Submitted By',
+              value: data.email,
+              inline: true
+            },
+            {
+              name: 'Status',
+              value: data.status,
+              inline: true
+            }
+          ],
+          timestamp: new Date().toISOString()
+        };
+        break;
 
-      return NextResponse.json({ success: true });
+      default:
+        return NextResponse.json({ error: 'Invalid notification type' }, { status: 400 });
     }
 
-    return NextResponse.json({ error: 'Invalid notification type' }, { status: 400 });
+    if (!webhookUrl) {
+      throw new Error('No webhook URL configured for this notification type');
+    }
+
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Discord API responded with ${response.status}`);
+    }
+
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error sending Discord notification:', error);
     return NextResponse.json(

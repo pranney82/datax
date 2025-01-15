@@ -49,8 +49,8 @@ export default function HomePage() {
   const [orgID, setOrgID] = useState('');
   const [grantKey, setGrantKey] = useState('');
   const [featureTitle, setFeatureTitle] = useState('');
-  const [showSuccess, setShowSuccess] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState<string>('');
+  const [confirmationMessage2, setConfirmationMessage2] = useState<string>('');
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
   const [openItem, setOpenItem] = useState<string | null>(null);
   const [supportTitle, setSupportTitle] = useState('');
@@ -136,7 +136,7 @@ export default function HomePage() {
 
     try {
       const db = getFirestore();
-      await addDoc(collection(db, 'featureRequests'), {
+      const docRef = await addDoc(collection(db, 'featureRequests'), {
         email: user.email,
         title: featureTitle,
         description: featureRequest,
@@ -144,14 +144,29 @@ export default function HomePage() {
         status: 'new'
       });
 
+      // Send Discord notification
+      await fetch('/api/discord-notify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: 'feature-request',
+          data: {
+            title: featureTitle,
+            description: featureRequest,
+            email: user.email,
+            status: 'new'
+          }
+        })
+      });
+
       setFeatureTitle('');
       setFeatureRequest('');
       
-      setShowSuccess(true);
       setConfirmationMessage('Feature request submitted successfully!');
       
       setTimeout(() => {
-        setShowSuccess(false);
         setConfirmationMessage('');
       }, 3000);
     } catch (error) {
@@ -177,15 +192,30 @@ export default function HomePage() {
         status: 'new'
       });
 
+      // Send Discord notification
+      await fetch('/api/discord-notify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: 'support-request',
+          data: {
+            title: supportTitle,
+            description: supportDescription,
+            email: user.email,
+            status: 'new'
+          }
+        })
+      });
+
       setSupportTitle('');
       setSupportDescription('');
       
-      setShowSuccess(true);
-      setConfirmationMessage('Support request submitted successfully!');
+      setConfirmationMessage2('Support request submitted successfully!');
       
       setTimeout(() => {
-        setShowSuccess(false);
-        setConfirmationMessage('');
+        setConfirmationMessage2('');
       }, 3000);
     } catch (error) {
       console.error('Error submitting support request:', error);
@@ -270,13 +300,6 @@ export default function HomePage() {
       )}
 
       <div className={!user ? 'filter blur-sm pointer-events-none' : ''}>
-        {showSuccess && (
-          <div className="fixed top-4 right-4 flex items-center gap-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50 animate-fade-in-down">
-            <CheckCircle2 className="w-5 h-5" />
-            <span>Feature request submitted successfully!</span>
-          </div>
-        )}
-        
         <div className="flex flex-1 flex-col gap-4 p-6 pt-4 animate-fadeIn">
           <div className="flex justify-between items-center mb-6">
             <div>
@@ -439,7 +462,8 @@ export default function HomePage() {
                   </div>
                 </form>
                 {confirmationMessage && (
-                  <div className="mt-4 p-4 bg-green-100 text-green-700 rounded-lg">
+                  <div className="mt-4 p-4 bg-green-100 text-green-700 rounded-lg flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" />
                     {confirmationMessage}
                   </div>
                 )}
@@ -486,6 +510,12 @@ export default function HomePage() {
                     </Button>
                   </div>
                 </form>
+                {confirmationMessage2 && (
+                  <div className="mt-4 p-4 bg-green-100 text-green-700 rounded-lg flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" />
+                    {confirmationMessage2}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
