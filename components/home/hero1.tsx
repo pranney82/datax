@@ -59,9 +59,9 @@ const Hero1 = () => {
             </Badge>
             <div className="my-6 space-y-4">
               <h2 className="text-4xl font-bold lg:text-5xl text-white leading-tight">
-                Done for you
-                <span className="block text-[#FFD400]">specialty features</span>
-                and dashboards
+                Your
+                <span className="block text-[#FFD400]">JOBTREAD</span>
+                automation partner
               </h2>
               <p className="text-2xl font-semibold text-white/80 italic">
                 ... no tech ability required
