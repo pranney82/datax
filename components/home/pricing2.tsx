@@ -160,7 +160,7 @@ const AddOns = () => {
                       </>
                     ) : (
                       <>
-                        Schedule Call <ArrowRight className="ml-2 h-5 w-5 inline-block animate-pulse" />
+                        Get Started <ArrowRight className="ml-2 h-5 w-5 inline-block animate-pulse" />
                       </>
                     )}
                   </Button>
@@ -198,8 +198,8 @@ const AddOns = () => {
                     <ul className="form-section page-section space-y-6">
                       <li id="cid_1" className="form-input-wide" data-type="control_head">
                         <div className="form-header-group">
-                          <h1 id="header_1" className="form-header text-3xl font-bold text-[#ffd400] mb-2">Schedule Your Call</h1>
-                          <div id="subHeader_1" className="form-subHeader text-[#fff]/80">Let us know how we can help you!</div>
+                          <h1 id="header_1" className="form-header text-3xl font-bold text-[#ffd400] mb-2">Get Started</h1>
+                          <div id="subHeader_1" className="form-subHeader text-[#fff]/80">Let us know how we can help you get started!</div>
                         </div>
                       </li>
                       <li className="form-line" data-type="control_fullname" id="id_3">
