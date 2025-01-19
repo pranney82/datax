@@ -198,7 +198,7 @@ const AddOns = () => {
                     <ul className="form-section page-section space-y-6">
                       <li id="cid_1" className="form-input-wide" data-type="control_head">
                         <div className="form-header-group">
-                          <h1 id="header_1" className="form-header text-3xl font-bold text-[#ffd400] mb-2">Appointment Request Form</h1>
+                          <h1 id="header_1" className="form-header text-3xl font-bold text-[#ffd400] mb-2">Schedule Your Call</h1>
                           <div id="subHeader_1" className="form-subHeader text-[#fff]/80">Let us know how we can help you!</div>
                         </div>
                       </li>
