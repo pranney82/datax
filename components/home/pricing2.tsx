@@ -22,7 +22,7 @@ const addons: AddOn[] = [
     icon: <Briefcase className="w-12 h-12 text-[#ffd400]" />,
     name: "Tech Brief",
     price: 0,
-    description: "Phone a friend for advanced JOBTREAD and integrated tech stack advice.",
+    description: "Get expert guidance on your automations and JOBTREAD.",
     priceSuffix: "FREE",
     additionalInfo: "Jump on a virtual call with our experts to get advice on your JOBTREAD setup, software integrations, and tech stack. We'll provide you with a summary of our call and recommendations."
   },
