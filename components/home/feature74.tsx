@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { BarChart3, Zap, BookOpen, Cog, TypeIcon as type, LucideIcon } from 'lucide-react';
+import { BarChart3, Zap, BookOpen, Cog, type LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Feature {
@@ -86,6 +86,7 @@ const FeatureCard = ({ feature, index }: { feature: Feature; index: number }) =>
 
   return (
     <motion.div
+      id={feature.id}
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
