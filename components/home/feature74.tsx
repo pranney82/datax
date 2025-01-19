@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { BarChart3, Zap, BookOpen, Cog, type LucideIcon } from 'lucide-react';
+import { BarChart3, Zap, BookOpen, Cog, TypeIcon as type, LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Feature {
@@ -89,7 +89,7 @@ const FeatureCard = ({ feature, index }: { feature: Feature; index: number }) =>
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className={`bg-gradient-to-br from-black via-black to-[#111] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#ffd400] flex flex-col lg:h-[500px] ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}
+      className={`bg-gradient-to-br from-black via-black to-[#111] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#ffd400] flex flex-col lg:h-auto ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}
     >
       <div className="lg:w-1/2 p-6 lg:p-8 flex flex-col justify-between">
         <div>
@@ -125,8 +125,8 @@ const FeatureCard = ({ feature, index }: { feature: Feature; index: number }) =>
           </Link>
         </div>
       </div>
-      <div className="lg:w-1/2 relative p-4 lg:p-8">
-        <div className="relative aspect-[4/3] h-full">
+      <div className="lg:w-1/2 relative p-4 lg:p-8 flex items-center justify-center">
+        <div className="relative w-full max-w-md mx-auto aspect-[4/3]">
           <Image
             src={feature.image || "/placeholder.svg"}
             alt={`${feature.title} preview`}
