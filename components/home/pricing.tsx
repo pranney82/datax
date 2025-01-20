@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, Zap, Rocket, Star, Sparkles } from 'lucide-react';
+import { Check, Zap, Rocket, Star, Sparkles, Users, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +14,7 @@ import StripePaymentButton from '@/components/home/stripebutton';
 
 const Pricing = () => {
   const { user } = useAuth();
-  const [isAnnually, setIsAnnually] = useState(false);
+  const [isAnnually, setIsAnnually] = useState(true);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [authType, setAuthType] = useState<'login' | 'signup'>(user ? 'login' : 'signup');
 
@@ -52,6 +52,7 @@ const Pricing = () => {
         'Google Street View Automation',
         'Zestimate Automation',
         'Cash Flow Calendar',
+        'Inventory',
         'Support & Feature Requests',
       ],
       priceId: isAnnually ? "price_1QVggE2LwdZLeKQfk2YRCDUV" : "price_1QVNq42LwdZLeKQfaXHHsMI6",
@@ -67,12 +68,12 @@ const Pricing = () => {
       monthlyPrice: 145,
       features: [
         'Everything in CORE',
-        'Advanced Automations',
-        'Inventory',
-        'Job Routing',
-        'AI Forecasting',
-        'Dashboard Benchmarking',
-        ' TV Dashboard',
+        'Zapier Maintenance',
+        'TV Dashboard',
+        'AIA Billing', 
+        'Google Calendar Sync',
+        'Calendly Integration',
+        'Priority Support',
       ],
       priceId: isAnnually ? "price_1QVggE2LwdZLeKQfk2YRCDUV" : "price_1QVNq42LwdZLeKQfaXHHsMI6",
       color: 'bg-gradient-to-br from-gray-100 to-gray-200',
@@ -138,18 +139,42 @@ const Pricing = () => {
   return (
     <section className="py-16 w-full bg-gradient-to-b from-white to-gray-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-screen-xl flex-col gap-12">
+        <div className="mx-auto flex max-w-screen-xl flex-col gap-6">
           <div className="text-center">
             <h2 className="text-pretty text-5xl font-bold lg:text-7xl mb-4 text-black">
               Choose Your Perfect Plan
             </h2>
             <p className="text-xl text-gray-600">Unlock the full potential of your business with our flexible pricing options</p>
           </div>
+
+          {/* Consulting Services Section */}
+          <div className="mb-8 bg-gradient-to-r from-yellow-100 to-yellow-200 rounded-2xl shadow-xl overflow-hidden">
+            <div className="p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="flex-1">
+                <h3 className="text-3xl md:text-4xl font-bold text-black mb-4">Need Custom Solutions?</h3>
+                <p className="text-xl text-gray-700 mb-6">
+                  Check out our expert consulting services tailored to your business needs.
+                </p>
+                <Button 
+                  className="bg-black hover:bg-gray-800 text-white hover:text-yellow-400 transition-colors py-3 px-6 text-lg font-semibold rounded-xl"
+                  onClick={() => {
+                    window.location.href = '/pricing/#cto-consulting';
+                  }}
+                >
+                  Explore Consulting Services
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </div>
+              <div className="flex-shrink-0">
+                <Users className="h-32 w-32 text-yellow-400" />
+              </div>
+            </div>
+          </div>
           
-          <div className="flex justify-center">
+          <div className="flex justify-center my-6">
             <div className="flex h-14 w-fit shrink-0 items-center rounded-full bg-gray-200 p-1 text-lg shadow-lg">
               <RadioGroup
-                defaultValue="monthly"
+                defaultValue="annually"
                 className="h-full grid-cols-2"
                 onValueChange={(value) => {
                   setIsAnnually(value === 'annually');
@@ -178,14 +203,14 @@ const Pricing = () => {
                     htmlFor="annually"
                     className="flex h-full cursor-pointer items-center justify-center px-8 font-semibold text-gray-700 peer-data-[state=checked]:text-black"
                   >
-                    Yearly (Save, 2 months FREE!)
+                    Annual (Save, 2 months FREE!)
                   </Label>
                 </div>
               </RadioGroup>
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 items-start">
             {plans.map((plan) => (
               <div
                 key={plan.name}
@@ -196,7 +221,7 @@ const Pricing = () => {
                     Most Popular
                   </div>
                 )}
-                <div className={`p-8 flex flex-col flex-1 ${plan.popular ? 'md:p-10' : ''}`}>
+                <div className={`p-6 flex flex-col flex-1 ${plan.popular ? 'md:p-8' : ''}`}>
                   <div className="flex items-center justify-between mb-4">
                     <Badge className={`text-lg font-semibold px-4 py-1 rounded-full bg-white ${plan.popular ? 'text-yellow-400 hover:text-black transition-colors' : 'text-black'}`}>
                       {plan.name}
@@ -222,7 +247,7 @@ const Pricing = () => {
                     ))}
                   </ul>
                 </div>
-                <div className={`p-6 bg-white ${plan.popular ? 'md:p-8' : ''}`}>
+                <div className={`p-4 bg-white ${plan.popular ? 'md:p-6' : ''}`}>
                   <SubscribeButton 
                     plan={plan} 
                     className={`${plan.buttonColor}`} 

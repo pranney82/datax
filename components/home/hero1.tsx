@@ -59,9 +59,9 @@ const Hero1 = () => {
             </Badge>
             <div className="my-6 space-y-4">
               <h2 className="text-4xl font-bold lg:text-5xl text-white leading-tight">
-                Done for you
-                <span className="block text-[#FFD400]">specialty features</span>
-                and dashboards
+                Your
+                <span className="block text-[#FFD400]">JOBTREAD</span>
+                automation partner
               </h2>
               <p className="text-2xl font-semibold text-white/80 italic">
                 ... no tech ability required
@@ -71,7 +71,7 @@ const Hero1 = () => {
               <div className="flex flex-col items-center">
                 <a href="/#epic-features" className="group w-auto">
                   <Button 
-                    className="h-14 px-8 w-auto bg-gradient-to-r from-[#FFD400] to-[#FFA500] text-[#000000] transition-all duration-300 transform hover:scale-105 relative overflow-hidden group-hover:shadow-[0_0_20px_5px_rgba(255,212,0,0.3)] hover:from-[#FFE666] hover:to-[#FFB733] rounded-full text-lg font-bold"
+                    className="h-12 px-6 w-auto bg-gradient-to-r from-[#FFD400] to-[#FFA500] text-[#000000] transition-all duration-300 transform hover:scale-105 relative overflow-hidden group-hover:shadow-[0_0_20px_5px_rgba(255,212,0,0.3)] hover:from-[#FFE666] hover:to-[#FFB733] rounded-full text-lg font-bold"
                     onMouseEnter={() => setIsHoveringTry(true)}
                     onMouseLeave={() => setIsHoveringTry(false)}
                   >

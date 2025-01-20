@@ -4,20 +4,20 @@ import { AuthProvider } from '@/lib/context/auth-context'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Win Your DATA',
-  description: 'Insights and automation for serious contractors',
+  title: 'Win Your DATAx',
+  description: 'Your JOBTREAD automation partner.',
   metadataBase: new URL('https://winyourdata.com'),
   openGraph: {
-    title: 'Win Your DATA',
-    description: 'Insights and automation for serious contractors',
+    title: 'Win Your DATAx',
+    description: 'Your JOBTREAD automation partner.',
     url: 'https://winyourdata.com',
-    siteName: 'Win Your DATA',
+    siteName: 'Win Your DATAx',
     images: [
       {
         url: '/assets/images/thumb.png',
         width: 1200,
         height: 630,
-        alt: 'Win Your DATA Logo',
+        alt: 'Win Your DATAx Logo',
       },
     ],
     locale: 'en_US',
@@ -25,8 +25,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Win Your DATA',
-    description: 'Insights and automation for serious contractors',
+    title: 'Win Your DATAx',
+    description: 'Your JOBTREAD automation partner.',
     images: ['/assets/images/thumb.png'],
   },
 }

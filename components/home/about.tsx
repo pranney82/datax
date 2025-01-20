@@ -1,46 +1,43 @@
-'use client';
+"use client"
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { motion, useAnimation } from 'framer-motion';
-import { Map, MapPin } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import Image from "next/image"
+import Link from "next/link"
+import { motion, useAnimation } from "framer-motion"
+import { Map, MapPin, ArrowRightIcon, HardHat, BotIcon as Robot } from "lucide-react"
+import { useState, useEffect } from "react"
 
 const EpicRoadmapButton = () => {
-  const [isHovered, setIsHovered] = useState(false);
-  const controls = useAnimation();
-  const pathControls = useAnimation();
+  const [isHovered, setIsHovered] = useState(false)
+  const controls = useAnimation()
+  const pathControls = useAnimation()
 
   useEffect(() => {
     if (isHovered) {
       controls.start({
         scale: [1, 1.05, 1],
-        transition: { duration: 0.5, repeat: Infinity }
-      });
+        transition: { duration: 0.5, repeat: Number.POSITIVE_INFINITY },
+      })
       pathControls.start({
         pathLength: [0, 1],
-        transition: { duration: 1.5, ease: "easeInOut" }
-      });
+        transition: { duration: 1.5, ease: "easeInOut" },
+      })
     } else {
-      controls.stop();
-      pathControls.stop();
-      pathControls.start({ pathLength: 0 });
+      controls.stop()
+      pathControls.stop()
+      pathControls.start({ pathLength: 0 })
     }
-  }, [isHovered, controls, pathControls]);
+  }, [isHovered, controls, pathControls])
 
   return (
     <Link href="/roadmap" passHref>
       <motion.button
-        className="group relative px-8 py-3 bg-[#ffd400] text-gray-800 font-bold rounded-md shadow-lg overflow-hidden"
+        className="group relative px-8 py-3 bg-[#ffd400] text-gray-800 font-bold rounded-full shadow-lg overflow-hidden"
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
       >
-        <motion.div
-          className="relative z-10 flex items-center justify-center space-x-2"
-          animate={controls}
-        >
+        <motion.div className="relative z-10 flex items-center justify-center space-x-2" animate={controls}>
           <Map className="w-5 h-5" />
-          <span>Roadmap</span>
+          <span>Explore Our Roadmap</span>
         </motion.div>
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
           <motion.path
@@ -74,52 +71,90 @@ const EpicRoadmapButton = () => {
         </motion.div>
       </motion.button>
     </Link>
-  );
-};
+  )
+}
 
 const About = () => {
   return (
-    <section className="py-16 w-full bg-white overflow-hidden">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-        <div className="grid items-center gap-12 lg:grid-cols-2 relative z-10">
-          <motion.div 
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-col items-center text-center lg:items-start lg:text-left"
-          >
-            <h1 className="my-6 text-5xl font-bold lg:text-7xl text-[#ffd400] drop-shadow-md">
-              About Us
-            </h1>
-            <p className="mb-8 max-w-xl text-gray-700 lg:text-xl leading-relaxed">
-              At <strong>DATAx</strong>, we&apos;re contractors who are passionate about helping other contractors thrive through the power of technology.
-              <br /><br />
-              It all started with real-world problems. Peter built a dashboard to visualize his business stats using JobTread data, and when he shared it, others loved it so much he knew he had to make it available for more people. Meanwhile, Elliott created micro features to tackle cash flow projections and automate workflows in his own business. When his friends saw the impact, they wanted in too.
-              <br /><br />
-              Together, we&apos;ve combined our expertise to simplify data and empower you, the business owner. Our mission is simple: to give you more time to work on your business—not in spreadsheets.
-              <br /><br />
-              Let&apos;s take your business to the next level, together.
-            </p>
-            <EpicRoadmapButton />
-          </motion.div>
+    <section className="py-20 w-full bg-white overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-4">
+            About <span className="text-[#ffd400]">DATAx</span>
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Empowering contractors with cutting-edge automation and technology solutions.
+          </p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 gap-16 items-center">
           <motion.div
-            initial={{ x: 50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="relative"
           >
+            <div className="absolute inset-0 bg-[#ffd400] rounded-2xl transform rotate-3 scale-105 z-0"></div>
             <Image
               src="/assets/images/about.png"
               alt="DATAx Team"
-              width={1200}
-              height={800}
-              className="max-h-auto w-full rounded-2xl object-cover border-8 border-[#ffd400] shadow-2xl"
+              width={600}
+              height={400}
+              className="rounded-2xl object-cover shadow-2xl relative z-10 transform transition-transform duration-300 hover:scale-105"
             />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="space-y-8"
+          >
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4 border-b-2 border-[#ffd400] pb-2 inline-block">
+                Our Story
+              </h2>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                We&apos;re <span className="font-semibold">contractors</span> (and also nerds) who are passionate about
+                helping other contractors thrive through the power of technology.
+              </p>
+            </div>
+
+            <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
+              <p className="text-lg text-gray-700 leading-relaxed">
+                It started with creating <span className="font-semibold">automations and integrations</span> for our own
+                construction companies, solving real-world challenges to transform how we worked in JOBTREAD.
+              </p>
+            </div>
+
+            <div className="bg-[#ffd400] p-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl group">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Our Mission</h3>
+              <p className="text-xl text-gray-800 font-semibold group-hover:text-gray-900 transition-colors duration-300">
+                Empower contractors with automation.
+              </p>
+              <div className="flex justify-between items-center mt-4">
+                <div className="flex space-x-4">
+                  <HardHat className="w-8 h-8 text-gray-900" />
+                  <ArrowRightIcon className="w-8 h-8 text-gray-900" />
+                  <Robot className="w-8 h-8 text-gray-900" />
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <EpicRoadmapButton />
+            </div>
           </motion.div>
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default About;
+export default About
 
