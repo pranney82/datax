@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ChevronDown, ChevronUp, CheckCircle, ArrowRight, Zap, Briefcase, X } from "lucide-react"
+import { ChevronDown, ChevronUp, CheckCircle, ArrowRight, Zap, Briefcase, X, GraduationCap, Phone } from "lucide-react"
 
 interface AddOn {
   id: string
@@ -13,28 +13,34 @@ interface AddOn {
   description: string
   priceSuffix: string
   additionalInfo: string
+  buttonText: string
+  buttonAction: () => void
 }
 
 const addons: AddOn[] = [
   {
     id: "tech brief",
-    icon: <Briefcase className="w-12 h-12 text-[#ffd400]" />,
+    icon: <Phone className="w-12 h-12 text-[#ffd400]" />,
     name: "Tech Brief",
     price: 0,
     description: "Get expert guidance on your automations and JOBTREAD.",
-    priceSuffix: "FREE",
+    priceSuffix: "free",
     additionalInfo:
       "Jump on a virtual call with our experts to get advice on your JOBTREAD setup, software integrations, and tech stack. We'll provide you with a summary of our call and recommendations.",
+    buttonText: "Get Started",
+    buttonAction: () => {},
   },
   {
     id: "zaps",
     icon: <Zap className="w-12 h-12 text-[#ffd400]" />,
     name: "Zapier Assessment",
     price: 525,
-    description: "Assessment of your current Zapier setup and recommendations for zaps.",
-    priceSuffix: "/Fee",
+    description: "Automation assessment and recomendations for new and improved zaps.",
+    priceSuffix: "one-time",
     additionalInfo:
       "Our Zapier experts will analyze your current processes and desired automations, identify inefficiencies, and provide tailored zap recommendation report, along with a scope of work for us to build and maintain your zaps.",
+    buttonText: "Get Started",
+    buttonAction: () => {},
   },
   {
     id: "consulting",
@@ -42,9 +48,25 @@ const addons: AddOn[] = [
     name: "CTO Consulting",
     price: 2500,
     description: "Holistic view of your JOBTREAD and integrated tech stack.",
-    priceSuffix: "/starting at month",
+    priceSuffix: "starting/month",
     additionalInfo:
       "Get expert guidance on your overall tech strategy, including software selection, integration, and scalability planning to support your business growth. Contract basis for 3, 6 and 12 months.",
+    buttonText: "Get Started",
+    buttonAction: () => {},
+  },
+  {
+    id: "signup",
+    icon: <GraduationCap className="w-12 h-12 text-[#ffd400]" />,
+    name: "Sign Up",
+    price: 1250,
+    description: "Subscribe to our premium service and unlock all features.",
+    priceSuffix: "one-time",
+    additionalInfo:
+      "Get access to all our premium features, including advanced automation, priority support, and exclusive content. Cancel anytime.",
+    buttonText: "Sign Up",
+    buttonAction: () => {
+      window.location.href = "https://placeholder-stripe-checkout-url.com"
+    },
   },
 ]
 
@@ -108,17 +130,17 @@ const AddOns = () => {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mt-16">
           <h3 className="text-4xl font-bold text-center mb-12 text-[#fff] tracking-tight">Consulting Services</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
             {addons.map((addon) => (
               <Card
                 key={addon.id}
-                className={`flex flex-col rounded-2xl bg-gradient-to-br from-[#111] to-[#222] shadow-2xl border-2 transition-all duration-300 transform hover:scale-105 ${
+                className={`flex flex-col rounded-2xl bg-gradient-to-br from-[#111] to-[#222] shadow-2xl border-2 transition-all duration-300 transform hover:scale-105 h-full ${
                   selectedAddons.includes(addon.id)
                     ? "border-[#ffd400] shadow-[#ffd400]/20"
                     : "border-transparent hover:shadow-[#ffd400]/10"
                 }`}
               >
-                <CardContent className="p-8 flex flex-col justify-between h-full relative overflow-hidden">
+                <CardContent className="p-6 sm:p-8 flex flex-col justify-between h-full relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#ffd400]/20 to-transparent rounded-bl-full transform translate-x-16 -translate-y-16"></div>
                   <div className="flex-grow">
                     <div className="flex items-center justify-between mb-6 relative z-10">
@@ -145,7 +167,7 @@ const AddOns = () => {
                     <span className="text-sm text-[#fff]/60 ml-1">{addon.priceSuffix}</span>
                   </div>
                 </CardContent>
-                <CardFooter className="p-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-[#000]/30">
+                <CardFooter className="p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-[#000]/30">
                   <Button
                     className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#fff]/10 text-[#fff] hover:bg-[#ffd400]/20 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:ring-opacity-50 text-lg font-medium"
                     onClick={() => toggleExpand(addon.id)}
@@ -166,16 +188,15 @@ const AddOns = () => {
                         ? "bg-[#ffd400] text-[#000] hover:bg-[#ffd400]/90"
                         : "bg-gradient-to-r from-[#ffd400] to-[#ffea80] text-[#000] hover:from-[#ffea80] hover:to-[#ffd400]"
                     }`}
-                    onClick={openModal}
+                    onClick={addon.id === "signup" ? addon.buttonAction : openModal}
                   >
-                    {selectedAddons.includes(addon.id) ? (
-                      <>
-                        Selected <CheckCircle className="ml-2 h-5 w-5 inline-block" />
-                      </>
+                    {addon.buttonText}{" "}
+                    {addon.id === "signup" ? (
+                      <ArrowRight className="ml-2 h-5 w-5 inline-block animate-pulse" />
+                    ) : selectedAddons.includes(addon.id) ? (
+                      <CheckCircle className="ml-2 h-5 w-5 inline-block" />
                     ) : (
-                      <>
-                        Get Started <ArrowRight className="ml-2 h-5 w-5 inline-block animate-pulse" />
-                      </>
+                      <ArrowRight className="ml-2 h-5 w-5 inline-block animate-pulse" />
                     )}
                   </Button>
                 </CardFooter>
