@@ -11,10 +11,10 @@ const footerLinks = [
   {
     title: 'Product',
     links: [
-      { name: 'Home', href: '/' },
-      { name: 'Dashboard', href: "https://www.winyourdata.com/#epic-features" },
-      { name: 'Toolbox', href: "https://www.winyourdata.com/#epic-features" },
-      { name: 'Library', href: "https://www.winyourdata.com/#epic-features" },
+      { name: 'Dashboard', href: "/#dashboard" },
+      { name: 'Toolbox', href: "/#toolbox" },
+      { name: 'Automation', href: "/#automation" },
+      { name: 'Library', href: "/#library" },
       { name: 'Pricing', href: '/pricing' },
     ],
   },

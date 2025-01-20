@@ -23,7 +23,7 @@ export default function ColorfulEnhancedCTA() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            Ready to <span className="text-[#FFD400] drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]">Win Your Data</span>?
+            Ready to <span className="text-[#FFD400] drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]">Win Your DATAx</span>?
           </motion.h2>
           <motion.p 
             className="mb-8 max-w-2xl text-[#000]/80 md:text-lg"
@@ -31,7 +31,7 @@ export default function ColorfulEnhancedCTA() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.5 }}
           >
-            Join a growing community of data-driven JOBTREAD companies and start making smarter decisions today.
+            Join a growing community of JOBTREAD companies harnessing the power of automation to work smarter, save time, and achieve more.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
