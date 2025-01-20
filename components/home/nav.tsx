@@ -1,6 +1,6 @@
 "use client"
 
-import { Menu, X, Zap, Home, Car, DollarSign, BarChart3, BookOpen, Map, Heart, Cog } from "lucide-react"
+import { Menu, X, Zap, Home, Car, DollarSign, BarChart3, BookOpen, Map, Heart, Cog, Box } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
 import {
@@ -28,9 +28,9 @@ const iconMap = {
       <BarChart3 className="size-8 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
     </div>
   ),
-  Zap: (
+  Box: (
     <div className="p-3 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
-      <Zap className="size-8 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
+      <Box className="size-8 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
     </div>
   ),
   BookOpen: (
@@ -109,7 +109,7 @@ const Navbar1 = () => {
             <div className="flex items-center">
               <Link
                 className={cn(
-                  "text-gray-800 hover:text-ffd400 transition-colors duration-200 relative",
+                  "text-gray-800 hover:text-ffd400 transition-colors duration-200 relative text-lg",
                   navigationMenuTriggerStyle,
                   buttonVariants({ variant: "ghost" }),
                   'after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#ffd400] after:scale-x-0 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left',
@@ -118,10 +118,10 @@ const Navbar1 = () => {
               >
                 <span>Home</span>
               </Link>
-              <NavigationMenu>
+              <NavigationMenu className="text-lg">
                 <NavigationMenuList>
                   <NavigationMenuItem className="text-gray-800">
-                    <NavigationMenuTrigger className="hover:text-ffd400 transition-colors duration-200 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#ffd400] after:scale-x-0 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left">
+                    <NavigationMenuTrigger className="hover:text-ffd400 transition-colors duration-200 relative text-lg after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#ffd400] after:scale-x-0 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left">
                       {iconMap.ZapSmall}
                       <span className="ml-2">Features</span>
                     </NavigationMenuTrigger>
@@ -155,13 +155,13 @@ const Navbar1 = () => {
                                 "flex select-none items-center gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#ffd400]/10 focus:bg-[#ffd400]/10 group",
                               )}
                             >
-                              {iconMap.Zap}
+                              {iconMap.Box}
                               <div className="transition-transform duration-300 transform group-hover:translate-x-1">
                                 <div className="text-base font-semibold text-black group-hover:text-[#ffd400] transition-colors duration-200">
                                   Toolbox
                                 </div>
                                 <p className="text-sm leading-snug text-gray-600 group-hover:text-black transition-colors duration-200 mt-1">
-                                  Access helpful tools and resources
+                                  Specialty, code-free solutions
                                 </p>
                               </div>
                             </Link>
@@ -181,7 +181,7 @@ const Navbar1 = () => {
                                   Automation
                                 </div>
                                 <p className="text-sm leading-snug text-gray-600 group-hover:text-black transition-colors duration-200 mt-1">
-                                  Streamline your workflow with powerful automation tools
+                                  Custom workflows built for you
                                 </p>
                               </div>
                             </Link>
@@ -214,7 +214,7 @@ const Navbar1 = () => {
               </NavigationMenu>
               <Link
                 className={cn(
-                  "text-gray-800 hover:text-ffd400 transition-colors duration-200 relative",
+                  "text-gray-800 hover:text-ffd400 transition-colors duration-200 relative text-lg",
                   navigationMenuTriggerStyle,
                   buttonVariants({ variant: "ghost" }),
                   'after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#ffd400] after:scale-x-0 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left',
@@ -225,7 +225,7 @@ const Navbar1 = () => {
               </Link>
               <Link
                 className={cn(
-                  "text-gray-800 hover:text-ffd400 transition-colors duration-200 relative",
+                  "text-gray-800 hover:text-ffd400 transition-colors duration-200 relative text-lg",
                   navigationMenuTriggerStyle,
                   buttonVariants({ variant: "ghost" }),
                   'after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#ffd400] after:scale-x-0 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left',
@@ -335,7 +335,7 @@ const Navbar1 = () => {
                 <nav className="flex flex-col gap-4">
                   <Link
                     href="/"
-                    className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200"
+                    className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200 text-lg"
                   >
                     {iconMap.Home}
                     <span className="ml-2">Home</span>
@@ -354,7 +354,7 @@ const Navbar1 = () => {
                     className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200"
                   >
                     <div className="p-2 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
-                      <Zap className="size-6 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
+                      <Box className="size-6 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
                     </div>
                     <span className="ml-2">Toolbox</span>
                   </Link>
@@ -378,14 +378,14 @@ const Navbar1 = () => {
                   </Link>
                   <Link
                     href="/about"
-                    className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200"
+                    className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200 text-lg"
                   >
                     {iconMap.Heart}
                     <span className="ml-2">About</span>
                   </Link>
                   <Link
                     href="/pricing"
-                    className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200"
+                    className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200 text-lg"
                   >
                     {iconMap.DollarSign}
                     <span className="ml-2">Pricing</span>

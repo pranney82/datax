@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
-import { BarChart3, Zap, BookOpen, Cog, type LucideIcon } from "lucide-react"
+import { BarChart3, Box, BookOpen, Cog, type LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface Feature {
@@ -40,7 +40,7 @@ const features: Feature[] = [
     list: ["Pre-built specialty features", "Automations & Integrations", "Code free, just turn on"],
     image: "/assets/images/feature2.png",
     color: "#ffd400",
-    icon: Zap,
+    icon: Box,
     link: "/pricing",
   },
   {

@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { motion, useAnimation } from "framer-motion"
-import { Map, MapPin, ArrowRightIcon } from "lucide-react"
+import { Map, MapPin, ArrowRightIcon, HardHat, BotIcon as Robot } from "lucide-react"
 import { useState, useEffect } from "react"
 
 const EpicRoadmapButton = () => {
@@ -128,7 +128,7 @@ const About = () => {
             <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
               <p className="text-lg text-gray-700 leading-relaxed">
                 It started with creating <span className="font-semibold">automations and integrations</span> for our own
-                construction companies, solving real-world challenges and transforming how we worked in JOBTREAD.
+                construction companies, solving real-world challenges to transform how we worked in JOBTREAD.
               </p>
             </div>
 
@@ -137,7 +137,13 @@ const About = () => {
               <p className="text-xl text-gray-800 font-semibold group-hover:text-gray-900 transition-colors duration-300">
                 Empower contractors with automation.
               </p>
-              <ArrowRightIcon className="w-6 h-6 mt-4 text-gray-900 group-hover:translate-x-2 transition-transform duration-300" />
+              <div className="flex justify-between items-center mt-4">
+                <div className="flex space-x-4">
+                  <HardHat className="w-8 h-8 text-gray-900" />
+                  <ArrowRightIcon className="w-8 h-8 text-gray-900" />
+                  <Robot className="w-8 h-8 text-gray-900" />
+                </div>
+              </div>
             </div>
 
             <div className="mt-8">
