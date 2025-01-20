@@ -70,6 +70,7 @@ const Pricing = () => {
         'Everything in CORE',
         'Zapier Maintenance',
         'TV Dashboard',
+        'AIA Billing', 
         'Google Calendar Sync',
         'Calendly Integration',
         'Priority Support',

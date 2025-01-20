@@ -121,7 +121,7 @@ const About = () => {
               </h2>
               <p className="text-lg text-gray-700 leading-relaxed">
                 We&apos;re <span className="font-semibold">contractors</span> (and also nerds) who are passionate about
-                helping contractors thrive through the power of technology.
+                helping other contractors thrive through the power of technology.
               </p>
             </div>
 

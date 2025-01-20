@@ -49,7 +49,7 @@ const features: Feature[] = [
     id: "automation",
     description:
       "Revolutionize your business processes with our Automation feature—integrating Zapier, custom formulas, and expert CTO consulting for unparalleled efficiency.",
-    list: ["Zapier integrations", "Custom formulas", "CTO consulting"],
+    list: ["Zapier integrations", "Custom API scripting", "CTO consulting"],
     image: "/assets/images/feature4.png",
     color: "#ffd400",
     icon: Cog,
