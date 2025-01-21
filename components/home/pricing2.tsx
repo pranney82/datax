@@ -63,7 +63,7 @@ const addons: AddOn[] = [
     priceSuffix: "one-time",
     additionalInfo:
       "Get access to all our premium features, including advanced automation, priority support, and exclusive content. Cancel anytime.",
-    buttonText: "Enroll Now",
+    buttonText: "Enroll Today",
     buttonAction: () => {
       window.location.href = "https://placeholder-stripe-checkout-url.com"
     },
