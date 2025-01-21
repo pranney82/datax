@@ -55,7 +55,7 @@ const addons: AddOn[] = [
     buttonAction: () => {},
   },
   {
-    id: "signup",
+    id: "courses",
     icon: <GraduationCap className="w-12 h-12 text-[#ffd400]" />,
     name: "Sign Up",
     price: 1250,
@@ -63,7 +63,7 @@ const addons: AddOn[] = [
     priceSuffix: "one-time",
     additionalInfo:
       "Get access to all our premium features, including advanced automation, priority support, and exclusive content. Cancel anytime.",
-    buttonText: "Sign Up",
+    buttonText: "Enroll Now",
     buttonAction: () => {
       window.location.href = "https://placeholder-stripe-checkout-url.com"
     },
