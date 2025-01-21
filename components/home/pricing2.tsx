@@ -55,17 +55,17 @@ const addons: AddOn[] = [
     buttonAction: () => {},
   },
   {
-    id: "signup",
+    id: "courses",
     icon: <GraduationCap className="w-12 h-12 text-[#ffd400]" />,
-    name: "Sign Up",
-    price: 1250,
-    description: "Subscribe to our premium service and unlock all features.",
-    priceSuffix: "one-time",
+    name: "Automation Courses",
+    price: 600,
+    description: "Learn how to automate your business and JobTread with our beginner and intermediate courses.",
+    priceSuffix: "one-time, lifetime access",
     additionalInfo:
-      "Get access to all our premium features, including advanced automation, priority support, and exclusive content. Cancel anytime.",
+      "Our courses are designed to help you automate your JobTread and software integrations. We offer beginner and intermediate courses, with lifetime access, and a community for continued support.",
     buttonText: "Sign Up",
     buttonAction: () => {
-      window.location.href = "https://placeholder-stripe-checkout-url.com"
+      window.location.href = "/courses"
     },
   },
 ]
@@ -130,7 +130,7 @@ const AddOns = () => {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mt-16">
           <h3 className="text-4xl font-bold text-center mb-12 text-[#fff] tracking-tight">Consulting Services</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 lg:gap-12">
             {addons.map((addon) => (
               <Card
                 key={addon.id}
@@ -168,27 +168,29 @@ const AddOns = () => {
                   </div>
                 </CardContent>
                 <CardFooter className="p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-[#000]/30">
-                  <Button
-                    className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#fff]/10 text-[#fff] hover:bg-[#ffd400]/20 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:ring-opacity-50 text-lg font-medium"
-                    onClick={() => toggleExpand(addon.id)}
-                  >
-                    {expandedAddon === addon.id ? (
-                      <>
-                        Less Info <ChevronUp className="ml-2 h-5 w-5 animate-bounce" />
-                      </>
-                    ) : (
-                      <>
-                        Learn More <ChevronDown className="ml-2 h-5 w-5 animate-bounce" />
-                      </>
-                    )}
-                  </Button>
+                  {addon.id !== "courses" && (
+                    <Button
+                      className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#fff]/10 text-[#fff] hover:bg-[#ffd400]/20 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:ring-opacity-50 text-lg font-medium"
+                      onClick={() => toggleExpand(addon.id)}
+                    >
+                      {expandedAddon === addon.id ? (
+                        <>
+                          Less Info <ChevronUp className="ml-2 h-5 w-5 animate-bounce" />
+                        </>
+                      ) : (
+                        <>
+                          Learn More <ChevronDown className="ml-2 h-5 w-5 animate-bounce" />
+                        </>
+                      )}
+                    </Button>
+                  )}
                   <Button
                     className={`w-full sm:w-auto px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:ring-opacity-50 text-lg font-bold ${
                       selectedAddons.includes(addon.id)
                         ? "bg-[#ffd400] text-[#000] hover:bg-[#ffd400]/90"
                         : "bg-gradient-to-r from-[#ffd400] to-[#ffea80] text-[#000] hover:from-[#ffea80] hover:to-[#ffd400]"
-                    }`}
-                    onClick={addon.id === "signup" ? addon.buttonAction : openModal}
+                    } ${addon.id === "courses" ? "ml-auto" : ""}`}
+                    onClick={addon.id === "courses" ? addon.buttonAction : openModal}
                   >
                     {addon.buttonText}{" "}
                     {addon.id === "signup" ? (
