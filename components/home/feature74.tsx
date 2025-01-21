@@ -61,7 +61,7 @@ const features: Feature[] = [
     id: "library",
     description:
       "Access a wealth of resources in our comprehensive Library—featuring ready-to-use templates and expert guides to help your team excel effortlessly.",
-    list: ["Extensive template collection", "Pre-built templates", "Cost Groups, Schedules, Todos"],
+    list: ["Automation Courses", "Extensive template collection", "Articles, Videos, Templates and more"],
     image: "/assets/images/feature3.png",
     color: "#ffd400",
     icon: BookOpen,
