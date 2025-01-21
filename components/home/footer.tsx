@@ -28,9 +28,9 @@ const footerLinks = [
   {
     title: 'Free Resources',
     links: [
-      { name: 'Library', href: '#' },
-      { name: 'Resources', href: '#' },
-      { name: 'Summary Dashboard', href: '#' },
+      { name: 'Library', href: '/pricing' },
+      { name: 'Resources', href: '/pricing' },
+      { name: 'Summary Dashboard', href: '/pricing' },
     ],
   },
 ];
