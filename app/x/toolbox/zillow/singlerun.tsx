@@ -237,13 +237,13 @@ export function SingleRun() {
         throw new Error('No Zestimate URL field configured');
       }
 
-      console.log('Submitting with:', {
-        grantKey: userSettings.grantKey,
-        locid: locationID,
-        zestimateField: zestimateField,
-        zestimateUrlField: zestimateUrlField,
-        address: address
-      });
+      // console.log('Submitting with:', {
+      //   grantKey: userSettings.grantKey,
+      //   locid: locationID,
+      //   zestimateField: zestimateField,
+      //   zestimateUrlField: zestimateUrlField,
+      //   address: address
+      // });
       
       const response = await fetch('/api/zillow', {
         method: 'POST',
