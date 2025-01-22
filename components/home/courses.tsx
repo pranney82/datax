@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import Link from "next/link"
 import { motion, useAnimation } from "framer-motion"
 import { ArrowRightIcon, HardHat, BotIcon as Robot, Zap } from "lucide-react"
@@ -81,6 +80,7 @@ const About = () => {
   return (
     <section className="py-20 w-full bg-gradient-to-br from-[#fff] via-[#ffd400] to-[#000] overflow-hidden relative">
       <div className="absolute inset-0 bg-[url('/assets/images/pattern.png')] opacity-10 mix-blend-overlay"></div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -131,13 +131,16 @@ const About = () => {
                 repeatType: "reverse",
               }}
             >
-              <Image
-                src="/assets/images/courses.png"
-                alt="Automation Courses"
-                width={600}
-                height={400}
-                className="rounded-2xl object-cover shadow-2xl relative z-10 transform transition-transform duration-300 hover:scale-105"
-              />
+              <div className="video-container-courses">
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/-N1rk-aY4tU"
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
             </motion.div>
           </motion.div>
 
@@ -264,13 +267,16 @@ const About = () => {
                 repeatType: "reverse",
               }}
             >
-              <Image
-                src="/assets/images/courses.png"
-                alt="Automation Courses"
-                width={600}
-                height={400}
-                className="rounded-2xl object-cover shadow-2xl relative z-10 transform transition-transform duration-300 hover:scale-105"
-              />
+              <div className="video-container-courses">
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/vPenvGTce5w"
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
             </motion.div>
           </motion.div>
 
@@ -368,7 +374,7 @@ const About = () => {
 
             <div>
               <h2 className="text-2xl font-bold text-[#ffd400] mb-4 border-b-2 border-[#ffd400] pb-2 inline-block">
-                Next Class Starts: January 29th, 2025
+                Next Class Starts: January 31th, 2025 
                 <br />
                 Following Class: April 8th, 2025
               </h2>
