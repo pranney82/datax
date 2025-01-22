@@ -1,44 +1,45 @@
-'use client'
+"use client"
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { Zap, ArrowRight, Hammer, Paintbrush, Drill } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React, { useState } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { motion } from "framer-motion"
+import { Zap, ArrowRight, Hammer, Paintbrush, Drill } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 const footerLinks = [
   {
-    title: 'Product',
+    title: "Solutions",
     links: [
-      { name: 'Dashboard', href: "/#dashboard" },
-      { name: 'Toolbox', href: "/#toolbox" },
-      { name: 'Automation', href: "/#automation" },
-      { name: 'Library', href: "/#library" },
-      { name: 'Pricing', href: '/pricing' },
+      { name: "DATAx", href: "/pricing" },
+      { name: "CTO Consulting", href: "/pricing/#cto-consulting" },
+      { name: "Automation Courses", href: "/courses" },
+      { name: "Pricing", href: "/pricing" },
     ],
   },
   {
-    title: 'Company',
+    title: "Company",
     links: [
-      { name: 'About', href: '/about' },
-      { name: 'Roadmap', href: '/roadmap' },
+      { name: "About", href: "/about" },
+      { name: "Roadmap", href: "/roadmap" },
     ],
   },
   {
-    title: 'Free Resources',
+    title: "Free Resources",
     links: [
-      { name: 'Library', href: '/pricing' },
-      { name: 'Resources', href: '/pricing' },
-      { name: 'Summary Dashboard', href: '/pricing' },
+      { name: "Library", href: "/pricing" },
+      { name: "Resources", href: "/pricing" },
+      { name: "Summary Dashboard", href: "/pricing" },
     ],
   },
-];
+]
 
 const FooterColumn = ({ title, links }: { title: string; links: { name: string; href: string }[] }) => {
   return (
     <div className="mb-8 lg:mb-0">
-      <h3 className="text-xl font-bold text-[#FFD400] mb-4 group-hover:text-white transition-colors duration-300">{title}</h3>
+      <h3 className="text-xl font-bold text-[#FFD400] mb-4 group-hover:text-white transition-colors duration-300">
+        {title}
+      </h3>
       <ul className="space-y-3">
         {links.map((link) => (
           <li key={link.name}>
@@ -53,32 +54,31 @@ const FooterColumn = ({ title, links }: { title: string; links: { name: string; 
         ))}
       </ul>
     </div>
-  );
-};
+  )
+}
 
 const Footer = () => {
-  const [isHoveringTry, setIsHoveringTry] = useState(false);
-  
+  const [isHoveringTry, setIsHoveringTry] = useState(false)
 
   return (
     <footer className="relative text-white py-16 w-full overflow-hidden bg-black">
       <div className="absolute inset-0 bg-[url('/assets/footer-bg.jpg')] bg-cover bg-center opacity-30"></div>
       <div className="absolute inset-0 bg-gradient-to-br from-black via-transparent to-[#FFD400] opacity-70"></div>
-      
+
       {/* Animated particles */}
       {[...Array(15)].map((_, i) => (
         <motion.div
           key={`dot-${i}`}
           className="absolute w-1 h-1 bg-[#FFD400] rounded-full"
           animate={{
-            x: ['0%', '100%'],
-            y: ['0%', '100%'],
+            x: ["0%", "100%"],
+            y: ["0%", "100%"],
             opacity: [0, 1, 0],
           }}
           transition={{
             duration: Math.random() * 10 + 10,
-            repeat: Infinity,
-            ease: 'linear',
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
           }}
           style={{
             left: `${Math.random() * 100}%`,
@@ -86,22 +86,22 @@ const Footer = () => {
           }}
         />
       ))}
-      
+
       {/* Animated hammers and paintbrushes */}
       {[...Array(6)].map((_, i) => (
         <motion.div
           key={`hammer-${i}`}
           className="absolute text-[#FFD400]"
           animate={{
-            x: ['0%', '100%'],
-            y: ['0%', '100%'],
+            x: ["0%", "100%"],
+            y: ["0%", "100%"],
             rotate: [0, 360],
             opacity: [0, 1, 0],
           }}
           transition={{
             duration: Math.random() * 15 + 15,
-            repeat: Infinity,
-            ease: 'linear',
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
           }}
           style={{
             left: `${Math.random() * 100}%`,
@@ -111,22 +111,22 @@ const Footer = () => {
           <Hammer size={16} />
         </motion.div>
       ))}
-      
+
       {/* Animated paintbrushes */}
       {[...Array(6)].map((_, i) => (
         <motion.div
           key={`paintbrush-${i}`}
           className="absolute text-[#FFD400]"
           animate={{
-            x: ['0%', '100%'],
-            y: ['0%', '100%'],
+            x: ["0%", "100%"],
+            y: ["0%", "100%"],
             rotate: [0, 360],
             opacity: [0, 1, 0],
           }}
           transition={{
             duration: Math.random() * 15 + 15,
-            repeat: Infinity,
-            ease: 'linear',
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
           }}
           style={{
             left: `${Math.random() * 100}%`,
@@ -143,15 +143,15 @@ const Footer = () => {
           key={`drill-${i}`}
           className="absolute text-[#FFD400]"
           animate={{
-            x: ['0%', '100%'],
-            y: ['0%', '100%'],
+            x: ["0%", "100%"],
+            y: ["0%", "100%"],
             rotate: [0, 360],
             opacity: [0, 1, 0],
           }}
           transition={{
             duration: Math.random() * 15 + 15,
-            repeat: Infinity,
-            ease: 'linear',
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
           }}
           style={{
             left: `${Math.random() * 100}%`,
@@ -161,7 +161,7 @@ const Footer = () => {
           <Drill size={16} />
         </motion.div>
       ))}
-      
+
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
           <motion.div
@@ -180,24 +180,27 @@ const Footer = () => {
               />
             </Link>
             <p className="text-xl text-gray-300 max-w-md font-medium leading-relaxed">
-              Data made easy. <br/>Unleash the power of <span className="font-normal">JOB</span>
-              <strong>TREAD</strong> API
+              Data made easy. <br />
+              Unleash the power of <span className="font-normal">DATA</span>
+              <strong>x</strong>
             </p>
             <div className="flex flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
               <div className="group w-auto flex items-center">
-                <Button 
+                <Button
                   className="w-auto sm:w-auto bg-[#FFD400] text-black font-bold py-6 px-6 sm:px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 hover:bg-white hover:text-black relative overflow-hidden group shadow-[0_0_15px_rgba(255,212,0,0.5)]"
                   onMouseEnter={() => setIsHoveringTry(true)}
                   onMouseLeave={() => setIsHoveringTry(false)}
                 >
                   <Link href="/pricing" className="flex items-center">
                     <span className="relative z-10 transition-colors duration-300">Try Free</span>
-                    <Zap className={`ml-2 h-5 w-5 relative z-10 transition-all duration-300 ${isHoveringTry ? 'rotate-[360deg] scale-125' : ''}`} />
+                    <Zap
+                      className={`ml-2 h-5 w-5 relative z-10 transition-all duration-300 ${isHoveringTry ? "rotate-[360deg] scale-125" : ""}`}
+                    />
                   </Link>
-                  <motion.div 
+                  <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-[#FFD400] to-white"
-                    initial={{ x: '100%' }}
-                    animate={isHoveringTry ? { x: '0%' } : { x: '100%' }}
+                    initial={{ x: "100%" }}
+                    animate={isHoveringTry ? { x: "0%" } : { x: "100%" }}
                     transition={{ duration: 0.3 }}
                   />
                 </Button>
@@ -214,7 +217,7 @@ const Footer = () => {
               />
             </Link>
           </motion.div>
-          
+
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -226,8 +229,8 @@ const Footer = () => {
             ))}
           </motion.div>
         </div>
-        
-        <motion.div 
+
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
@@ -249,8 +252,8 @@ const Footer = () => {
         </motion.div>
       </div>
     </footer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer
 
