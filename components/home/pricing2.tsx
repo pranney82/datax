@@ -222,7 +222,7 @@ const AddOns = () => {
               <div className="text-center py-6">
                 <h2 className="text-xl sm:text-2xl font-bold text-[#ffd400] mb-3">Thank You!</h2>
                 <p className="text-[#fff] text-sm sm:text-base mb-4">
-                  We've received your request and will get back to you shortly.
+                  We&apos;ve received your request and will get back to you shortly.
                 </p>
                 <Button
                   onClick={resetForm}
