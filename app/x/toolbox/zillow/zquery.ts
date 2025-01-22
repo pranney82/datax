@@ -146,12 +146,11 @@ export const searchWebhooks = ({ orgID }: QueryParams1) => ({
 export const createWebhook = ({ orgID, url, zestimateField, zillowUrlField }: QueryParams1) => ({
   "createWebhook": {
     "$": {
+      "eventTypes": [
+        "locationCreated"
+      ],
       "organizationId": orgID,
-      "url": url,
-      "metadata": {
-        "zestimateField": zestimateField,
-        "zillowUrlField": zillowUrlField
-      }
+      "url": url
     }
   }
 });

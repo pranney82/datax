@@ -42,14 +42,14 @@ export async function POST(request: Request) {
     const isWebhook = 'createdEvent' in webhookData
     //console.log('Request type:', { isWebhook, webhookData })
 
-    let grantKey, locid, zestimateField, zestimateUrlField, address
+    let grantKey, locid, zestimateField, zestimateUrlField, address, jtOrgId
 
     if (isWebhook) {
-      const jtOrgId = webhookData.createdEvent?.organization?.id
+      jtOrgId = webhookData.createdEvent?.organization?.id
       const locationId = webhookData.createdEvent?.data?.next?.id
       const locationData = webhookData.createdEvent?.data?.next
       
-      //console.log('Webhook path values:', { jtOrgId, locationId, locationData })
+      console.log('Webhook path values:', { jtOrgId, locationId, locationData })
 
       if (!jtOrgId || !locationId || !locationData) {
         return NextResponse.json({
@@ -69,8 +69,8 @@ export async function POST(request: Request) {
       }
 
       const orgDoc = querySnapshot.docs[0]
-      const orgData = orgDoc.data()
-
+      const orgData = orgDoc.data() 
+      console.log('Org data:', orgData.uid);
       // Set the values from our DB
       grantKey = orgData.grantKey
       locid = locationId
@@ -85,11 +85,13 @@ export async function POST(request: Request) {
       grantKey = manualRequest.grantKey
       locid = manualRequest.locid
       zestimateField = manualRequest.zestimateField
+      //notice this is zillowUrlField which is the same as webhook zstimateUrlField but I missed the typo and now we're stuck. 
       zestimateUrlField = manualRequest.zestimateUrlField
       address = manualRequest.address.replace(/(,\s*|\s+)USA$/, '').trim() as string
     }
 
     console.log('Pre-Bridge API call values:', { 
+     jtOrgId,
      grantKey, 
      locid, 
      zestimateField, 

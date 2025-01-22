@@ -67,18 +67,18 @@ export default function SettingsPage() {
 
       const orgData = orgDoc.data()
       
-      // Search stripedata collection for matching orgID
-      const stripeQuery = query(
+      // Search stripedata collection for matching stripeCustomerId
+      const stripeQuery = doc(
         collection(db, 'stripedata'),
-        where('orgID', '==', userData.org)
+        userData.stripeCustomerId
       )
       
-      const stripeSnapshot = await getDocs(stripeQuery)
+      const stripeSnapshot = await getDoc(stripeQuery)
       let subscriptionStatus = 'free'
       let subscriptionType = 'free'
       
-      if (!stripeSnapshot.empty) {
-        const stripeData = stripeSnapshot.docs[0].data()
+      if (stripeSnapshot.exists()) {
+        const stripeData = stripeSnapshot.data()
         subscriptionStatus = stripeData.subscriptionStatus || 'error'
         subscriptionType = stripeData.tier || 'error'
       }

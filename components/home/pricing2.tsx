@@ -35,7 +35,7 @@ const addons: AddOn[] = [
     icon: <Zap className="w-12 h-12 text-[#ffd400]" />,
     name: "Zapier Assessment",
     price: 525,
-    description: "Automation assessment and recomendations for new and improved zaps.",
+    description: "Provide automation assessment and recomendations for new and improved.",
     priceSuffix: "one-time",
     additionalInfo:
       "Our Zapier experts will analyze your current processes and desired automations, identify inefficiencies, and provide tailored zap recommendation report, along with a scope of work for us to build and maintain your zaps.",
@@ -55,17 +55,17 @@ const addons: AddOn[] = [
     buttonAction: () => {},
   },
   {
-    id: "signup",
+    id: "courses",
     icon: <GraduationCap className="w-12 h-12 text-[#ffd400]" />,
-    name: "Sign Up",
-    price: 1250,
-    description: "Subscribe to our premium service and unlock all features.",
-    priceSuffix: "one-time",
+    name: "Automation Courses",
+    price: 600,
+    description: "Learn how to automate your business and JobTread with our beginner and intermediate courses.",
+    priceSuffix: "one-time, lifetime access",
     additionalInfo:
       "Get access to all our premium features, including advanced automation, priority support, and exclusive content. Cancel anytime.",
-    buttonText: "Sign Up",
+    buttonText: "Enroll Today",
     buttonAction: () => {
-      window.location.href = "https://placeholder-stripe-checkout-url.com"
+      window.location.href = "/courses"
     },
   },
 ]
@@ -126,11 +126,12 @@ const AddOns = () => {
   }
 
   return (
-    <section id="cto-consulting" className="py-16 w-full bg-[#000] relative">
+    <section id="cto-consulting" className="py-12 w-full bg-[#000] relative">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mt-16">
-          <h3 className="text-4xl font-bold text-center mb-12 text-[#fff] tracking-tight">Consulting Services</h3>
+        <div className="mt-12">
+          <h3 className="text-3xl font-bold text-center mb-8 text-[#fff] tracking-tight">Consulting Services</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+
             {addons.map((addon) => (
               <Card
                 key={addon.id}
@@ -168,27 +169,29 @@ const AddOns = () => {
                   </div>
                 </CardContent>
                 <CardFooter className="p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-[#000]/30">
-                  <Button
-                    className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#fff]/10 text-[#fff] hover:bg-[#ffd400]/20 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:ring-opacity-50 text-lg font-medium"
-                    onClick={() => toggleExpand(addon.id)}
-                  >
-                    {expandedAddon === addon.id ? (
-                      <>
-                        Less Info <ChevronUp className="ml-2 h-5 w-5 animate-bounce" />
-                      </>
-                    ) : (
-                      <>
-                        Learn More <ChevronDown className="ml-2 h-5 w-5 animate-bounce" />
-                      </>
-                    )}
-                  </Button>
+                  {addon.id !== "courses" && (
+                    <Button
+                      className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#fff]/10 text-[#fff] hover:bg-[#ffd400]/20 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:ring-opacity-50 text-lg font-medium"
+                      onClick={() => toggleExpand(addon.id)}
+                    >
+                      {expandedAddon === addon.id ? (
+                        <>
+                          Less Info <ChevronUp className="ml-2 h-5 w-5 animate-bounce" />
+                        </>
+                      ) : (
+                        <>
+                          Learn More <ChevronDown className="ml-2 h-5 w-5 animate-bounce" />
+                        </>
+                      )}
+                    </Button>
+                  )}
                   <Button
                     className={`w-full sm:w-auto px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:ring-opacity-50 text-lg font-bold ${
                       selectedAddons.includes(addon.id)
                         ? "bg-[#ffd400] text-[#000] hover:bg-[#ffd400]/90"
                         : "bg-gradient-to-r from-[#ffd400] to-[#ffea80] text-[#000] hover:from-[#ffea80] hover:to-[#ffd400]"
-                    }`}
-                    onClick={addon.id === "signup" ? addon.buttonAction : openModal}
+                    } ${addon.id === "courses" ? "ml-auto" : ""}`}
+                    onClick={addon.id === "courses" ? addon.buttonAction : openModal}
                   >
                     {addon.buttonText}{" "}
                     {addon.id === "signup" ? (
@@ -207,23 +210,23 @@ const AddOns = () => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-gradient-to-br from-[#111] to-[#222] rounded-2xl p-4 sm:p-6 w-full max-w-2xl mx-auto my-4 sm:my-8 relative border-2 border-[#ffd400] shadow-2xl transform transition-all duration-300 ease-in-out">
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
+          <div className="bg-gradient-to-br from-[#111] to-[#222] rounded-xl p-4 w-full max-w-md mx-auto my-2 sm:my-4 relative border-2 border-[#ffd400] shadow-2xl transform transition-all duration-300 ease-in-out">
             <button
               onClick={closeModal}
-              className="absolute top-2 right-2 sm:top-4 sm:right-4 text-[#ffd400] hover:text-[#ffea80] transition-colors duration-200 bg-[#000]/20 rounded-full p-2"
+              className="absolute top-2 right-2 text-[#ffd400] hover:text-[#ffea80] transition-colors duration-200 bg-[#000]/20 rounded-full p-1"
             >
-              <X className="w-5 h-5 sm:w-6 sm:h-6" />
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
             {showThankYou ? (
-              <div className="text-center py-8 sm:py-12">
-                <h2 className="text-2xl sm:text-3xl font-bold text-[#ffd400] mb-4">Thank You!</h2>
-                <p className="text-[#fff] text-base sm:text-lg mb-6 sm:mb-8">
-                  We&apos;ve received your request and will get back to you shortly.
+              <div className="text-center py-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-[#ffd400] mb-3">Thank You!</h2>
+                <p className="text-[#fff] text-sm sm:text-base mb-4">
+                  We've received your request and will get back to you shortly.
                 </p>
                 <Button
                   onClick={resetForm}
-                  className="px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-[#ffd400] to-[#ffea80] text-[#000] font-bold rounded-full transition-all duration-300 hover:from-[#ffea80] hover:to-[#ffd400] hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:ring-opacity-50"
+                  className="px-4 sm:px-6 py-2 bg-gradient-to-r from-[#ffd400] to-[#ffea80] text-[#000] font-bold rounded-full transition-all duration-300 hover:from-[#ffea80] hover:to-[#ffd400] hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:ring-opacity-50 text-sm"
                 >
                   Close
                 </Button>
@@ -241,30 +244,27 @@ const AddOns = () => {
                   onSubmit={handleSubmit}
                 >
                   <div role="main" className="form-all">
-                    <ul className="form-section page-section space-y-3 sm:space-y-4">
+                    <ul className="form-section page-section space-y-3">
                       <li id="cid_1" className="form-input-wide" data-type="control_head">
                         <div className="form-header-group">
-                          <h1
-                            id="header_1"
-                            className="form-header text-xl sm:text-2xl font-bold text-[#ffd400] mb-1 sm:mb-2"
-                          >
+                          <h1 id="header_1" className="form-header text-lg sm:text-xl font-bold text-[#ffd400] mb-1">
                             Get Started
                           </h1>
-                          <div id="subHeader_1" className="form-subHeader text-[#fff]/80 text-xs sm:text-sm">
+                          <div id="subHeader_1" className="form-subHeader text-[#fff]/80 text-xs">
                             Let us know how we can help you get started!
                           </div>
                         </div>
                       </li>
                       <li className="form-line" data-type="control_fullname" id="id_3">
                         <label
-                          className="form-label form-label-top text-[#fff]/90 text-xs sm:text-sm"
+                          className="form-label form-label-top text-[#fff]/90 text-xs"
                           id="label_3"
                           htmlFor="first_3"
                         >
                           Your Name
                         </label>
                         <div id="cid_3" className="form-input-wide" data-layout="full">
-                          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                             <input
                               type="text"
                               id="first_3"
@@ -286,7 +286,7 @@ const AddOns = () => {
                       </li>
                       <li className="form-line" data-type="control_textbox" id="id_17">
                         <label
-                          className="form-label form-label-top text-[#fff]/90 text-xs sm:text-sm"
+                          className="form-label form-label-top text-[#fff]/90 text-xs"
                           id="label_17"
                           htmlFor="input_17"
                         >
@@ -302,10 +302,10 @@ const AddOns = () => {
                           />
                         </div>
                       </li>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <li className="form-line" data-type="control_phone" id="id_4">
                           <label
-                            className="form-label form-label-top text-[#fff]/90 text-xs sm:text-sm"
+                            className="form-label form-label-top text-[#fff]/90 text-xs"
                             id="label_4"
                             htmlFor="input_4_full"
                           >
@@ -324,7 +324,7 @@ const AddOns = () => {
                         </li>
                         <li className="form-line" data-type="control_email" id="id_5">
                           <label
-                            className="form-label form-label-top text-[#fff]/90 text-xs sm:text-sm"
+                            className="form-label form-label-top text-[#fff]/90 text-xs"
                             id="label_5"
                             htmlFor="input_5"
                           >
@@ -343,7 +343,7 @@ const AddOns = () => {
                       </div>
                       <li className="form-line" data-type="control_address" id="id_6">
                         <label
-                          className="form-label form-label-top text-[#fff]/90 text-xs sm:text-sm"
+                          className="form-label form-label-top text-[#fff]/90 text-xs"
                           id="label_6"
                           htmlFor="input_6_addr_line1"
                         >
@@ -357,7 +357,7 @@ const AddOns = () => {
                             className="form-input"
                             placeholder="Street Address"
                           />
-                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          <div className="grid grid-cols-2 gap-2">
                             <input
                               type="text"
                               id="input_6_city"
@@ -372,19 +372,19 @@ const AddOns = () => {
                               className="form-input"
                               placeholder="State"
                             />
-                            <input
-                              type="text"
-                              id="input_6_postal"
-                              name="q6_yourAddress[postal]"
-                              className="form-input col-span-2 sm:col-span-1"
-                              placeholder="Postal / Zip Code"
-                            />
                           </div>
+                          <input
+                            type="text"
+                            id="input_6_postal"
+                            name="q6_yourAddress[postal]"
+                            className="form-input"
+                            placeholder="Postal / Zip Code"
+                          />
                         </div>
                       </li>
                       <li className="form-line" data-type="control_dropdown" id="id_15">
                         <label
-                          className="form-label form-label-top text-[#fff]/90 text-xs sm:text-sm"
+                          className="form-label form-label-top text-[#fff]/90 text-xs"
                           id="label_15"
                           htmlFor="input_15"
                         >
@@ -402,7 +402,7 @@ const AddOns = () => {
                       </li>
                       <li className="form-line" data-type="control_textarea" id="id_10">
                         <label
-                          className="form-label form-label-top text-[#fff]/90 text-xs sm:text-sm"
+                          className="form-label form-label-top text-[#fff]/90 text-xs"
                           id="label_10"
                           htmlFor="input_10"
                         >
@@ -423,7 +423,7 @@ const AddOns = () => {
                           <button
                             id="input_14"
                             type="submit"
-                            className="form-submit-button w-full py-2 sm:py-3 px-4 sm:px-6 bg-gradient-to-r from-[#ffd400] to-[#ffea80] text-[#000] font-bold rounded-full transition-all duration-300 hover:from-[#ffea80] hover:to-[#ffd400] hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:ring-opacity-50"
+                            className="form-submit-button w-full py-2 px-4 bg-gradient-to-r from-[#ffd400] to-[#ffea80] text-[#000] font-bold rounded-full transition-all duration-300 hover:from-[#ffea80] hover:to-[#ffd400] hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:ring-opacity-50 text-sm"
                             disabled={isSubmitting}
                           >
                             {isSubmitting ? "Submitting..." : "Submit"}
@@ -448,9 +448,9 @@ const AddOns = () => {
         .form-textarea,
         .form-select {
           width: 100%;
-          padding: 8px 12px;
+          padding: 6px 10px;
           border: 1px solid #444;
-          border-radius: 8px;
+          border-radius: 6px;
           background: #222;
           color: #fff;
           transition: all 0.3s;
@@ -469,9 +469,9 @@ const AddOns = () => {
           appearance: none;
           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ffd400'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
           background-repeat: no-repeat;
-          background-position: right 12px center;
-          background-size: 16px;
-          padding-right: 40px;
+          background-position: right 10px center;
+          background-size: 14px;
+          padding-right: 30px;
         }
         .mask-phone-number {
           /* Add any specific styles for the phone number input if needed */
@@ -486,7 +486,6 @@ const AddOns = () => {
           .form-textarea,
           .form-select {
             font-size: 16px; /* Prevent zoom on focus in iOS */
-            padding: 6px 10px;
           }
           
           .form-label {
