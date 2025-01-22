@@ -205,7 +205,7 @@ export function SingleRun() {
         throw new Error('User not authenticated');
       }
 
-      const response = await fetch('/api/coverphoto/2', {
+      const response = await fetch('/api/coverphoto', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
