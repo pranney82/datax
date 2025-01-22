@@ -1,16 +1,14 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from "react"
-import { Zap, Sparkles, Play } from "lucide-react"
+import { useState, useEffect, useCallback } from "react"
+import { Zap, Sparkles } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 
 const Hero1 = () => {
   const [isHoveringTry, setIsHoveringTry] = useState(false)
   const [stars, setStars] = useState<{ x: number; y: number; size: number; opacity: number }[]>([])
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
-  const playerRef = useRef<YT.Player | null>(null)
 
   const generateStars = useCallback(() => {
     const newStars = Array.from({ length: 100 }, () => ({
@@ -28,54 +26,11 @@ const Hero1 = () => {
     return () => clearInterval(starInterval)
   }, [generateStars])
 
-  useEffect(() => {
-    const tag = document.createElement("script")
-    tag.src = "https://www.youtube.com/iframe_api"
-    const firstScriptTag = document.getElementsByTagName("script")[0]
-    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
-
-    return () => {
-      // Clean up the script tag when the component unmounts
-      const scriptTag = document.querySelector('script[src="https://www.youtube.com/iframe_api"]')
-      if (scriptTag) {
-        scriptTag.remove()
-      }
-    }
-  }, [])
-
   const videoData = {
     question: "How does it work?",
     answer:
       "Getting started is easy! Simply enter your JOBTREAD grant key, and you're all set. From there, you can explore your dashboard, enable custom integrations, and unlock a variety of powerful features!",
-    videoUrl: "https://www.youtube.com/embed/FiAXjvgV0Zc",
-    thumbnailUrl: "assets/thumbnails/2.png",
-    videoId: "FiAXjvgV0Zc", // Extract video ID from the URL
-  }
-
-  const onPlayClick = () => {
-    if (playerRef.current) {
-      playerRef.current.playVideo()
-      setIsVideoPlaying(true)
-    } else {
-      // If the player isn't ready yet, we'll create it now
-      new YT.Player("youtube-player", {
-        height: "100%",
-        width: "100%",
-        videoId: videoData.videoId,
-        playerVars: {
-          autoplay: 1,
-          modestbranding: 1,
-          rel: 0,
-        },
-        events: {
-          onReady: (event) => {
-            playerRef.current = event.target
-            event.target.playVideo()
-            setIsVideoPlaying(true)
-          },
-        },
-      })
-    }
+    videoId: "FiAXjvgV0Zc",
   }
 
   return (
@@ -206,32 +161,13 @@ const Hero1 = () => {
               transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
             />
             <div className="relative w-full pb-[56.25%] overflow-hidden rounded-lg">
-              <AnimatePresence>
-                {!isVideoPlaying && (
-                  <motion.div
-                    className="absolute inset-0 flex items-center justify-center bg-black/50"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <img
-                      src={videoData.thumbnailUrl || "/placeholder.svg"}
-                      alt={videoData.question}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                    <motion.button
-                      className="bg-white/20 backdrop-blur-sm rounded-full p-4 z-10"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={onPlayClick}
-                      aria-label="Play video"
-                    >
-                      <Play className="w-12 h-12 text-white" />
-                    </motion.button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              <div id="youtube-player" className="absolute top-0 left-0 w-full h-full rounded-lg shadow-2xl"></div>
+              <iframe
+                className="absolute top-0 left-0 w-full h-full rounded-lg shadow-2xl"
+                src={`https://www.youtube.com/embed/${videoData.videoId}?modestbranding=1&rel=0`}
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
             </div>
           </motion.div>
         </div>

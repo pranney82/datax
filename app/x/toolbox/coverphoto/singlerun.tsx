@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import ModernDashboardCard from "@/components/dash-card"
 import { cpQuery1 } from "./cpquery"
 import { useDebounce } from "./hooks/useDebounce"
 import {
@@ -206,7 +205,7 @@ export function SingleRun() {
         throw new Error('User not authenticated');
       }
 
-      const response = await fetch('/api/coverphoto/2', {
+      const response = await fetch('/api/coverphoto', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
