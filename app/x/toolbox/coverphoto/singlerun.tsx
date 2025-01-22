@@ -206,7 +206,7 @@ export function SingleRun() {
         throw new Error('User not authenticated');
       }
 
-      const response = await fetch('/api/coverphoto', {
+      const response = await fetch('/api/coverphoto/2', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -241,11 +241,9 @@ export function SingleRun() {
 
   return (
     <div className="w-full">
-      <ModernDashboardCard
-        title="Update cover photo for a specific job"
-        description=""
-        loading={isLoading}
-        content={
+      <p className="text-sm text-muted-foreground">
+        Update cover photo for a specific job
+      </p>
           <div className="w-full space-y-4">
             <div className="space-y-2 w-full">
               <Label htmlFor="jobId">Job ID</Label>
@@ -335,8 +333,6 @@ export function SingleRun() {
               {isLoading ? 'Processing...' : 'Update Cover Photo'}
             </Button>
           </div>
-        }
-      />
     </div>
   )
 }

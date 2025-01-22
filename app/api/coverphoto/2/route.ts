@@ -3,19 +3,23 @@ import { db } from '@/lib/firebase'
 import { collection, addDoc, getDocs } from 'firebase/firestore'
 
 interface JobTreadWebhookData {
-  job: {
+  _type: string;
+  createdEvent: {
     _type: string;
-    id: string;
+    type: string;
+    job: {
+      _type: string;
+      id: string;
+    };
+    location: {
+      _type: string;
+      id: string;
+    };
+    organization: {
+      _type: string;
+      id: string;
+    };
   };
-  location: {
-    _type: string;
-    id: string;
-  };
-  organization: {
-    _type: string;
-    id: string;
-  };
-  type: string;
 }
 
 interface JobTreadResponse {
@@ -37,15 +41,15 @@ export async function POST(request: Request) {
     const webhookData = await request.json() as JobTreadWebhookData
     
     // Only process 'jobCreated' events
-    if (webhookData.type !== 'jobCreated') {
+    if (webhookData.createdEvent.type !== 'jobCreated') {
       return NextResponse.json({ status: 'ignored', reason: 'Not a job creation event' })
     }
 
     // Extract the required data from webhook payload
     const jobData = {
-      jobId: webhookData.job.id,
-      locationId: webhookData.location.id,
-      orgId: webhookData.organization.id,
+      jobId: webhookData.createdEvent.job.id,
+      locationId: webhookData.createdEvent.location.id,
+      orgId: webhookData.createdEvent.organization.id,
     }
 
     const grantKey = await getGrantKey(jobData.orgId);
