@@ -1,6 +1,20 @@
 "use client"
 
-import { Menu, X, Zap, Home, Car, DollarSign, BarChart3, BookOpen, Map, Heart, Cog, Box } from "lucide-react"
+import {
+  Menu,
+  X,
+  Zap,
+  Home,
+  Car,
+  DollarSign,
+  BookOpen,
+  Map,
+  Heart,
+  Cog,
+  Code2,
+  Users,
+  BookText,
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
 import {
@@ -23,14 +37,19 @@ import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 
 const iconMap = {
-  BarChart3: (
+  Code2: (
     <div className="p-3 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
-      <BarChart3 className="size-8 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
+      <Code2 className="size-8 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
     </div>
   ),
-  Box: (
+  Users: (
     <div className="p-3 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
-      <Box className="size-8 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
+      <Users className="size-8 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
+    </div>
+  ),
+  BookText: (
+    <div className="p-3 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
+      <BookText className="size-8 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
     </div>
   ),
   BookOpen: (
@@ -123,25 +142,25 @@ const Navbar1 = () => {
                   <NavigationMenuItem className="text-gray-800">
                     <NavigationMenuTrigger className="hover:text-ffd400 transition-colors duration-200 relative text-lg after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#ffd400] after:scale-x-0 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left">
                       {iconMap.ZapSmall}
-                      <span className="ml-2">Features</span>
+                      <span className="ml-2">Solutions</span>
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
                       <ul className="grid w-[400px] gap-3 p-4 bg-white rounded-xl shadow-lg">
                         <li>
                           <NavigationMenuLink asChild>
                             <Link
-                              href="/#dashboard"
+                              href="/#datax"
                               className={cn(
                                 "flex select-none items-center gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#ffd400]/10 focus:bg-[#ffd400]/10 group",
                               )}
                             >
-                              {iconMap.BarChart3}
+                              {iconMap.Code2}
                               <div className="transition-transform duration-300 transform group-hover:translate-x-1">
                                 <div className="text-base font-semibold text-black group-hover:text-[#ffd400] transition-colors duration-200">
-                                  Dashboard
+                                  DATAx
                                 </div>
                                 <p className="text-sm leading-snug text-gray-600 group-hover:text-black transition-colors duration-200 mt-1">
-                                  Visualize your JOBTREAD data
+                                  Already built automations, just turn on
                                 </p>
                               </div>
                             </Link>
@@ -150,18 +169,18 @@ const Navbar1 = () => {
                         <li>
                           <NavigationMenuLink asChild>
                             <Link
-                              href="/#toolbox"
+                              href="/#cto"
                               className={cn(
                                 "flex select-none items-center gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#ffd400]/10 focus:bg-[#ffd400]/10 group",
                               )}
                             >
-                              {iconMap.Box}
+                              {iconMap.Users}
                               <div className="transition-transform duration-300 transform group-hover:translate-x-1">
                                 <div className="text-base font-semibold text-black group-hover:text-[#ffd400] transition-colors duration-200">
-                                  Toolbox
+                                  CTO Consulting
                                 </div>
                                 <p className="text-sm leading-snug text-gray-600 group-hover:text-black transition-colors duration-200 mt-1">
-                                  Specialty, code-free solutions
+                                  Custom automations, monthly CTO services
                                 </p>
                               </div>
                             </Link>
@@ -170,38 +189,18 @@ const Navbar1 = () => {
                         <li>
                           <NavigationMenuLink asChild>
                             <Link
-                              href="/#automation"
+                              href="/#courses"
                               className={cn(
                                 "flex select-none items-center gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#ffd400]/10 focus:bg-[#ffd400]/10 group",
                               )}
                             >
-                              {iconMap.Cog}
+                              {iconMap.BookText}
                               <div className="transition-transform duration-300 transform group-hover:translate-x-1">
                                 <div className="text-base font-semibold text-black group-hover:text-[#ffd400] transition-colors duration-200">
-                                  Automation
+                                  Automation Courses
                                 </div>
                                 <p className="text-sm leading-snug text-gray-600 group-hover:text-black transition-colors duration-200 mt-1">
-                                  Custom workflows built for you
-                                </p>
-                              </div>
-                            </Link>
-                          </NavigationMenuLink>
-                        </li>
-                        <li>
-                          <NavigationMenuLink asChild>
-                            <Link
-                              href="/#library"
-                              className={cn(
-                                "flex select-none items-center gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#ffd400]/10 focus:bg-[#ffd400]/10 group",
-                              )}
-                            >
-                              {iconMap.BookOpen}
-                              <div className="transition-transform duration-300 transform group-hover:translate-x-1">
-                                <div className="text-base font-semibold text-black group-hover:text-[#ffd400] transition-colors duration-200">
-                                  Library
-                                </div>
-                                <p className="text-sm leading-snug text-gray-600 group-hover:text-black transition-colors duration-200 mt-1">
-                                  Explore our extensive knowledge base
+                                  Work with an expert to with your automations
                                 </p>
                               </div>
                             </Link>
@@ -341,40 +340,31 @@ const Navbar1 = () => {
                     <span className="ml-2">Home</span>
                   </Link>
                   <Link
-                    href="/#dashboard"
+                    href="/#datax"
                     className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200"
                   >
                     <div className="p-2 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
-                      <BarChart3 className="size-6 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
+                      <Code2 className="size-6 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
                     </div>
-                    <span className="ml-2">Dashboard</span>
+                    <span className="ml-2">DATAx</span>
                   </Link>
                   <Link
-                    href="/#toolbox"
+                    href="/#cto"
                     className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200"
                   >
                     <div className="p-2 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
-                      <Box className="size-6 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
+                      <Users className="size-6 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
                     </div>
-                    <span className="ml-2">Toolbox</span>
+                    <span className="ml-2">CTO Consulting</span>
                   </Link>
                   <Link
-                    href="/#automation"
+                    href="/#courses"
                     className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200"
                   >
                     <div className="p-2 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
-                      <Cog className="size-6 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
+                      <BookText className="size-6 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
                     </div>
-                    <span className="ml-2">Automation</span>
-                  </Link>
-                  <Link
-                    href="/#library"
-                    className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200"
-                  >
-                    <div className="p-2 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
-                      <BookOpen className="size-6 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
-                    </div>
-                    <span className="ml-2">Library</span>
+                    <span className="ml-2">Automation Courses</span>
                   </Link>
                   <Link
                     href="/about"
