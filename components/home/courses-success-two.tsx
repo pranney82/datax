@@ -192,8 +192,8 @@ const CoursesSuccessTwo = () => {
               </h3>
               <ul className="list-none text-gray-700 space-y-2">
                 {[
-                  "Get Zapier paid tier",
-                  "Connect Zapier to JobTread",
+                  "Select your language: Python or JavaScript",
+                  "Review your existing zaps and make sure they're working correctly",
                   "Review the first worksheet!"
                 ].map((item, index) => (
                   <motion.li
@@ -213,7 +213,7 @@ const CoursesSuccessTwo = () => {
 
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b-2 border-[#ffd400] pb-2 inline-block">
-                Next Class Starts: January 31th, 2025
+                Next Class Starts: February 7th, 2025
               </h2>
             </div>
 

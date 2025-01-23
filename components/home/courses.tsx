@@ -237,7 +237,7 @@ const About = () => {
 
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b-2 border-[#ffd400] pb-2 inline-block">
-                Next Class Starts: January 29th, 2025
+                Next Class Starts: February 5th, 2025
               </h2>
             </div>
 
@@ -374,7 +374,7 @@ const About = () => {
 
             <div>
               <h2 className="text-2xl font-bold text-[#ffd400] mb-4 border-b-2 border-[#ffd400] pb-2 inline-block">
-                Next Class Starts: January 31th, 2025 
+                Next Class Starts: February 7th, 2025 
                 <br />
                 Following Class: April 8th, 2025
               </h2>
