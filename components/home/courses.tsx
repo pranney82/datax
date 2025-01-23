@@ -242,7 +242,7 @@ const About = () => {
             </div>
 
             <div className="mt-8">
-              <EpicButton title="Enroll Now" href="#" variant="light" />
+              <EpicButton title="Enroll Now" href="https://buy.stripe.com/9AQ7wpa4z0936ek7st" variant="light" />
             </div>
           </motion.div>
         </div>
@@ -381,7 +381,7 @@ const About = () => {
             </div>
 
             <div className="mt-8">
-              <EpicButton title="Level Up Now" href="#" variant="dark" />
+              <EpicButton title="Level Up Now" href="https://buy.stripe.com/cN26slccH5tnauA002" variant="dark" />
             </div>
           </motion.div>
         </div>
