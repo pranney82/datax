@@ -162,8 +162,6 @@ export default function FeaturesPage() {
   }, [allFeatures, searchQuery]);
   return (
     <div className="flex flex-col min-h-screen w-full max-w-full overflow-x-hidden">
-      <header className="bg-white border-b border-gray-200">
-      </header>
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
           <h2 className="text-2xl font-bold">Toolbox</h2>
