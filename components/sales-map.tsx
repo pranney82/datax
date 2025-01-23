@@ -172,7 +172,13 @@ export default function SalesMap({
     return (
         <EpicDashboardCard
             title={title}
-            content={MapContent}
+            content={
+                isLoading ? (
+                    <div className="p-4 text-center">
+                        Loading map...
+                    </div>
+                ) : MapContent
+            }
         />
     );
 }
