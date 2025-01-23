@@ -1,13 +1,22 @@
+"use client"
+
 import Image from "next/image";
 import EpicDashboardCard from "@/components/dash-card";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 export interface JobLocation {
     id: number;
-    lat: number;
-    lng: number;
     title: string;
     address: string;
 }
+
+interface Coordinates {
+    lat: number;
+    lng: number;
+}
+
+interface GeocodedLocation extends JobLocation, Coordinates {}
 
 interface SalesMapProps {
     jobs: JobLocation[];
@@ -17,6 +26,26 @@ interface SalesMapProps {
     mapHeight?: number;
 }
 
+async function getCoordinates(address: string): Promise<Coordinates> {
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+        params: {
+            address: address,
+            key: apiKey
+        }
+    });
+
+    if (response.data.status === 'OK') {
+        const location = response.data.results[0].geometry.location;
+        return {
+            lat: location.lat,
+            lng: location.lng
+        };
+    } else {
+        throw new Error('Geocoding failed: ' + response.data.status);
+    }
+}
+
 export default function SalesMap({ 
     jobs,
     title = "Active Jobs Map",
@@ -24,14 +53,37 @@ export default function SalesMap({
     mapHeight = 600
 }: SalesMapProps) {
     const GOOGLE_MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    const [validLocations, setValidLocations] = useState<GeocodedLocation[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const calculateBounds = (locations: JobLocation[]) => {
-        const validLocations = locations.filter(loc => 
-            loc.lat !== 0 && loc.lng !== 0 && 
-            loc.lat !== undefined && loc.lng !== undefined
-        );
+    useEffect(() => {
+        async function geocodeAddresses() {
+            setIsLoading(true);
+            const geocodedResults = await Promise.all(
+                jobs.filter(job => job.address)
+                    .map(async (job) => {
+                        try {
+                            const coords = await getCoordinates(job.address);
+                            return {
+                                ...job,
+                                ...coords
+                            };
+                        } catch (error) {
+                            console.error(`Failed to geocode address for job ${job.id}:`, error);
+                            return null;
+                        }
+                    })
+            );
+            
+            setValidLocations(geocodedResults.filter((loc): loc is GeocodedLocation => loc !== null));
+            setIsLoading(false);
+        }
 
-        if (validLocations.length === 0) {
+        geocodeAddresses();
+    }, [jobs]);
+
+    const calculateBounds = (locations: GeocodedLocation[]) => {
+        if (locations.length === 0) {
             // Default to Dallas-Fort Worth area if no valid coordinates
             return { 
                 north: 32.7767, south: 32.7767, 
@@ -43,7 +95,7 @@ export default function SalesMap({
         let north = -90, south = 90, east = -180, west = 180;
         let sumLat = 0, sumLng = 0;
 
-        validLocations.forEach(loc => {
+        locations.forEach(loc => {
             north = Math.max(north, loc.lat);
             south = Math.min(south, loc.lat);
             east = Math.max(east, loc.lng);
@@ -55,13 +107,13 @@ export default function SalesMap({
         return {
             north, south, east, west,
             center: {
-                lat: sumLat / validLocations.length,
-                lng: sumLng / validLocations.length
+                lat: sumLat / locations.length,
+                lng: sumLng / locations.length
             }
         };
     };
 
-    const bounds = calculateBounds(jobs);
+    const bounds = calculateBounds(validLocations);
 
     if (!GOOGLE_MAPS_KEY) {
         console.error('Google Maps API key is not configured');
@@ -78,7 +130,7 @@ export default function SalesMap({
         );
     }
 
-    const markers = jobs.map(job => (
+    const markers = validLocations.map(job => (
         `markers=color:red%7Clabel:${job.id}%7C${job.lat},${job.lng}`
     )).join('&');
 
@@ -102,14 +154,14 @@ export default function SalesMap({
                 unoptimized
             />
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
-                {jobs.map(job => (
+                {validLocations.map(job => (
                     <div key={job.id} className="flex items-center space-x-2 p-2 bg-gray-50 rounded">
                         <div className="flex-shrink-0 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
                             {job.id}
                         </div>
                         <div>
                             <div className="font-medium">{job.title}</div>
-                            <div className="text-gray-500">{job.address}</div>
+                            
                         </div>
                     </div>
                 ))}

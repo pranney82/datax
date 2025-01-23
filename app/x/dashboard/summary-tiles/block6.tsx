@@ -13,8 +13,7 @@ type QueryResponse = {
             nodes?: Array<{
                 name?: string;
                 location?: {
-                    latitude?: number;
-                    longitude?: number;
+                    address?: string;
                 }
             }>
         }
@@ -25,7 +24,6 @@ export function Block6() {
   const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState<QueryResponse | null>(null)
-
 
   const fetchQuery = async (orgID: string, grantKey: string) => {
     if (!grantKey || !orgID) {
@@ -93,6 +91,7 @@ export function Block6() {
                       "name": [],
                       "location": {
                         "id": {},
+                        "address": {},
                         "latitude": {},
                         "longitude": {}
                       }
@@ -157,16 +156,13 @@ export function Block6() {
   }
 
   const jobsQuery = query.organization?.jobs?.nodes || []
-  const formattedJobs: JobLocation[] = jobsQuery.map((job, index) => {
-    const hasLocation = job.location?.latitude != null && job.location?.longitude != null;
-    return {
-        id: index + 1,
-        lat: job.location?.latitude || 0,
-        lng: job.location?.longitude || 0,
-        title: job.name || 'Unnamed Job',
-        address: hasLocation ? '' : "Can't find location data"
-    };
-  })
+  const formattedJobs: JobLocation[] = jobsQuery
+    .filter(job => job.location?.address)
+    .map((job, index) => ({
+      id: index + 1,
+      title: job.name || 'Unnamed Job',
+      address: job.location!.address!
+    }));
 
   return (
     <SalesMap 
