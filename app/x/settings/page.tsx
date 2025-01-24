@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import Link from "next/link"
 import { Textarea } from "@/components/ui/textarea"
+import { sendPasswordResetEmail } from "firebase/auth"
+import { auth } from "@/lib/firebase"
 
 type Organization = {
   id: string;
@@ -52,6 +54,8 @@ export default function SettingsPage() {
   const [grantKeyDialogOpen, setGrantKeyDialogOpen] = useState(false)
   const [supportDialogOpen, setSupportDialogOpen] = useState(false)
   const [supportMessage, setSupportMessage] = useState('')
+
+  const [resetEmailSent, setResetEmailSent] = useState(false)
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -204,6 +208,19 @@ export default function SettingsPage() {
     // You might want to show a success message to the user here
   }
 
+  const handleResetPassword = async () => {
+    if (!user?.email) return
+    
+    try {
+      await sendPasswordResetEmail(auth, user.email)
+      setResetEmailSent(true)
+      setTimeout(() => setResetEmailSent(false), 3000) // Clear message after 3 seconds
+    } catch (error) {
+      console.error('Error sending reset email:', error)
+      alert('Failed to send reset email. Please try again.')
+    }
+  }
+
   return (
     <div className="flex-grow container mx-auto px-4 py-8">
       <div className="grid gap-6">
@@ -293,6 +310,25 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Reset Password</Label>
+                  <div className="text-sm text-muted-foreground">
+                    <Button 
+                      variant="outline"                      
+                      className="w-full"
+                      onClick={handleResetPassword}
+                    >
+                      Send password reset email
+                    </Button>
+                    {resetEmailSent && (
+                      <span className="ml-2 text-green-600">
+                        Reset email sent! Check your inbox.
+                      </span>
+                    )}
+                  </div>
+                </div>
+                </div>
+                <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Dark Mode</Label>
                   <div className="text-sm text-muted-foreground">
