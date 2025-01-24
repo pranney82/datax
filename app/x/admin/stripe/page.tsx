@@ -47,7 +47,7 @@ interface StripeData {
   customerName: string
   amount: number
   status: string
-  createdAt: { toDate: () => Date }
+  createdAt: { seconds: number; nanoseconds: number }
   paymentMethod: string
   tier: string
   subscriptionStatus: string
@@ -99,23 +99,23 @@ export default function StripePage() {
 
   const sortedPayments = [...filteredPayments].sort((a, b) => {
     if (sortField === "createdAt") {
-      const aDate = a.createdAt.toDate()
-      const bDate = b.createdAt.toDate()
+      const aTime = a.createdAt?.seconds || 0;
+      const bTime = b.createdAt?.seconds || 0;
       return sortDirection === "asc" 
-        ? aDate.getTime() - bDate.getTime()
-        : bDate.getTime() - aDate.getTime()
+        ? aTime - bTime
+        : bTime - aTime;
     }
     if (sortField === "amount") {
       return sortDirection === "asc" 
         ? a.amount - b.amount
-        : b.amount - a.amount
+        : b.amount - a.amount;
     }
-    const aValue = String(a[sortField])
-    const bValue = String(b[sortField])
+    const aValue = String(a[sortField]);
+    const bValue = String(b[sortField]);
     return sortDirection === "asc" 
       ? aValue.localeCompare(bValue)
-      : bValue.localeCompare(aValue)
-  })
+      : bValue.localeCompare(aValue);
+  });
 
   const totalPages = Math.ceil(sortedPayments.length / ITEMS_PER_PAGE)
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
@@ -227,7 +227,7 @@ export default function StripePage() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {payment.createdAt.toDate().toLocaleString()}
+                      {new Date(payment.createdAt?.seconds * 1000).toLocaleString()}
                     </TableCell>
                     <TableCell>
                       <DropdownMenu>

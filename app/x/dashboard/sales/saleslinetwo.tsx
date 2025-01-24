@@ -131,7 +131,7 @@ const processQueryResultForChart = (results: Array<{
     // Initialize all dates with 0 values for each option
     results.forEach(({ startDate }) => {
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const [monthStr] = startDate.split('-');
+        const [year, monthStr] = startDate.split('-');
         const monthIndex = parseInt(monthStr, 10) - 1;
         const monthName = monthNames[monthIndex];
         

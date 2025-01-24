@@ -228,11 +228,11 @@ export default function Leads() {
               const orgData = orgDoc.data()
               
               if (orgData?.orgID && orgData?.grantKey) {
-                console.log('Monthly dates to fetch:', dateRange.monthDates)
+                //console.log('Monthly dates to fetch:', dateRange.monthDates)
 
                 const monthlyData = await Promise.all(dateRange.monthDates.map(async (monthStartDate) => {
                   const monthEndDate = dateRange.getLastDayOfMonth(monthStartDate)
-                  console.log(`Fetching for month: ${monthStartDate} to ${monthEndDate}`)
+                  //console.log(`Fetching for month: ${monthStartDate} to ${monthEndDate}`)
                   
                   const monthlyQueryData = await fetchQuery(
                     orgData.orgID, 
@@ -240,7 +240,7 @@ export default function Leads() {
                     monthStartDate,
                     monthEndDate
                   )
-                  console.log('Monthly query result:', monthlyQueryData)
+                  //console.log('Monthly query result:', monthlyQueryData)
                   
                   return {
                     start: monthStartDate,
@@ -254,7 +254,7 @@ export default function Leads() {
                     }
                   }
                 }))
-                console.log('Final monthly data:', monthlyData)
+                //console.log('Final monthly data:', monthlyData)
                 setMonthlyData(monthlyData)
               }
             }
@@ -280,7 +280,7 @@ export default function Leads() {
         ? (((monthlyData[monthlyData.length - 1]?.metrics?.count ?? 1) / currentMonthLeads) * 100).toFixed(1) 
         : '0'
 
-    console.log('data:', monthlyData)
+    //console.log('data:', monthlyData)
 
     // Calculate revenue per lead
     const revenuePerLead = block4Metrics.count > 0

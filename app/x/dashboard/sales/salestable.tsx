@@ -56,7 +56,7 @@ interface SalesData {
 
 const fetchSalesRepsData = async (orgID: string, grantKey: string, cfName3: string, cfID: string, startDate: string, endDate: string) => {
     try {
-        console.log('Fetching sales reps data with params:', { orgID, cfName3, cfID, startDate, endDate });
+        //console.log('Fetching sales reps data with params:', { orgID, cfName3, cfID, startDate, endDate });
         
         const query = {
             "$": { "grantKey": grantKey },
@@ -82,7 +82,7 @@ const fetchSalesRepsData = async (orgID: string, grantKey: string, cfName3: stri
         }
 
         const result = await response.json();
-        console.log('Sales reps data result:', result);
+        //console.log('Sales reps data result:', result);
         return result;
     } catch (error) {
         console.error('Error fetching sales reps data:', error);
@@ -130,11 +130,11 @@ export default function SalesTable() {
             const orgID = orgDoc.data()?.orgID;
             const grantKey = orgDoc.data()?.grantKey;
 
-            console.log('Fetching sales reps with:', { orgID, grantKey, field, fieldOptions, dateRange });
+            //console.log('Fetching sales reps with:', { orgID, grantKey, field, fieldOptions, dateRange });
 
             const salesData = await Promise.all(
                 fieldOptions.map((option: string) => {
-                    console.log('Fetching data for option:', option);
+                    //console.log('Fetching data for option:', option);
                     return fetchSalesRepsData(
                         orgID,
                         grantKey,
@@ -146,16 +146,16 @@ export default function SalesTable() {
                 })
             );
 
-            console.log('Raw sales data results:', salesData);
+            //console.log('Raw sales data results:', salesData);
 
             const processedData = salesData.map((data: SalesData, index) => {
                 const option = fieldOptions[index];
                 const jobs = data?.scope?.connection?.withValues || [];
-                console.log(`Processing data for ${option}:`, {
-                    totalJobs: jobs.length,
-                    approvedJobs: jobs.filter((job: Job) => job.approvedCustomerOrders?.priceWithTax > 0).length,
-                    pendingJobs: jobs.filter((job: Job) => job.pendingCustomerOrders?.priceWithTax > 0).length
-                });
+                // console.log(`Processing data for ${option}:`, {
+                //     totalJobs: jobs.length,
+                //     approvedJobs: jobs.filter((job: Job) => job.approvedCustomerOrders?.priceWithTax > 0).length,
+                //     pendingJobs: jobs.filter((job: Job) => job.pendingCustomerOrders?.priceWithTax > 0).length
+                // });
 
                 const totalCount = jobs.length;
                 const approvedJobs = jobs.filter((job: Job) => job.approvedCustomerOrders?.priceWithTax > 0);
@@ -173,7 +173,7 @@ export default function SalesTable() {
                 };
             });
 
-            console.log('Final processed data:', processedData);
+            //console.log('Final processed data:', processedData);
             setSalesReps(processedData);
         } catch (error) {
             console.error('Error fetching sales data:', error);
@@ -201,7 +201,7 @@ export default function SalesTable() {
                 const grantKey = orgDoc.data()?.grantKey;
                 
                 if (salestablecfv && salestablecfvName && orgID && grantKey) {
-                    console.log('Found saved custom field:', { salestablecfv, salestablecfvName });
+                    //console.log('Found saved custom field:', { salestablecfv, salestablecfvName });
                     setSelectedField(salestablecfv);
                     setSelectedFieldName(salestablecfvName);
                     
@@ -226,10 +226,10 @@ export default function SalesTable() {
                     }
 
                     const result = await response.json();
-                    console.log('Custom field options result:', result);
+                    //console.log('Custom field options result:', result);
                     
                     const fieldOptions = result?.organization?.customFields?.nodes?.[0]?.options || [];
-                    console.log('Setting options from saved field:', fieldOptions);
+                    //console.log('Setting options from saved field:', fieldOptions);
                     setOptions(fieldOptions);
 
                     fetchSalesData(salestablecfv, salestablecfvName, fieldOptions);

@@ -16,6 +16,20 @@ export default function FeatureProtect({ children, featureName }: FeatureProtect
   const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(storeSubStatus || null);
   const [subscriptionTier, setSubscriptionTier] = useState<string | null>(storeSubType || null);
   const [isLoading, setIsLoading] = useState(!storeSubStatus);
+  const [hasAccess, setHasAccess] = useState(false);
+
+  useEffect(() => {
+    // Check access whenever subscription status or tier changes
+    const access = subscriptionStatus === 'active' && subscriptionTier === 'CORE';
+    setHasAccess(access);
+    console.log("[FeatureProtect] Access Check:", {
+      access,
+      subscriptionStatus,
+      subscriptionTier,
+      featureName,
+      isLoading
+    });
+  }, [subscriptionStatus, subscriptionTier, featureName, isLoading]);
 
   useEffect(() => {
     // If we already have subscription data in the store, don't fetch again
@@ -36,12 +50,18 @@ export default function FeatureProtect({ children, featureName }: FeatureProtect
         const stripeCustomerIdDoc = await getDocs(collection(db, 'users', uid));
         if (stripeCustomerIdDoc.empty) {
           console.error('No user document found');
+          setSubscriptionStatus('free');
+          setSubscriptionTier('free');
+          setIsLoading(false);
           return;
         }
         
         const stripeCustomerId = stripeCustomerIdDoc.docs[0].data().stripeCustomerId;
         if (!stripeCustomerId) {
           console.error('No stripeCustomerId found');
+          setSubscriptionStatus('free');
+          setSubscriptionTier('free');
+          setIsLoading(false);
           return;
         }
         
@@ -73,16 +93,7 @@ export default function FeatureProtect({ children, featureName }: FeatureProtect
     fetchSubscriptionStatus();
   }, [uid, org, storeSubStatus, storeSubType]);
 
-  if (isLoading || !uid) {
-    return children;
-  }
-
-  const hasAccess = subscriptionStatus === 'active' && subscriptionTier === 'CORE';
-  console.log("hasAccess: ", hasAccess);
-  console.log("subscriptionStatus: ", subscriptionStatus);
-  console.log("subscriptionTier: ", subscriptionTier);
-
-  if (!hasAccess) {
+  if (hasAccess === false) {
     return (
       <div className="relative min-h-full">
         <div className="blur-sm pointer-events-none">
@@ -93,6 +104,7 @@ export default function FeatureProtect({ children, featureName }: FeatureProtect
           <div className="text-center space-y-4 p-8 rounded-lg bg-background/95 shadow-lg max-w-md mx-auto">
             <h2 className="text-2xl font-bold">Premium Feature</h2>
             <p className="text-muted-foreground">
+              Sorry, but the JT Connect free trial period has ended.<br /><br />
               {featureName} requires an active CORE subscription
             </p>
             <Button 

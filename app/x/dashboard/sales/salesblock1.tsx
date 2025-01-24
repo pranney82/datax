@@ -11,7 +11,7 @@ export function SalesBlock1() {
     const lastMonthMetrics = block4MonthlyMetrics[10]?.metrics || {};
     const approvedDiff = Math.ceil(((currentMonthMetrics.amountSum - lastMonthMetrics.amountSum)/lastMonthMetrics.amountSum)*100);
 
-    console.log('block4MonthlyMetrics:', block4MonthlyMetrics)
+    //console.log('block4MonthlyMetrics:', block4MonthlyMetrics)
 
     return (
         <DashCard 

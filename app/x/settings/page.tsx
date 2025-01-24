@@ -71,20 +71,23 @@ export default function SettingsPage() {
 
       const orgData = orgDoc.data()
       
-      // Search stripedata collection for matching stripeCustomerId
-      const stripeQuery = doc(
-        collection(db, 'stripedata'),
-        userData.stripeCustomerId
-      )
-      
-      const stripeSnapshot = await getDoc(stripeQuery)
       let subscriptionStatus = 'free'
       let subscriptionType = 'free'
-      
-      if (stripeSnapshot.exists()) {
-        const stripeData = stripeSnapshot.data()
-        subscriptionStatus = stripeData.subscriptionStatus || 'error'
-        subscriptionType = stripeData.tier || 'error'
+
+      // Only fetch stripe data if we have a stripeCustomerId
+      if (userData.stripeCustomerId) {
+        const stripeQuery = doc(
+          collection(db, 'stripedata'),
+          userData.stripeCustomerId
+        )
+        
+        const stripeSnapshot = await getDoc(stripeQuery)
+        
+        if (stripeSnapshot.exists()) {
+          const stripeData = stripeSnapshot.data()
+          subscriptionStatus = stripeData.subscriptionStatus || 'error'
+          subscriptionType = stripeData.tier || 'error'
+        }
       }
 
       setSettings(prev => ({
