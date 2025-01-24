@@ -47,15 +47,23 @@ export default function LeadsAreaChart() {
     const statusObj: StatusObject = item.statusCounts.reduce((acc: StatusObject, curr: StatusCount) => {
       acc[curr.status] = curr.count;
       return acc;
-    }, {});        
+    }, {});
+
+    // Direct month mapping to avoid any date parsing issues
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const [_, monthStr] = item.start.split('-');
+    const monthIndex = parseInt(monthStr, 10) - 1;
+    const monthName = monthNames[monthIndex];
+    
     return {
-      month: new Date(item.start).toLocaleDateString('en-US', { month: 'short' }),
+      month: monthName,
       approved: statusObj['approved'] || 0,
       denied: statusObj['denied'] || 0,
       draft: statusObj['draft'] || 0,
       pending: statusObj['pending'] || 0,
     };
   });
+  // Note: No sorting needed as block3StatusCounts is already in chronological order
   
   const statusColors: { [key: string]: string } = {
     'approved': '#FFD400',

@@ -141,7 +141,7 @@ export default function SalesTable() {
                         option,
                         field,
                         dateRange.monthDates[0],
-                        dateRange.monthDates[dateRange.monthDates.length - 1]
+                        dateRange.getLastDayOfMonth(dateRange.monthDates[dateRange.monthDates.length - 1])
                     );
                 })
             );

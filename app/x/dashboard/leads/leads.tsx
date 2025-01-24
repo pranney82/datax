@@ -277,8 +277,10 @@ export default function Leads() {
 
     // Calculate conversion rate using the same logic as block4
     const conversionRate = currentMonthLeads > 0 && monthlyData[monthlyData.length - 1]?.metrics?.count > 0
-        ? ((currentMonthLeads / (monthlyData[monthlyData.length - 1]?.metrics?.count ?? 1)) * 100).toFixed(1) 
+        ? (((monthlyData[monthlyData.length - 1]?.metrics?.count ?? 1) / currentMonthLeads) * 100).toFixed(1) 
         : '0'
+
+    console.log('data:', monthlyData)
 
     // Calculate revenue per lead
     const revenuePerLead = block4Metrics.count > 0

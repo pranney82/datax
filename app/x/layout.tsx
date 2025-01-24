@@ -16,7 +16,7 @@ export default function XLayout({ children }: { children: React.ReactNode }) {
           <div className="flex-grow pb-16 md:pb-0">
           <div className="mb-6">
             <Alert variant="default" className="bg-primary text-black">
-              <AlertTitle><h3 className="text-2xl font-bold">We are now Official JobTread Partners!!</h3></AlertTitle>
+              <AlertTitle><span className="text-2xl font-bold">We are now Official JobTread Partners!!</span></AlertTitle>
               <AlertDescription>
                 So we can officially offer our services: Tech Consulting, and Courses. <Link href="https://winyourdata.com/#cto" className="text-blue-500">Find out more here!</Link>
               </AlertDescription>

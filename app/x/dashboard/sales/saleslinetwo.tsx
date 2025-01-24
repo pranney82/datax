@@ -122,32 +122,39 @@ const processQueryResultForChart = (results: Array<{
     startDate: string
 }>): MonthlyData[] => {
         
-    const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const monthlyTotals: { [key: string]: { [value: string]: number } } = {};
+    // Create a map to store the data by startDate to preserve chronological order
+    const dataByDate: { [key: string]: { month: string; [key: string]: number | string } } = {};
     
+    // Get unique options first
     const uniqueOptions = Array.from(new Set(results.map(r => r.option)));
-    monthOrder.forEach(month => {
-        monthlyTotals[month] = {};
-        uniqueOptions.forEach(option => {
-            monthlyTotals[month][option] = 0;
-        });
-    });
-
-    results.forEach(({ result, option, startDate }) => {
-        const month = new Date(startDate).toLocaleString('default', { month: 'short' });
-        const amount = result?.scope?.connection?.["Amount:sum"] || 0;
-
-        if (monthlyTotals[month]) {
-            monthlyTotals[month][option] = amount;
+    
+    // Initialize all dates with 0 values for each option
+    results.forEach(({ startDate }) => {
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const [_, monthStr] = startDate.split('-');
+        const monthIndex = parseInt(monthStr, 10) - 1;
+        const monthName = monthNames[monthIndex];
+        
+        if (!dataByDate[startDate]) {
+            dataByDate[startDate] = {
+                month: monthName,
+                ...Object.fromEntries(uniqueOptions.map(option => [option, 0]))
+            };
         }
     });
 
-    return Object.entries(monthlyTotals)
-        .map(([month, values]) => ({
-            month,
-            ...values
-        }))
-        .sort((a, b) => monthOrder.indexOf(a.month) - monthOrder.indexOf(b.month));
+    // Fill in the actual values
+    results.forEach(({ result, option, startDate }) => {
+        const amount = result?.scope?.connection?.["Amount:sum"] || 0;
+        if (dataByDate[startDate]) {
+            dataByDate[startDate][option] = amount;
+        }
+    });
+
+    // Convert to array maintaining chronological order
+    return Object.entries(dataByDate)
+        .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
+        .map(([_, data]) => data);
 };
 
 export default function RevenueBySourceChart() {

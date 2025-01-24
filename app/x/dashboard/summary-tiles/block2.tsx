@@ -366,7 +366,7 @@ export function Block2() {
                       ]
                     }
                   },
-                  "page": page || "85kPcQs5F7ePtTu3fBXSSDcXLrv2XcPD7zwUQevNWHP"
+                  "page": page || ""
                 },
                 "_": "jobs",
                 "nextPage": {},

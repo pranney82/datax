@@ -8,8 +8,8 @@ export function SalesBlock2() {
     
     // Get current month's data
     const currentMonth = new Date().getMonth();
-    const currentMonthStatusCounts = block3StatusCounts[currentMonth]?.statusCounts || [];
-    const lastMonthStatusCounts = block3StatusCounts[currentMonth - 1]?.statusCounts || [];
+    const currentMonthStatusCounts = block3StatusCounts[11]?.statusCounts || [];
+    const lastMonthStatusCounts = block3StatusCounts[10]?.statusCounts || [];
 
     // Calculate metrics
     const approvedDeals = currentMonthStatusCounts.find(s => s.status === 'approved')?.count || 0;

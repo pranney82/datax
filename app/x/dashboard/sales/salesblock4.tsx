@@ -21,8 +21,6 @@ export function SalesBlock4() {
     const { salesTarget, setSalesTarget, block4MonthlyMetrics } = useLeadsCount();
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [newTarget, setNewTarget] = useState("");
-    
-    const currentMonth = new Date().getMonth();
 
     // Fetch sales target from Firestore
     useEffect(() => {
@@ -81,7 +79,7 @@ export function SalesBlock4() {
 
     // Calculate target percentage
     const targetPercentage = salesTarget > 0 
-        ? ((block4MonthlyMetrics[currentMonth]?.metrics.amountSum || 0) / salesTarget * 100).toFixed(1)
+        ? ((block4MonthlyMetrics[11]?.metrics.amountSum || 0) / salesTarget * 100).toFixed(1)
         : 0;
 
     return (

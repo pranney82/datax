@@ -77,9 +77,15 @@ export default function RevenueChart() {
         const cumulativeActual = block4MonthlyMetrics
             .slice(0, index + 1)
             .reduce((sum, m) => sum + (m.metrics.amountSum || 0), 0);
+
+         // Direct month mapping to avoid any date parsing issues
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const [_, monthStr] = metric.start.split('-');
+        const monthIndex = parseInt(monthStr, 10) - 1;
+        const monthName = monthNames[monthIndex];
         
         return {
-            month: new Date(metric.start).toLocaleString('default', { month: 'short' }),
+            month: monthName,
             actual: Math.round(cumulativeActual),
             target: cumulativeTarget
         };
