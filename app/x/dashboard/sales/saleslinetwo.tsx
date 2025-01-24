@@ -131,7 +131,7 @@ const processQueryResultForChart = (results: Array<{
     // Initialize all dates with 0 values for each option
     results.forEach(({ startDate }) => {
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const [_, monthStr] = startDate.split('-');
+        const [monthStr] = startDate.split('-');
         const monthIndex = parseInt(monthStr, 10) - 1;
         const monthName = monthNames[monthIndex];
         
@@ -154,7 +154,7 @@ const processQueryResultForChart = (results: Array<{
     // Convert to array maintaining chronological order
     return Object.entries(dataByDate)
         .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
-        .map(([_, data]) => data);
+        .map(([, data]) => data);
 };
 
 export default function RevenueBySourceChart() {

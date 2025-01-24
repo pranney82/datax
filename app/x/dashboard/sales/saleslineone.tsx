@@ -80,7 +80,7 @@ export default function RevenueChart() {
 
          // Direct month mapping to avoid any date parsing issues
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const [_, monthStr] = metric.start.split('-');
+        const [monthStr] = metric.start.split('-');
         const monthIndex = parseInt(monthStr, 10) - 1;
         const monthName = monthNames[monthIndex];
         

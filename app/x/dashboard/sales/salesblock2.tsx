@@ -7,7 +7,6 @@ export function SalesBlock2() {
     const { block3StatusCounts } = useLeadsCount();
     
     // Get current month's data
-    const currentMonth = new Date().getMonth();
     const currentMonthStatusCounts = block3StatusCounts[11]?.statusCounts || [];
     const lastMonthStatusCounts = block3StatusCounts[10]?.statusCounts || [];
 
