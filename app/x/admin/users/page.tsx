@@ -29,9 +29,9 @@ import {
 } from "@/components/ui/pagination"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore"
+import { collection, getDocs, deleteDoc, doc, getDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
-import { MoreHorizontal, ArrowUpDown } from "lucide-react"
+import { MoreHorizontal, ArrowUpDown, Download } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import {
   DropdownMenu,
@@ -58,10 +58,15 @@ interface UserData {
   enableNotifications: boolean
   name: string
   org: string
-  stripeID: string
+  stripeCustomerId: string
+}
+
+interface StripeData {
+  customerId: string
+  customerEmail: string
   subscriptionStatus: string
   tier: string
-  updatedAt: string
+  createdAt: { toDate: () => Date }
 }
 
 interface OrgData {
@@ -69,29 +74,105 @@ interface OrgData {
   [key: string]: unknown
 }
 
-const ITEMS_PER_PAGE = 10
+const ITEMS_PER_PAGE = 20
+
+const formatDate = (dateObj: { toDate: () => Date } | undefined): string => {
+  try {
+    if (!dateObj?.toDate) return "Invalid date"
+    const date = dateObj.toDate()
+    if (!(date instanceof Date) || isNaN(date.getTime())) return "Invalid date"
+    return date.toLocaleString()
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error fetching data:", error.message)
+    } else {
+      console.error("Error fetching data:", String(error))
+    }
+    return "Invalid date"
+  }
+}
+
+type SortableField = keyof UserData | "stripeData.subscriptionStatus" | "stripeData.tier"
+
+const downloadCSV = (users: (UserData & { stripeData?: StripeData })[], orgs: Record<string, OrgData>) => {
+  // Define CSV headers
+  const headers = [
+    'Name',
+    'Email',
+    'Organization',
+    'Grant Key',
+    'Subscription Status',
+    'Tier',
+    'Created At'
+  ]
+
+  // Convert users to CSV rows
+  const rows = users.map(user => [
+    user.name,
+    user.email,
+    user.org,
+    orgs[user.org]?.grantKey || 'No key',
+    user.stripeData?.subscriptionStatus || 'free',
+    user.stripeData?.tier || 'free',
+    formatDate(user.createdAt)
+  ])
+
+  // Combine headers and rows
+  const csvContent = [
+    headers.join(','),
+    ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+  ].join('\n')
+
+  // Create and trigger download
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+  const link = document.createElement('a')
+  const url = URL.createObjectURL(blob)
+  link.setAttribute('href', url)
+  link.setAttribute('download', `users_${new Date().toISOString().split('T')[0]}.csv`)
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<UserData[]>([])
+  const [users, setUsers] = useState<(UserData & { stripeData?: StripeData })[]>([])
   const [orgs, setOrgs] = useState<Record<string, OrgData>>({})
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState("")
-  const [sortField, setSortField] = useState<keyof UserData>("createdAt")
+  const [sortField, setSortField] = useState<SortableField>("createdAt")
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc")
   const [userToDelete, setUserToDelete] = useState<UserData | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch users
         const usersSnapshot = await getDocs(collection(db, "users"))
         const userData = usersSnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         })) as UserData[]
-        setUsers(userData)
 
-        const uniqueOrgIds = Array.from(new Set(userData.map(user => user.org)))
+        // Fetch stripe data for each user
+        const usersWithStripeData = await Promise.all(
+          userData.map(async (user) => {
+            if (!user.stripeCustomerId) return user
+
+            const stripeDoc = await getDoc(doc(db, "stripedata", user.stripeCustomerId))
+            if (stripeDoc.exists()) {
+              return {
+                ...user,
+                stripeData: stripeDoc.data() as StripeData
+              }
+            }
+            return user
+          })
+        )
+
+        setUsers(usersWithStripeData)
+
+        const uniqueOrgIds = Array.from(new Set(usersWithStripeData.map(user => user.org)))
         const orgsData: Record<string, OrgData> = {}
         
         await Promise.all(
@@ -107,8 +188,12 @@ export default function UsersPage() {
         )
         
         setOrgs(orgsData)
-      } catch (error) {
-        console.error("Error fetching data:", error)
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error("Error fetching data:", error.message)
+        } else {
+          console.error("Error fetching data:", String(error))
+        }
       } finally {
         setLoading(false)
       }
@@ -117,7 +202,7 @@ export default function UsersPage() {
     fetchData()
   }, [])
 
-  const handleSort = (field: keyof UserData) => {
+  const handleSort = (field: SortableField) => {
     if (field === sortField) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc")
     } else {
@@ -133,8 +218,24 @@ export default function UsersPage() {
   )
 
   const sortedUsers = [...filteredUsers].sort((a, b) => {
-    const aValue = String(a[sortField])
-    const bValue = String(b[sortField])
+    // Handle sorting for nested stripeData fields
+    if (sortField === "stripeData.subscriptionStatus") {
+      const aValue = a.stripeData?.subscriptionStatus || ""
+      const bValue = b.stripeData?.subscriptionStatus || ""
+      return sortDirection === "asc" 
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue)
+    }
+    if (sortField === "stripeData.tier") {
+      const aValue = a.stripeData?.tier || ""
+      const bValue = b.stripeData?.tier || ""
+      return sortDirection === "asc" 
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue)
+    }
+    
+    const aValue = String(a[sortField as keyof UserData])
+    const bValue = String(b[sortField as keyof UserData])
     return sortDirection === "asc" 
       ? aValue.localeCompare(bValue)
       : bValue.localeCompare(aValue)
@@ -184,12 +285,22 @@ export default function UsersPage() {
               {users.length}
             </Badge>
           </h1>
-          <Input
-            placeholder="Search users..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="max-w-xs"
-          />
+          <div className="flex items-center gap-2">
+            <Input
+              placeholder="Search users..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="max-w-xs"
+            />
+            <Button 
+              variant="outline" 
+              size="icon"
+              onClick={() => downloadCSV(sortedUsers, orgs)}
+              title="Export to CSV"
+            >
+              <Download className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
         <div className="rounded-md border">
@@ -208,10 +319,10 @@ export default function UsersPage() {
                 <TableHead>
                   Grant Key
                 </TableHead>
-                <TableHead onClick={() => handleSort("subscriptionStatus")} className="cursor-pointer">
+                <TableHead onClick={() => handleSort("stripeData.subscriptionStatus")} className="cursor-pointer">
                   Status <ArrowUpDown className="inline h-4 w-4" />
                 </TableHead>
-                <TableHead onClick={() => handleSort("tier")} className="cursor-pointer">
+                <TableHead onClick={() => handleSort("stripeData.tier")} className="cursor-pointer">
                   Tier <ArrowUpDown className="inline h-4 w-4" />
                 </TableHead>
                 <TableHead onClick={() => handleSort("createdAt")} className="cursor-pointer">
@@ -240,12 +351,10 @@ export default function UsersPage() {
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.org}</TableCell>
                     <TableCell>{orgs[user.org]?.grantKey || 'No key'}</TableCell>
-                    <TableCell>{user.subscriptionStatus}</TableCell>
-                    <TableCell>{user.tier}</TableCell>
+                    <TableCell>{user.stripeData?.subscriptionStatus || 'free'}</TableCell>
+                    <TableCell>{user.stripeData?.tier || 'free'}</TableCell>
                     <TableCell>
-                      {user.createdAt && typeof user.createdAt.toDate === "function"
-                        ? user.createdAt.toDate().toLocaleString()
-                        : "Invalid Date"}
+                      {formatDate(user.createdAt)}
                     </TableCell>
                     <TableCell>
                       <DropdownMenu>
@@ -258,7 +367,7 @@ export default function UsersPage() {
                           <DropdownMenuItem>Edit</DropdownMenuItem>
                           <DropdownMenuItem 
                             className="text-red-600"
-                            onClick={() => setUserToDelete(user)}
+                            onClick={() => setUserToDelete(user as UserData)}
                           >
                             Delete
                           </DropdownMenuItem>
