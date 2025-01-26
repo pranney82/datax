@@ -231,7 +231,7 @@ export const Card3 = () => {
             </div>
 
             <div className="space-y-2 w-full">
-              <Label>Assign a custom field for Living Area</Label>
+              <Label>Assign a custom field for Living Area Sqft</Label>
               <Select
                 value={selectedLivingAreaField}
                 onValueChange={setSelectedLivingAreaField}

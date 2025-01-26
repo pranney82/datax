@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     const isWebhook = 'createdEvent' in webhookData
     //console.log('Request type:', { isWebhook, webhookData })
 
-    let grantKey, locid, zestimateField, zestimateUrlField, address, jtOrgId, yearBuiltField, yearbuilt, bedBathField, bedbath, livingAreaField, livingArea, latestSalePriceField, latestSalePrice, lastestSaleDate, latestSaleDateField
+    let grantKey, locid, zestimateField, zestimateUrlField, address, jtOrgId, yearBuiltField, bedBathField, livingAreaField, latestSalePriceField, lastestSaleDate, latestSaleDateField
 
     if (isWebhook) {
       jtOrgId = webhookData.createdEvent?.organization?.id
@@ -168,16 +168,16 @@ export async function POST(request: Request) {
     //console.log('Building:', bridgeResponse2?.bundle?.[0]?.building);
     //console.log('Sales items:', bridgeResponse2?.bundle?.filter((item: { salesPrice: number | null }) => item.salesPrice !== null));
 
-    yearbuilt = bridgeResponse2?.bundle?.[0]?.building?.[0]?.yearBuilt;
+    const yearbuilt = bridgeResponse2?.bundle?.[0]?.building?.[0]?.yearBuilt;
     const bedrooms = bridgeResponse2?.bundle?.[0]?.building?.[0]?.bedrooms;
     const fullBaths = bridgeResponse2?.bundle?.[0]?.building?.[0]?.fullBaths;
     const halfBaths = bridgeResponse2?.bundle?.[0]?.building?.[0]?.halfBaths;
 
     // Calculate total bathrooms (add 0.5 for each half bath)
     const totalBathrooms = (fullBaths || 0) + ((halfBaths || 0) * 0.5);
-    bedbath = `${bedrooms} bed, ${totalBathrooms} bath`;
+    const bedbath = `${bedrooms} bed, ${totalBathrooms} bath`;
 
-    livingArea = bridgeResponse2?.bundle?.[0]?.areas?.find(
+    const livingArea = bridgeResponse2?.bundle?.[0]?.areas?.find(
       (area: { type: string }) => area.type === "Zillow Calculated Finished Area"
     )?.areaSquareFeet;
     const transactionURL = bridgeResponse2?.bundle?.[0]?.transactionsUrl;
@@ -205,7 +205,7 @@ export async function POST(request: Request) {
       return res.json();
     });
 
-    console.log('Bridge API response3:', bridgeResponse3);
+    //console.log('Bridge API response3:', bridgeResponse3);
 
     // Get the latest sale record with both price and date in one operation
     const latestSaleRecord = bridgeResponse3?.bundle
@@ -215,7 +215,7 @@ export async function POST(request: Request) {
       )?.[0];
 
     // Extract values from the record
-    latestSalePrice = latestSaleRecord?.salesPrice;
+    const latestSalePrice = latestSaleRecord?.salesPrice;
 
     // Convert the date if we have it
     if (latestSaleRecord?.recordingDate) {
@@ -269,6 +269,9 @@ export async function POST(request: Request) {
       updateFields.latestSaleDateField = latestSaleDateField;
       updateFields.lastestSaleDate = lastestSaleDate;
     }
+
+    //add formatted address
+    updateFields.formattedAddress = address;
 
     console.log('Update fields:', updateFields);
 
