@@ -21,6 +21,8 @@ interface QueryParams1 {
     livingArea?: string;
     latestSalePriceField?: string;
     latestSalePrice?: string;
+    latestSaleDateField?: string;
+    lastestSaleDate?: string;
     formattedAddress?: string;
   }
   
@@ -181,7 +183,7 @@ export const zQuery2 = ({ locID, orgID }: QueryParams1) => ({
   }
 });
 
-export const updateLocJT = ({ locID, zestimateField, zestimate, zestimateUrlField, zestimateURL, orgID, yearBuiltField, yearbuilt, bedBathField, bedbath, livingAreaField, livingArea, latestSalePriceField, latestSalePrice, formattedAddress }: QueryParams1) => ({
+export const updateLocJT = ({ locID, zestimateField, zestimate, zestimateUrlField, zestimateURL, orgID, yearBuiltField, yearbuilt, bedBathField, bedbath, livingAreaField, livingArea, latestSalePriceField, latestSalePrice, latestSaleDateField, lastestSaleDate, formattedAddress }: QueryParams1) => ({
     "updateLocation": {
       "$": {
         "id": locID,
@@ -192,7 +194,8 @@ export const updateLocJT = ({ locID, zestimateField, zestimate, zestimateUrlFiel
           [(yearBuiltField as string)]: yearbuilt,
           [(bedBathField as string)]: bedbath,
           [(livingAreaField as string)]: livingArea,
-          [(latestSalePriceField as string)]: latestSalePrice
+          [(latestSalePriceField as string)]: latestSalePrice,
+          [(latestSaleDateField as string)]: lastestSaleDate
         },
         "address": formattedAddress
       }

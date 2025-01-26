@@ -26,6 +26,7 @@ export const Card3 = () => {
     const [selectedBedBathField, setSelectedBedBathField] = useState<string>("");
     const [selectedLivingAreaField, setSelectedLivingAreaField] = useState<string>("");
     const [selectedLatestSalePriceField, setSelectedLatestSalePriceField] = useState<string>("");
+    const [selectedLatestSaleDateField, setSelectedLatestSaleDateField] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
@@ -51,10 +52,12 @@ export const Card3 = () => {
           yearBuiltField: selectedYearBuiltField,
           bedBathField: selectedBedBathField,
           livingAreaField: selectedLivingAreaField,
-          latestSalePriceField: selectedLatestSalePriceField
+          latestSalePriceField: selectedLatestSalePriceField,
+          latestSaleDateField: selectedLatestSaleDateField
         });
 
         setSuccess(true);
+        window.location.reload();
       } catch (error) {
         console.error('Error saving fields:', error);
         setError(error instanceof Error ? error.message : 'An error occurred');
@@ -124,6 +127,7 @@ export const Card3 = () => {
           setSelectedBedBathField(orgData.bedBathField || "");
           setSelectedLivingAreaField(orgData.livingAreaField || "");
           setSelectedLatestSalePriceField(orgData.latestSalePriceField || "");
+          setSelectedLatestSaleDateField(orgData.latestSaleDateField || "");
 
           // Fetch custom fields once we have the settings
           if (settings.orgId && settings.grantKey) {
@@ -250,6 +254,25 @@ export const Card3 = () => {
               <Select
                 value={selectedLatestSalePriceField}
                 onValueChange={setSelectedLatestSalePriceField}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a custom field" />
+                </SelectTrigger>
+                <SelectContent>
+                  {fields.map((field) => (
+                    <SelectItem key={field.id} value={field.id}>
+                      {field.name} ({field.type})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2 w-full">
+              <Label>Assign a custom field for Latest Sale Date</Label>
+              <Select
+                value={selectedLatestSaleDateField}
+                onValueChange={setSelectedLatestSaleDateField}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a custom field" />

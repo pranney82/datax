@@ -32,6 +32,8 @@ interface ManualRequest {
   livingArea: string;
   latestSalePriceField: string;
   latestSalePrice: string;
+  latestSaleDateField: string;
+  lastestSaleDate: string;
 }
 
 type WebhookData = WebhookEvent | ManualRequest;
@@ -51,7 +53,7 @@ export async function POST(request: Request) {
     const isWebhook = 'createdEvent' in webhookData
     //console.log('Request type:', { isWebhook, webhookData })
 
-    let grantKey, locid, zestimateField, zestimateUrlField, address, jtOrgId, yearBuiltField, yearbuilt, bedBathField, bedbath, livingAreaField, livingArea, latestSalePriceField, latestSalePrice
+    let grantKey, locid, zestimateField, zestimateUrlField, address, jtOrgId, yearBuiltField, yearbuilt, bedBathField, bedbath, livingAreaField, livingArea, latestSalePriceField, latestSalePrice, lastestSaleDate, latestSaleDateField
 
     if (isWebhook) {
       jtOrgId = webhookData.createdEvent?.organization?.id
@@ -89,6 +91,7 @@ export async function POST(request: Request) {
       bedBathField = orgData.bedBathField
       livingAreaField = orgData.livingAreaField
       latestSalePriceField = orgData.latestSalePriceField
+      latestSaleDateField = orgData.latestSaleDateField
 
       // Use the address directly from webhook data
       address = locationData.formattedAddress.replace(/(,\s*|\s+)USA$/, '').trim() as string
@@ -104,6 +107,8 @@ export async function POST(request: Request) {
       bedBathField = manualRequest.bedBathField
       livingAreaField = manualRequest.livingAreaField
       latestSalePriceField = manualRequest.latestSalePriceField
+      latestSaleDateField = manualRequest.latestSaleDateField
+
       address = manualRequest.address.replace(/(,\s*|\s+)USA$/, '').trim() as string
     }
 
@@ -117,6 +122,7 @@ export async function POST(request: Request) {
      bedBathField,
      livingAreaField,
      latestSalePriceField,
+     latestSaleDateField,
      address 
     })
 
@@ -199,15 +205,29 @@ export async function POST(request: Request) {
       return res.json();
     });
 
-    //console.log('Bridge API response3:', bridgeResponse3);
+    console.log('Bridge API response3:', bridgeResponse3);
 
-    latestSalePrice = bridgeResponse3?.bundle
+    // Get the latest sale record with both price and date in one operation
+    const latestSaleRecord = bridgeResponse3?.bundle
       ?.filter((item: { salesPrice: number | null }) => item.salesPrice !== null)
       ?.sort((a: { recordingDate: string }, b: { recordingDate: string }) => 
         new Date(b.recordingDate).getTime() - new Date(a.recordingDate).getTime()
-      )?.[0]?.salesPrice;
+      )?.[0];
 
-    //console.log('Latest sale price:', latestSalePrice);
+    // Extract values from the record
+    latestSalePrice = latestSaleRecord?.salesPrice;
+
+    // Convert the date if we have it
+    if (latestSaleRecord?.recordingDate) {
+      const date = new Date(latestSaleRecord.recordingDate);
+      lastestSaleDate = date.toLocaleDateString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric'
+      });
+    }
+
+    console.log('Latest sale date:', lastestSaleDate);
 
     // Create an object with only the fields that have values
     const updateFields: Record<string, string> = {
@@ -243,6 +263,11 @@ export async function POST(request: Request) {
     if (latestSalePriceField && latestSalePrice) {
       updateFields.latestSalePriceField = latestSalePriceField;
       updateFields.latestSalePrice = latestSalePrice;
+    }
+
+    if (latestSaleDateField && lastestSaleDate) {
+      updateFields.latestSaleDateField = latestSaleDateField;
+      updateFields.lastestSaleDate = lastestSaleDate;
     }
 
     console.log('Update fields:', updateFields);

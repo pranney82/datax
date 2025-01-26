@@ -71,6 +71,7 @@ export function SingleRun() {
   const [bedBathField, setBedBathField] = useState<string>("")
   const [livingAreaField, setLivingAreaField] = useState<string>("")
   const [latestSalePriceField, setLatestSalePriceField] = useState<string>("")
+  const [latestSaleDateField, setLatestSaleDateField] = useState<string>("")
 
   const triggerRefresh = useCustomFieldsStore((state) => state.triggerRefresh)
 
@@ -135,6 +136,7 @@ export function SingleRun() {
         setBedBathField(orgData.bedBathField || "")
         setLivingAreaField(orgData.livingAreaField || "")
         setLatestSalePriceField(orgData.latestSalePriceField || "")
+        setLatestSaleDateField(orgData.latestSaleDateField || "") 
       } catch (error) {
         console.error('Error fetching settings:', error)
         if (error instanceof Error) {
@@ -261,6 +263,10 @@ export function SingleRun() {
         throw new Error('No Latest Sale Price field configured');
       }
 
+      if (!latestSaleDateField) {
+        throw new Error('No Latest Sale Date field configured');
+      }
+
       // console.log('Submitting with:', {
       //   grantKey: userSettings.grantKey,
       //   locid: locationID,
@@ -285,6 +291,7 @@ export function SingleRun() {
           bedBathField: bedBathField,
           livingAreaField: livingAreaField,
           latestSalePriceField: latestSalePriceField,
+          latestSaleDateField: latestSaleDateField,
           address: address
         }),
       });
@@ -292,7 +299,7 @@ export function SingleRun() {
       if (!response.ok) {
         const data = await response.json();
         console.error('API error response:', data);
-        throw new Error(data.error || 'Failed to update cover photo');
+        throw new Error(data.error || 'Failed to update Zillow data');
       }
 
       //console.log('API call successful');

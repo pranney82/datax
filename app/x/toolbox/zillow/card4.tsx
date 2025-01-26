@@ -153,6 +153,13 @@ export const Card4 = () => {
             >
               {isLoading ? 'Creating...' : 'Create Custom Field: Latest Sale Price'}
             </Button>
+            <Button 
+              onClick={() => handleCreateField("Latest Sale Date", "date")}
+              disabled={isLoading}
+              className="w-full"
+            >
+              {isLoading ? 'Creating...' : 'Create Custom Field: Latest Sale Date'}
+            </Button>
           </div>
         }
       />  
