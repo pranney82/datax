@@ -72,7 +72,7 @@ export const Card4 = () => {
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`You might already have a custom field with this name. HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();        
@@ -112,7 +112,7 @@ export const Card4 = () => {
             )}
 
             <Button 
-              onClick={() => handleCreateField("Zestimate", "text")}
+              onClick={() => handleCreateField("Zestimate", "number")}
               disabled={isLoading}
               className="w-full"
             >
@@ -124,6 +124,34 @@ export const Card4 = () => {
               className="w-full"
             >
               {isLoading ? 'Creating...' : 'Create Custom Field: Zillow URL'}
+            </Button>
+            <Button 
+              onClick={() => handleCreateField("Year Built", "number")}
+              disabled={isLoading}
+              className="w-full"
+            >
+              {isLoading ? 'Creating...' : 'Create Custom Field: Year Built'}
+            </Button>
+            <Button 
+              onClick={() => handleCreateField("Bed Bath", "text")}
+              disabled={isLoading}
+              className="w-full"
+            >
+              {isLoading ? 'Creating...' : 'Create Custom Field: Bed Bath'}
+            </Button>
+            <Button 
+              onClick={() => handleCreateField("Living Area", "number")}
+              disabled={isLoading}
+              className="w-full"
+            >
+              {isLoading ? 'Creating...' : 'Create Custom Field: Living Area'}
+            </Button>
+            <Button 
+              onClick={() => handleCreateField("Latest Sale Price", "number")}
+              disabled={isLoading}
+              className="w-full"
+            >
+              {isLoading ? 'Creating...' : 'Create Custom Field: Latest Sale Price'}
             </Button>
           </div>
         }

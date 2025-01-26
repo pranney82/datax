@@ -67,6 +67,10 @@ export function SingleRun() {
   const [userSettings, setUserSettings] = useState<{grantKey?: string, orgId?: string}>({})
   const [zestimateField, setZestimateField] = useState<string>("")
   const [zestimateUrlField, setZestimateUrlField] = useState<string>("")
+  const [yearBuiltField, setYearBuiltField] = useState<string>("")
+  const [bedBathField, setBedBathField] = useState<string>("")
+  const [livingAreaField, setLivingAreaField] = useState<string>("")
+  const [latestSalePriceField, setLatestSalePriceField] = useState<string>("")
 
   const triggerRefresh = useCustomFieldsStore((state) => state.triggerRefresh)
 
@@ -127,6 +131,10 @@ export function SingleRun() {
         // Set the zestimate field ID
         setZestimateField(orgData.zestimateField || "")
         setZestimateUrlField(orgData.zillowUrlField || "")
+        setYearBuiltField(orgData.yearBuiltField || "")
+        setBedBathField(orgData.bedBathField || "")
+        setLivingAreaField(orgData.livingAreaField || "")
+        setLatestSalePriceField(orgData.latestSalePriceField || "")
       } catch (error) {
         console.error('Error fetching settings:', error)
         if (error instanceof Error) {
@@ -237,6 +245,22 @@ export function SingleRun() {
         throw new Error('No Zestimate URL field configured');
       }
 
+      if (!yearBuiltField) {
+        throw new Error('No Year Built field configured');
+      }
+
+      if (!bedBathField) {
+        throw new Error('No Bed Bath field configured');
+      }
+
+      if (!livingAreaField) {
+        throw new Error('No Living Area field configured');
+      }
+
+      if (!latestSalePriceField) {
+        throw new Error('No Latest Sale Price field configured');
+      }
+
       // console.log('Submitting with:', {
       //   grantKey: userSettings.grantKey,
       //   locid: locationID,
@@ -257,6 +281,10 @@ export function SingleRun() {
           grantKey: userSettings.grantKey,
           zestimateField: zestimateField,
           zestimateUrlField: zestimateUrlField,
+          yearBuiltField: yearBuiltField,
+          bedBathField: bedBathField,
+          livingAreaField: livingAreaField,
+          latestSalePriceField: latestSalePriceField,
           address: address
         }),
       });

@@ -13,6 +13,15 @@ interface QueryParams1 {
     zestimateURL?: string;
     zestimateUrlField?: string;
     zillowUrlField?: string;
+    yearBuiltField?: string;
+    yearbuilt?: string;
+    bedBathField?: string;
+    bedbath?: string;
+    livingAreaField?: string;
+    livingArea?: string;
+    latestSalePriceField?: string;
+    latestSalePrice?: string;
+    formattedAddress?: string;
   }
   
   export const zQuery1 = ({ orgID, value }: QueryParams1) => ({
@@ -172,15 +181,20 @@ export const zQuery2 = ({ locID, orgID }: QueryParams1) => ({
   }
 });
 
-export const updateLocJT = ({ locID, zestimateField, zestimate, zestimateUrlField, zestimateURL, orgID }: QueryParams1) => ({
+export const updateLocJT = ({ locID, zestimateField, zestimate, zestimateUrlField, zestimateURL, orgID, yearBuiltField, yearbuilt, bedBathField, bedbath, livingAreaField, livingArea, latestSalePriceField, latestSalePrice, formattedAddress }: QueryParams1) => ({
     "updateLocation": {
       "$": {
         "id": locID,
         "organizationId": orgID,
         "customFieldValues": {
           [(zestimateField as string)]: zestimate,
-          [(zestimateUrlField as string)]: zestimateURL
-        }
+          [(zestimateUrlField as string)]: zestimateURL,
+          [(yearBuiltField as string)]: yearbuilt,
+          [(bedBathField as string)]: bedbath,
+          [(livingAreaField as string)]: livingArea,
+          [(latestSalePriceField as string)]: latestSalePrice
+        },
+        "address": formattedAddress
       }
     }
   });

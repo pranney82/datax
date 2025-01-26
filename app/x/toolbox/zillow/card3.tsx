@@ -22,6 +22,10 @@ export const Card3 = () => {
     const [fields, setFields] = useState<CustomField[]>([]);
     const [selectedZestimateField, setSelectedZestimateField] = useState<string>("");
     const [selectedUrlField, setSelectedUrlField] = useState<string>("");
+    const [selectedYearBuiltField, setSelectedYearBuiltField] = useState<string>("");
+    const [selectedBedBathField, setSelectedBedBathField] = useState<string>("");
+    const [selectedLivingAreaField, setSelectedLivingAreaField] = useState<string>("");
+    const [selectedLatestSalePriceField, setSelectedLatestSalePriceField] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
@@ -43,7 +47,11 @@ export const Card3 = () => {
 
         await updateDoc(doc(db, 'orgs', orgId), {
           zestimateField: selectedZestimateField,
-          zillowUrlField: selectedUrlField
+          zillowUrlField: selectedUrlField,
+          yearBuiltField: selectedYearBuiltField,
+          bedBathField: selectedBedBathField,
+          livingAreaField: selectedLivingAreaField,
+          latestSalePriceField: selectedLatestSalePriceField
         });
 
         setSuccess(true);
@@ -112,6 +120,10 @@ export const Card3 = () => {
           // Set the previously saved field selections
           setSelectedZestimateField(orgData.zestimateField || "");
           setSelectedUrlField(orgData.zillowUrlField || "");
+          setSelectedYearBuiltField(orgData.yearBuiltField || "");
+          setSelectedBedBathField(orgData.bedBathField || "");
+          setSelectedLivingAreaField(orgData.livingAreaField || "");
+          setSelectedLatestSalePriceField(orgData.latestSalePriceField || "");
 
           // Fetch custom fields once we have the settings
           if (settings.orgId && settings.grantKey) {
@@ -162,6 +174,82 @@ export const Card3 = () => {
               <Select
                 value={selectedUrlField}
                 onValueChange={setSelectedUrlField}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a custom field" />
+                </SelectTrigger>
+                <SelectContent>
+                  {fields.map((field) => (
+                    <SelectItem key={field.id} value={field.id}>
+                      {field.name} ({field.type})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2 w-full">
+              <Label>Assign a custom field for Year Built</Label>
+              <Select
+                value={selectedYearBuiltField}
+                onValueChange={setSelectedYearBuiltField}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a custom field" />
+                </SelectTrigger>
+                <SelectContent>
+                  {fields.map((field) => (
+                    <SelectItem key={field.id} value={field.id}>
+                      {field.name} ({field.type})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2 w-full">
+              <Label>Assign a custom field for Bed Bath</Label>
+              <Select
+                value={selectedBedBathField}
+                onValueChange={setSelectedBedBathField}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a custom field" />
+                </SelectTrigger>
+                <SelectContent>
+                  {fields.map((field) => (
+                    <SelectItem key={field.id} value={field.id}>
+                      {field.name} ({field.type})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2 w-full">
+              <Label>Assign a custom field for Living Area</Label>
+              <Select
+                value={selectedLivingAreaField}
+                onValueChange={setSelectedLivingAreaField}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a custom field" />
+                </SelectTrigger>
+                <SelectContent>
+                  {fields.map((field) => (
+                    <SelectItem key={field.id} value={field.id}>
+                      {field.name} ({field.type})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2 w-full">
+              <Label>Assign a custom field for Latest Sale Price</Label>
+              <Select
+                value={selectedLatestSalePriceField}
+                onValueChange={setSelectedLatestSalePriceField}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a custom field" />
