@@ -22,12 +22,11 @@ const Pricing = () => {
       monthlyPrice: 0,
       features: [
         "Unlimited Users",
+        "Syncs with JOBTREAD",
         "Active Jobs Map",
         "Summary Dashboard",
-        "Template Library",
-        "Resource Library",
-        "Real-time Data Sync",
-        "API Script Library",
+        "Cost Group Templates",
+        "Schedule Templates",
       ],
       priceId: "",
       color: "bg-white",
@@ -40,13 +39,11 @@ const Pricing = () => {
       monthlyPrice: 29,
       features: [
         "Everything in FREE",
-        "Sales Dashboard",
         "Leads Dashboard",
-        "Jobs Dashboard",
-        "Google Street View Automation",
-        "Zestimate Automation",
+        "Sales Dashboard",
+        "Google Street Cover Photo",
+        "Zillow Information",
         "Cash Flow Calendar",
-        "Inventory",
         "Support & Feature Requests",
       ],
       priceId: isAnnually ? "price_1QVggE2LwdZLeKQfk2YRCDUV" : "price_1QVNq42LwdZLeKQfaXHHsMI6",
@@ -61,11 +58,11 @@ const Pricing = () => {
       monthlyPrice: 145,
       features: [
         "Everything in CORE",
-        "Zapier Maintenance",
-        "TV Dashboard",
-        "AIA Billing",
+        "AIA Billing Invoice",
+        "Inventory Tracking",
         "Google Calendar Sync",
         "Calendly Integration",
+        "TV Dashboard",
         "Priority Support",
       ],
       priceId: isAnnually ? "price_1QVggE2LwdZLeKQfk2YRCDUV" : "price_1QVNq42LwdZLeKQfaXHHsMI6",
@@ -125,7 +122,7 @@ const Pricing = () => {
   }
 
   return (
-    <section className="py-24 w-full bg-gradient-to-b from-white to-gray-100">
+    <section id="xpricing" className="py-24 w-full bg-gradient-to-b from-white to-gray-100">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-5xl md:text-7xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-black to-[#FFD400]">

@@ -22,7 +22,7 @@ interface Feature {
 
 const features: Feature[] = [
   {
-    title: "DATAx",
+    title: "DATAx Software",
     subtitle: "AUTOMATIONS DONE FOR YOU ",
     id: "datax",
     description: "Access dashboards, specialized features and template library.",
@@ -30,7 +30,7 @@ const features: Feature[] = [
     image: "/assets/images/feature1.png",
     color: "#ffd400",
     icon: Code2,
-    link: "/pricing",
+    link: "/datax",
     pattern: `data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffd400' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E`,
   },
   {
@@ -46,7 +46,7 @@ const features: Feature[] = [
     pattern: `data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffd400' fill-opacity='0.1'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E`,
   },
   {
-    title: "Courses",
+    title: "Automation Courses",
     subtitle: "AUTOMATION COURSES WITH AN EXPERT",
     id: "courses",
     description: "Enhance your automation skills lead our automation experts.",
@@ -129,7 +129,7 @@ const FeatureCard = ({ feature, index }: { feature: Feature; index: number }) =>
 
 const EpicFeatures = () => {
   return (
-    <section id="epic-features" className="py-24 w-full bg-gradient-to-b from-black to-gray-900">
+    <section id="epic-solutions" className="py-24 w-full bg-gradient-to-b from-black to-gray-900">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <motion.h1

@@ -109,7 +109,7 @@ const Hero1 = () => {
               transition={{ delay: 0.4, duration: 0.8 }}
             >
               <div className="flex flex-col items-center">
-                <a href="/#epic-features" className="group w-auto">
+                <a href="/#epic-solutions" className="group w-auto">
                   <Button
                     className="h-12 px-6 w-auto bg-gradient-to-r from-[#FFD400] to-[#FFA500] text-[#000000] transition-all duration-300 transform hover:scale-105 relative overflow-hidden group-hover:shadow-[0_0_20px_5px_rgba(255,212,0,0.3)] hover:from-[#FFE666] hover:to-[#FFB733] rounded-full text-lg font-bold"
                     onMouseEnter={() => setIsHoveringTry(true)}
@@ -120,7 +120,7 @@ const Hero1 = () => {
                       animate={isHoveringTry ? { y: [-1, 1, -1] } : {}}
                       transition={{ duration: 0.5, repeat: Number.POSITIVE_INFINITY }}
                     >
-                      Explore Features
+                      Explore Solutions
                     </motion.span>
                     <motion.div
                       animate={isHoveringTry ? { rotate: 360, scale: 1.25 } : { rotate: 0, scale: 1 }}
