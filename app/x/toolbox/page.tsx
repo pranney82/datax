@@ -39,7 +39,7 @@ function FeatureCard({ title, description, href, isPopular, status, footerTag }:
                 isPopular
                   ? "bg-[#ffd400] text-[#000]"
                   : status === "Coming Soon"
-                    ? "bg-blue-100 text-blue-800"
+                    ? "bg-gray-100 text-gray-600"
                     : status === "Request"
                       ? "bg-purple-100 text-purple-800"
                       : ""
@@ -56,33 +56,22 @@ function FeatureCard({ title, description, href, isPopular, status, footerTag }:
           <p className="line-clamp-2">{description}</p>
           {footerTag && (
             <span
-              className={`ml-2 px-2 py-1 text-xs font-medium rounded-full ${
-                footerTag === "PRO" ? "bg-[#ffd400] text-[#000]" : "bg-gray-200 text-gray-800"
-              } flex items-center gap-1`}
+              className={`ml-2 px-1.5 py-0.25 text-[9px] font-medium rounded flex items-center gap-0.5 transition-all duration-200 ease-in-out items-center ${
+                footerTag === "PRO"
+                  ? "bg-gradient-to-r from-[#fff5cc] to-[#ffd400] text-[#664d00] border border-[#ffd400] shadow-sm hover:brightness-105"
+                  : footerTag === "CORE"
+                    ? "bg-gradient-to-r from-[#fffae6] to-[#fff5cc] text-[#664d00] border border-[#ffe680] hover:brightness-105"
+                    : "bg-gray-200 text-gray-800"
+              }`}
             >
-              {footerTag === "PRO" ? (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                      fillRule="evenodd"
-                      d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  {footerTag}
-                </>
-              ) : (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  {footerTag}
-                </>
-              )}
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-2 w-2" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  fillRule="evenodd"
+                  d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span className="font-semibold">{footerTag}</span>
             </span>
           )}
         </div>
@@ -103,7 +92,7 @@ const allFeatures: FeatureCardProps[] = [
   },
   {
     title: "Zillow Data Import",
-    description: "When a job is created, automatically import property data from Zillow and assign to custom fields.",
+    description: "Import property data from Zillow and assign to custom fields.",
     href: "/x/toolbox/zillow",
     isPopular: true,
     status: "Active",
