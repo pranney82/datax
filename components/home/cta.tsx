@@ -38,13 +38,13 @@ export default function ColorfulEnhancedCTA() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6, duration: 0.5 }}
           >
-            <Link href="/pricing">
+            <Link href="/pricing/#xpricing">
               <button 
                 className="w-full sm:w-auto min-w-[200px] bg-[#000] text-[#FFF] font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 hover:bg-[#FFD400] hover:text-[#000] relative overflow-hidden group shadow-[0_0_15px_rgba(0,0,0,0.3)]"
                 onMouseEnter={() => setIsHoveringTry(true)}
                 onMouseLeave={() => setIsHoveringTry(false)}
               >
-                <span className="relative z-10 transition-colors duration-300">Try Free</span>
+                <span className="relative z-10 transition-colors duration-300">Unlock Automation</span>
                 <Zap className={`ml-2 h-5 w-5 inline-block relative z-10 transition-all duration-300 ${isHoveringTry ? 'rotate-[360deg] scale-125' : ''}`} />
                 <motion.div 
                   className="absolute inset-0 bg-[#FFD400]"
@@ -61,7 +61,6 @@ export default function ColorfulEnhancedCTA() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.5 }}
           >
-            No card required
           </motion.p>
         </motion.div>
       </div>

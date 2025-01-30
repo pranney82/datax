@@ -98,7 +98,7 @@ export default function ZillowPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <ModernDashboardCard 
           title="Automatic Zillow Data"
-          description="Enable automatic Zillow data import on job creation. This will create a Zestimate and Zillow URL for each job created in JobTread."
+          description="Import on location creation. This will create Zillow data on your location record in JobTread."
         >
           <div className="space-y-4">
             <div>

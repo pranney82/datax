@@ -11,10 +11,10 @@ const footerLinks = [
   {
     title: "Solutions",
     links: [
-      { name: "DATAx", href: "/pricing" },
+      { name: "DATAx", href: "/datax" },
       { name: "CTO Consulting", href: "/pricing/#cto-consulting" },
       { name: "Automation Courses", href: "/courses" },
-      { name: "Pricing", href: "/pricing" },
+      { name: "Pricing", href: "/pricing/#xpricing" },
     ],
   },
   {
@@ -27,9 +27,9 @@ const footerLinks = [
   {
     title: "Free Resources",
     links: [
-      { name: "Library", href: "/pricing" },
-      { name: "Resources", href: "/pricing" },
-      { name: "Summary Dashboard", href: "/pricing" },
+      { name: "Library", href: "/pricing/#xpricing" },
+      { name: "Resources", href: "/pricing/#xpricing" },
+      { name: "Summary Dashboard", href: "/pricing/#xpricing" },
     ],
   },
 ]
@@ -191,8 +191,8 @@ const Footer = () => {
                   onMouseEnter={() => setIsHoveringTry(true)}
                   onMouseLeave={() => setIsHoveringTry(false)}
                 >
-                  <Link href="/pricing" className="flex items-center">
-                    <span className="relative z-10 transition-colors duration-300">Try Free</span>
+                  <Link href="/pricing/#xpricing" className="flex items-center">
+                    <span className="relative z-10 transition-colors duration-300">Unlock Automation</span>
                     <Zap
                       className={`ml-2 h-5 w-5 relative z-10 transition-all duration-300 ${isHoveringTry ? "rotate-[360deg] scale-125" : ""}`}
                     />
@@ -204,7 +204,6 @@ const Footer = () => {
                     transition={{ duration: 0.3 }}
                   />
                 </Button>
-                <p className="text-xs sm:text-sm text-gray-400 font-medium whitespace-nowrap ml-4">No card required</p>
               </div>
             </div>
             <Link href="#" className="inline-block">

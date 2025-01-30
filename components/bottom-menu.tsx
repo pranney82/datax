@@ -1,6 +1,6 @@
 "use client"
 
-import { Home, BarChart3, Zap, BookOpen } from 'lucide-react'
+import { Home, BarChart3, Box, BookOpen } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { DrawerDemo } from './drawer'
@@ -8,7 +8,7 @@ import { DrawerDemo } from './drawer'
 const menuItems = [
   { icon: Home, label: 'Home', href: '/x' },
   { icon: BarChart3, label: 'Dashboard', href: '/x/dashboard' },
-  { icon: Zap, label: 'Toolbox', href: '/x/toolbox' },
+  { icon: Box, label: 'Toolbox', href: '/x/toolbox' },
   { icon: BookOpen, label: 'Library', href: '/x/library/templates' },
 ]
 

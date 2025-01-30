@@ -21,48 +21,25 @@ interface AddOn {
 
 const addons: AddOn[] = [
   {
-    id: "tech-brief",
-    icon: <Users className="w-12 h-12 text-[#FFD400]" />,
-    name: "Tech Brief",
-    price: 0,
-    description: "Get expert guidance on your automations and JOBTREAD.",
-    priceSuffix: "free",
-    additionalInfo:
-      "Jump on a virtual call with our experts to get advice on your JOBTREAD setup, software integrations, and tech stack. We'll provide you with a summary of our call and recommendations.",
-    buttonText: "Get Started",
-    buttonAction: () => {},
-  },
-  {
     id: "zapier-assessment",
     icon: <Users className="w-12 h-12 text-[#FFD400]" />,
-    name: "Zapier Assessment",
-    price: 525,
-    description: "Provide automation assessment and recommendations for new and improved processes.",
-    priceSuffix: "one-time",
+    name: "Tech Assessment",
+    price: 0,
+    description: "Get an automation assessment and recommendations for new and improved processes from our experts.",
+    priceSuffix: "free",
     additionalInfo:
-      "Our Zapier experts will analyze your current processes and desired automations, identify inefficiencies, and provide a tailored zap recommendation report, along with a scope of work for us to build and maintain your zaps.",
+      "Our automation experts will analyze your current processes and desired automations, identify inefficiencies, and provide a tailored zap recommendation report, along with a scope of work for us to build and maintain your zaps.",
     buttonText: "Get Started",
     buttonAction: () => {},
     popular: true,
-  },
-  {
-    id: "cto-consulting",
-    icon: <Users className="w-12 h-12 text-[#FFD400]" />,
-    name: "CTO Consulting",
-    price: 2500,
-    description: "Holistic view of your JOBTREAD and integrated tech stack.",
-    priceSuffix: "starting/month",
-    additionalInfo:
-      "Get expert guidance on your overall tech strategy, including software selection, integration, and scalability planning to support your business growth. Contract basis for 3, 6 and 12 months.",
-    buttonText: "Get Started",
-    buttonAction: () => {},
   },
   {
     id: "automation-courses",
     icon: <BookText className="w-12 h-12 text-[#FFD400]" />,
     name: "Automation Courses",
     price: 600,
-    description: "Build automations along side an expert, well build, test and teach you how to build you own automations.",
+    description:
+      "Build automations along side an expert, well build, test and teach you how to build you own automations.",
     priceSuffix: "one-time, lifetime access",
     additionalInfo:
       "Work with an automation expert to learn how to build your very own automations. You&apos;ll also get lifetime acces to all automation video resources.",
@@ -70,6 +47,7 @@ const addons: AddOn[] = [
     buttonAction: () => {
       window.location.href = "/courses"
     },
+    popular: true,
   },
 ]
 
