@@ -15,11 +15,6 @@ export function ScrollToTopButton({ scrollThreshold = 300, excludePaths = ["/x"]
   const [isVisible, setIsVisible] = useState(false)
   const pathname = usePathname()
 
-  // Check if current path is in excluded paths
-  if (excludePaths.includes(pathname)) {
-    return null
-  }
-
   const debounce = <T extends (...args: unknown[]) => void>(
     func: T,
     wait: number,
@@ -39,13 +34,18 @@ export function ScrollToTopButton({ scrollThreshold = 300, excludePaths = ["/x"]
         setIsVisible(false)
       }
     }, 100),
-    [],
+    [scrollThreshold],
   )
 
   useEffect(() => {
     window.addEventListener("scroll", toggleVisibility)
     return () => window.removeEventListener("scroll", toggleVisibility)
   }, [toggleVisibility])
+
+  // Check if current path is in excluded paths - moved after hooks
+  if (excludePaths.includes(pathname)) {
+    return null
+  }
 
   const scrollToTop = () => {
     window.scrollTo({
