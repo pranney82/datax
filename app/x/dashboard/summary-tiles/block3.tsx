@@ -211,6 +211,15 @@ export function Block3() {
     fetchData()
   }, [user, hasFetched, dateRange, setLeadsCount, setBlock3MonthlyLeads, setBlock3StatusCounts, fetchQuery, fetchStatusQuery])
 
+  const menuInfo = "Total of all new customers created."
+  const menuItems = [
+    {
+      label: "Info",
+      type: "info" as const,
+      tooltip: menuInfo
+    }
+  ]
+
   if (loading) {
     return <DashCard title="" description="Loading..." content="..." />
   }
@@ -226,6 +235,7 @@ export function Block3() {
       title="# Total Leads" 
       description="last 12 months"
       content={queryValue?.toString() || '0'}
+      menuItems={menuItems}
     />
   )
 }

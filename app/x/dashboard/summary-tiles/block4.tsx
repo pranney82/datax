@@ -280,6 +280,15 @@ export function Block4() {
     fetchData()
   }, [user, hasFetched, dateRange, setBlock4Metrics, setBlock4MonthlyMetrics, fetchQuery])
 
+  const menuInfo = "Taking the total number of leads and dividing by the leads that have approved customer orders to get the conversion rate."
+  const menuItems = [
+    {
+      label: "Info",
+      type: "info" as const,
+      tooltip: menuInfo
+    }
+  ]
+
   if (loading) {
     return <DashCard title="" description="Loading..." content="..." />
   }
@@ -296,6 +305,7 @@ export function Block4() {
       title="Conversion Rate" 
       description="last 12 months"
       content={`${conversionRate}%`}
+      menuItems={menuItems}
     />
   )
 }

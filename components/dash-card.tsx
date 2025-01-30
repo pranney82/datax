@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 import {
   Card,
   CardContent,
@@ -8,6 +8,13 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -16,10 +23,13 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Info } from 'lucide-react'
 
 interface MenuItem {
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
+  type?: 'info';
+  tooltip?: string;
 }
 
 interface DashCardProps {
@@ -41,6 +51,7 @@ interface DashCardProps {
   loading?: boolean
   accentColor?: string
   icon?: ReactNode
+  infoTooltip?: string
 }
 
 export default function ModernDashboardCard({
@@ -54,8 +65,17 @@ export default function ModernDashboardCard({
   badge,
   loading = false,
   accentColor = 'bg-black',
-  icon
+  icon,
 }: DashCardProps) {
+  const [openDialog, setOpenDialog] = useState<Record<number, boolean>>({})
+
+  const toggleDialog = (index: number) => {
+    setOpenDialog(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }))
+  }
+
   if (loading) {
     return (
       <Card className="overflow-hidden shadow-sm">
@@ -80,7 +100,9 @@ export default function ModernDashboardCard({
       <div className={`h-0.5 w-full ${accentColor}`} />
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold">{title}</CardTitle>
+          <div className="flex items-center gap-2">
+            <CardTitle className="text-lg font-semibold">{title}</CardTitle>
+          </div>
           {menuItems && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -95,9 +117,33 @@ export default function ModernDashboardCard({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {menuItems.map((item, index) => (
-                  <DropdownMenuItem key={index} onClick={item.onClick}>
-                    {item.label}
-                  </DropdownMenuItem>
+                  item.type === 'info' ? (
+                    <Dialog key={index} open={openDialog[index]} onOpenChange={(open) => setOpenDialog(prev => ({ ...prev, [index]: open }))}>
+                      <DialogTrigger asChild>
+                        <DropdownMenuItem onSelect={(e) => {
+                          e.preventDefault();
+                          toggleDialog(index);
+                        }}>
+                          <div className="flex items-center gap-2">
+                            {item.label}
+                            <Info className="h-4 w-4" />
+                          </div>
+                        </DropdownMenuItem>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>{item.label}</DialogTitle>
+                        </DialogHeader>
+                        <div className="py-4">
+                          <p>{item.tooltip}</p>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  ) : (
+                    <DropdownMenuItem key={index} onClick={item.onClick}>
+                      {item.label}
+                    </DropdownMenuItem>
+                  )
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
