@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { ArrowUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
@@ -15,43 +15,46 @@ export function ScrollToTopButton({ scrollThreshold = 300, excludePaths = ["/x"]
   const [isVisible, setIsVisible] = useState(false)
   const pathname = usePathname()
 
-  const debounce = <T extends (...args: unknown[]) => void>(
-    func: T,
-    wait: number,
-  ): ((...args: Parameters<T>) => void) => {
-    let timeout: NodeJS.Timeout | null = null
-    return (...args: Parameters<T>) => {
-      if (timeout) clearTimeout(timeout)
-      timeout = setTimeout(() => func(...args), wait)
-    }
-  }
-
-  const toggleVisibility = useCallback(
-    debounce(() => {
-      if (window.pageYOffset > scrollThreshold) {
-        setIsVisible(true)
-      } else {
-        setIsVisible(false)
+  const debounce = useMemo(() => {
+    return <T extends (...args: never[]) => void>(
+      func: T,
+      wait: number
+    ): ((...args: Parameters<T>) => void) => {
+      let timeout: NodeJS.Timeout | null = null
+      return (...args: Parameters<T>) => {
+        if (timeout) clearTimeout(timeout)
+        timeout = setTimeout(() => func(...args), wait)
       }
-    }, 100),
-    [scrollThreshold],
-  )
+    }
+  }, [])
+
+  const handleScroll = useCallback(() => {
+    if (window.pageYOffset > scrollThreshold) {
+      setIsVisible(true)
+    } else {
+      setIsVisible(false)
+    }
+  }, [scrollThreshold])
+
+  const debouncedHandleScroll = useMemo(() => {
+    return debounce(handleScroll, 100)
+  }, [debounce, handleScroll])
 
   useEffect(() => {
-    window.addEventListener("scroll", toggleVisibility)
-    return () => window.removeEventListener("scroll", toggleVisibility)
-  }, [toggleVisibility])
+    window.addEventListener("scroll", debouncedHandleScroll)
+    return () => window.removeEventListener("scroll", debouncedHandleScroll)
+  }, [debouncedHandleScroll])
 
-  // Check if current path is in excluded paths - moved after hooks
-  if (excludePaths.includes(pathname)) {
-    return null
-  }
-
-  const scrollToTop = () => {
+  const scrollToTop = useCallback(() => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     })
+  }, [])
+
+  // Check if current path is in excluded paths
+  if (excludePaths.includes(pathname)) {
+    return null
   }
 
   return (

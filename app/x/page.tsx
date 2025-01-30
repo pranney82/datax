@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { PlusCircle, ExternalLink, Map, BarChart3, Box, BookOpen, Settings2, Rocket, CheckCircle2, Play, HeartHandshake, LifeBuoy } from 'lucide-react'
+import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useAuth } from "@/lib/context/auth-context"
@@ -339,10 +340,13 @@ export default function HomePage() {
                             ></iframe>
                           ) : (
                             <div className="relative w-full h-full">
-                              <img
+                              <Image
                                 src={item.thumbnailUrl}
                                 alt={`Thumbnail for ${item.question}`}
-                                className="w-full h-full object-cover"
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                priority
                               />
                               <div className="absolute inset-0 flex items-center justify-center">
                                 <button

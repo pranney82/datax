@@ -23,7 +23,10 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Info } from 'lucide-react'
+import { Info, MoreVertical } from 'lucide-react'
+
+type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline'
+type TrendType = 'up' | 'down'
 
 interface MenuItem {
   label: string;
@@ -32,26 +35,29 @@ interface MenuItem {
   tooltip?: string;
 }
 
+interface FooterProps {
+  text: string;
+  trend?: TrendType;
+  value?: string;
+}
+
+interface BadgeProps {
+  text: string;
+  variant?: BadgeVariant;
+}
+
 interface DashCardProps {
-  title: string
-  description?: string
-  content?: string | ReactNode
-  subContent?: string
-  children?: ReactNode
-  footer?: {
-    text: string
-    trend?: 'up' | 'down'
-    value?: string
-  }
-  menuItems?: MenuItem[]
-  badge?: {
-    text: string
-    variant?: 'default' | 'secondary' | 'destructive' | 'outline'
-  }
-  loading?: boolean
-  accentColor?: string
-  icon?: ReactNode
-  infoTooltip?: string
+  title: string;
+  description?: string;
+  content?: string | ReactNode;
+  subContent?: string;
+  children?: ReactNode;
+  footer?: FooterProps;
+  menuItems?: MenuItem[];
+  badge?: BadgeProps;
+  loading?: boolean;
+  accentColor?: string;
+  icon?: ReactNode;
 }
 
 export default function ModernDashboardCard({
@@ -69,8 +75,8 @@ export default function ModernDashboardCard({
 }: DashCardProps) {
   const [openDialog, setOpenDialog] = useState<Record<number, boolean>>({})
 
-  const toggleDialog = (index: number) => {
-    setOpenDialog(prev => ({
+  const toggleDialog = (index: number): void => {
+    setOpenDialog((prev) => ({
       ...prev,
       [index]: !prev[index]
     }))
@@ -103,22 +109,18 @@ export default function ModernDashboardCard({
           <div className="flex items-center gap-2">
             <CardTitle className="text-lg font-semibold">{title}</CardTitle>
           </div>
-          {menuItems && (
+          {menuItems && menuItems.length > 0 && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                   <span className="sr-only">Open menu</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-                    <circle cx="12" cy="12" r="1" />
-                    <circle cx="19" cy="12" r="1" />
-                    <circle cx="5" cy="12" r="1" />
-                  </svg>
+                  <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {menuItems.map((item, index) => (
                   item.type === 'info' ? (
-                    <Dialog key={index} open={openDialog[index]} onOpenChange={(open) => setOpenDialog(prev => ({ ...prev, [index]: open }))}>
+                    <Dialog key={index} open={openDialog[index]} onOpenChange={(open) => setOpenDialog((prev) => ({ ...prev, [index]: open }))}>
                       <DialogTrigger asChild>
                         <DropdownMenuItem onSelect={(e) => {
                           e.preventDefault();
@@ -135,7 +137,7 @@ export default function ModernDashboardCard({
                           <DialogTitle>{item.label}</DialogTitle>
                         </DialogHeader>
                         <div className="py-4">
-                          <p>{item.tooltip}</p>
+                          {item.tooltip && <p className="text-sm text-gray-600">{item.tooltip}</p>}
                         </div>
                       </DialogContent>
                     </Dialog>
@@ -158,7 +160,6 @@ export default function ModernDashboardCard({
             ) : (
               <div className="w-full">{content}</div>
             )}
-
             {subContent && (
               <div className="text-sm text-muted-foreground">{subContent}</div>
             )}

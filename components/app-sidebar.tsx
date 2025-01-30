@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Home, Settings2, SquareChevronLeft, SquareChevronRight, BarChart3, Box, BookOpen, Landmark, HelpCircle } from 'lucide-react'
+import Image from 'next/image'
 
 import {
   Sidebar,
@@ -70,7 +71,13 @@ export function AppSidebar(props: React.ComponentPropsWithoutRef<typeof Sidebar>
             <SidebarMenuButton size="lg" asChild>
               <a href="#">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <img src="/assets/icons/0.png" alt="Sidebar Icon" className="size-8" />
+                  <Image 
+                    src="/assets/icons/0.png" 
+                    alt="Sidebar Icon" 
+                    width={32} 
+                    height={32}
+                    className="size-8"
+                  />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">DATAx</span>
