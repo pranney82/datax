@@ -6,6 +6,7 @@ import Summary from "./summary"
 import Leads from "./leads/leads"
 import Sales from "./sales/sales"
 import Jobs from "./jobs/jobs"
+import { DatePickerWithRange } from "@/components/datepicker"
 
 export default function Page() {
   const router = useRouter()
@@ -22,6 +23,7 @@ export default function Page() {
     <main className="flex-grow container mx-auto px-4 py-8">
       <div className="flex items-center gap-2 justify-between mb-4">
         <h1 className="text-2xl font-bold">Dashboard</h1>    
+        <DatePickerWithRange />
       </div>
       <Tabs value={tab} onValueChange={handleTabChange}>
         <TabsList className="inline-flex h-10 items-center justify-start rounded-md bg-muted p-1 text-muted-foreground">
