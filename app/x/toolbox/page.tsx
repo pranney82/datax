@@ -20,8 +20,8 @@ interface FeatureCardProps {
 
 function FeatureCard({ title, description, href, isPopular, status, footerTag }: FeatureCardProps) {
   return (
-    <Card className="bg-white border border-gray-200 rounded-lg overflow-hidden transition-all duration-200 ease-in-out hover:shadow-md hover:border-gray-300 flex flex-col">
-      <div className="p-4 flex-grow">
+    <Card className="bg-white border border-gray-200 rounded-lg overflow-hidden transition-all duration-200 ease-in-out hover:shadow-lg hover:border-gray-300 flex flex-col">
+      <div className="p-5 flex-grow">
         <div className="flex flex-row justify-between items-start mb-3">
           <div className="flex items-center gap-2">
             <Zap className="h-5 w-5 text-[#ffd400]" />
@@ -35,13 +35,13 @@ function FeatureCard({ title, description, href, isPopular, status, footerTag }:
           <div>
             <Badge
               variant="secondary"
-              className={`gap-1 font-semibold pointer-events-none ml-2 whitespace-nowrap px-2 py-1 rounded-full text-xs ${
+              className={`gap-1 font-semibold pointer-events-none ml-2 whitespace-nowrap px-2 py-1 rounded-full text-xs border ${
                 isPopular
-                  ? "bg-[#ffd400] text-[#000]"
+                  ? "bg-[#ffd400] text-[#000] border-[#e6bf00]"
                   : status === "Coming Soon"
-                    ? "bg-gray-100 text-gray-600"
+                    ? "bg-gray-100 text-gray-600 border-gray-300"
                     : status === "Request"
-                      ? "bg-purple-100 text-purple-800"
+                      ? "bg-purple-100 text-purple-800 border-purple-300"
                       : ""
               }`}
             >
@@ -51,7 +51,7 @@ function FeatureCard({ title, description, href, isPopular, status, footerTag }:
           </div>
         </div>
       </div>
-      <div className="bg-gray-50 p-4 text-sm text-gray-600">
+      <div className="bg-gray-50 p-4 text-sm text-gray-600 border-t border-gray-100">
         <div className="flex justify-between items-center">
           <p className="line-clamp-2">{description}</p>
           {footerTag && (
@@ -206,19 +206,19 @@ export default function FeaturesPage() {
   }, [searchQuery, selectedTier])
 
   return (
-    <div className="flex flex-col min-h-screen w-full max-w-full overflow-x-hidden">
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
-          <h2 className="text-2xl font-bold">Toolbox</h2>
+    <div className="flex flex-col min-h-screen w-full max-w-full overflow-x-hidden bg-gray-50">
+      <main className="flex-grow container mx-auto px-4 py-8 sm:py-12">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-6">
+          <h2 className="text-3xl font-bold text-gray-800">Toolbox</h2>
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Input
               placeholder="Search tools..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full sm:w-64"
+              className="w-full sm:w-64 bg-white"
             />
             <Select value={selectedTier} onValueChange={(value: "all" | "core" | "pro") => setSelectedTier(value)}>
-              <SelectTrigger className="w-full sm:w-40">
+              <SelectTrigger className="w-full sm:w-40 bg-white">
                 <SelectValue placeholder="Filter by tier" />
               </SelectTrigger>
               <SelectContent>
@@ -229,7 +229,7 @@ export default function FeaturesPage() {
             </Select>
           </div>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
           {filteredAndSortedFeatures.map((feature, index) => (
             <FeatureCard
               key={index}
