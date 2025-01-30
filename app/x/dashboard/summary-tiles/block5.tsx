@@ -229,6 +229,15 @@ export function Block5() {
     fetchData()
   }, [user, fetchQuery, setPendingQuery])
 
+  const menuInfo = "A total of all estimates that have a status of 'pending'."
+  const menuItems = [
+    {
+      label: "Info",
+      type: "info" as const,
+      tooltip: menuInfo
+    }
+  ]
+
   if (loading) {
     return <DashCard title="Revenue" description="Loading..." content="..." />
   }
@@ -246,6 +255,7 @@ export function Block5() {
       title="Pipeline Value" 
       description="last 12 months"
       content={`$${docSum}`}
+      menuItems={menuItems}
     />
   )
 }

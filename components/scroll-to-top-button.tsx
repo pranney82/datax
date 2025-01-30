@@ -13,7 +13,6 @@ function debounce<T extends (...args: unknown[]) => void>(func: T, wait: number)
     timeout = setTimeout(() => func(...args), wait)
   }
 }
-
 interface ScrollToTopButtonProps {
   scrollThreshold?: number
   excludePaths?: string[]
@@ -23,12 +22,14 @@ export function ScrollToTopButton({ scrollThreshold = 300, excludePaths = ["/x"]
   const [isVisible, setIsVisible] = useState(false)
   const pathname = usePathname()
 
+
   // Check if the current path should exclude the button
   const shouldExclude = useCallback(() => {
     return excludePaths.some((path) => pathname.startsWith(path))
   }, [pathname, excludePaths])
 
   const toggleVisibility = useCallback(() => {
+
     if (window.pageYOffset > scrollThreshold) {
       setIsVisible(true)
     } else {

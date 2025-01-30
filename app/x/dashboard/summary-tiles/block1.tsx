@@ -263,6 +263,15 @@ export function Block1() {
     fetchData()
   }, [user, hasFetched, dateRange, fetchRevenue, setMonthlyRevenue, setQuery, query])
 
+  const menuInfo = "Calculated from paid invoices"
+  const menuItems = [
+    {
+      label: "Info",
+      type: "info" as const,
+      tooltip: menuInfo
+    }
+  ]
+
   if (loading) {
     return <DashCard title="Revenue" description="Loading..." content="..." />
   }
@@ -280,6 +289,7 @@ export function Block1() {
       title="Revenue" 
       description="last 12 months"
       content={revenueValue}
+      menuItems={menuItems}
     />
   )
 }

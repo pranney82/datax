@@ -434,6 +434,15 @@ export function Block2() {
     fetchData()
   }, [user, fetchRevenue])
 
+  const menuInfo = "Looking at all jobs with approved customer orders. Taking the budgeted cost and subtracting the actual cost to get the gross margin."
+  const menuItems = [
+    {
+      label: "Info",
+      type: "info" as const,
+      tooltip: menuInfo
+    }
+  ]
+
   if (loading) {
     return <DashCard title="Revenue" description="Loading..." content="..." />
   }
@@ -459,6 +468,7 @@ export function Block2() {
       title="Gross Margin" 
       description="Completed Projects"
       content={`${grossMargin}%`}
+      menuItems={menuItems}
     />
   )
 }

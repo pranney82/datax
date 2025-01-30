@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { queryCFLeads } from '@/app/x/dashboard/leads/query';
@@ -36,7 +36,7 @@ export default function LeadsLostQuery({ selectedField }: { selectedField?: stri
   const [isLoading, setIsLoading] = useState(true);
   const { dateRange } = useLeadsCount();
 
-  const fetchLeadsData = async (orgID: string, grantKey: string, cfName: string, page?: string) => {
+  const fetchLeadsData = useCallback(async (orgID: string, grantKey: string, cfName: string, page?: string) => {
     try {
       //console.log('Fetching page:', page || 'initial');
       const response = await fetch('/api/jtfetch', {
@@ -70,9 +70,9 @@ export default function LeadsLostQuery({ selectedField }: { selectedField?: stri
       console.error('Error:', error);
       return null;
     }
-  };
+  }, [dateRange]);
 
-  const fetchAllPages = async (orgID: string, grantKey: string, leadslostcfv: string, leadslostcfvName: string) => {
+  const fetchAllPages = useCallback(async (orgID: string, grantKey: string, leadslostcfv: string, leadslostcfvName: string) => {
     //console.log('Starting fetchAllPages with:', { orgID, leadslostcfv, leadslostcfvName });
     let currentPage = "";
     let allResults: CustomFieldValue[] = [];
@@ -133,7 +133,7 @@ export default function LeadsLostQuery({ selectedField }: { selectedField?: stri
         }
       }
     };
-  };
+  }, [fetchLeadsData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -187,7 +187,7 @@ export default function LeadsLostQuery({ selectedField }: { selectedField?: stri
     };
 
     fetchData();
-  }, [dateRange, selectedField]);
+  }, [dateRange, selectedField, fetchAllPages]);
 
   return { queryResult, isLoading };
 }

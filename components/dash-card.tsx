@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 import {
   Card,
   CardContent,
@@ -8,6 +8,13 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -16,31 +23,41 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Info, MoreVertical } from 'lucide-react'
+
+type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline'
+type TrendType = 'up' | 'down'
 
 interface MenuItem {
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
+  type?: 'info';
+  tooltip?: string;
+}
+
+interface FooterProps {
+  text: string;
+  trend?: TrendType;
+  value?: string;
+}
+
+interface BadgeProps {
+  text: string;
+  variant?: BadgeVariant;
 }
 
 interface DashCardProps {
-  title: string
-  description?: string
-  content?: string | ReactNode
-  subContent?: string
-  children?: ReactNode
-  footer?: {
-    text: string
-    trend?: 'up' | 'down'
-    value?: string
-  }
-  menuItems?: MenuItem[]
-  badge?: {
-    text: string
-    variant?: 'default' | 'secondary' | 'destructive' | 'outline'
-  }
-  loading?: boolean
-  accentColor?: string
-  icon?: ReactNode
+  title: string;
+  description?: string;
+  content?: string | ReactNode;
+  subContent?: string;
+  children?: ReactNode;
+  footer?: FooterProps;
+  menuItems?: MenuItem[];
+  badge?: BadgeProps;
+  loading?: boolean;
+  accentColor?: string;
+  icon?: ReactNode;
 }
 
 export default function ModernDashboardCard({
@@ -54,8 +71,17 @@ export default function ModernDashboardCard({
   badge,
   loading = false,
   accentColor = 'bg-black',
-  icon
+  icon,
 }: DashCardProps) {
+  const [openDialog, setOpenDialog] = useState<Record<number, boolean>>({})
+
+  const toggleDialog = (index: number): void => {
+    setOpenDialog((prev) => ({
+      ...prev,
+      [index]: !prev[index]
+    }))
+  }
+
   if (loading) {
     return (
       <Card className="overflow-hidden shadow-sm">
@@ -80,24 +106,46 @@ export default function ModernDashboardCard({
       <div className={`h-0.5 w-full ${accentColor}`} />
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold">{title}</CardTitle>
-          {menuItems && (
+          <div className="flex items-center gap-2">
+            <CardTitle className="text-lg font-semibold">{title}</CardTitle>
+          </div>
+          {menuItems && menuItems.length > 0 && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                   <span className="sr-only">Open menu</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-                    <circle cx="12" cy="12" r="1" />
-                    <circle cx="19" cy="12" r="1" />
-                    <circle cx="5" cy="12" r="1" />
-                  </svg>
+                  <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {menuItems.map((item, index) => (
-                  <DropdownMenuItem key={index} onClick={item.onClick}>
-                    {item.label}
-                  </DropdownMenuItem>
+                  item.type === 'info' ? (
+                    <Dialog key={index} open={openDialog[index]} onOpenChange={(open) => setOpenDialog((prev) => ({ ...prev, [index]: open }))}>
+                      <DialogTrigger asChild>
+                        <DropdownMenuItem onSelect={(e) => {
+                          e.preventDefault();
+                          toggleDialog(index);
+                        }}>
+                          <div className="flex items-center gap-2">
+                            {item.label}
+                            <Info className="h-4 w-4" />
+                          </div>
+                        </DropdownMenuItem>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>{item.label}</DialogTitle>
+                        </DialogHeader>
+                        <div className="py-4">
+                          {item.tooltip && <p className="text-sm text-gray-600">{item.tooltip}</p>}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  ) : (
+                    <DropdownMenuItem key={index} onClick={item.onClick}>
+                      {item.label}
+                    </DropdownMenuItem>
+                  )
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -112,7 +160,6 @@ export default function ModernDashboardCard({
             ) : (
               <div className="w-full">{content}</div>
             )}
-
             {subContent && (
               <div className="text-sm text-muted-foreground">{subContent}</div>
             )}

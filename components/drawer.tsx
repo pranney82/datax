@@ -13,6 +13,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import Link from 'next/link'
+import Image from 'next/image'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useUserStore } from "@/lib/stores/user-store"
 
@@ -39,7 +40,16 @@ export function DrawerDemo() {
         <div className="mx-auto w-full max-w-sm">
           <DrawerHeader className="flex flex-col items-center bg-gradient-to-r from-black to-[#ffd400] text-white rounded-t-lg p-6">
             <DrawerTitle className="text-2xl font-bold mb-2">
-              <img src="/assets/logos/5.png" alt="Datax" className="h-12 w-auto mb-4" />
+              <div className="relative h-12 w-auto mb-4">
+                <Image 
+                  src="/assets/logos/5.png" 
+                  alt="Datax" 
+                  width={150}
+                  height={48}
+                  className="h-12 w-auto"
+                  priority
+                />
+              </div>
             </DrawerTitle>
             <DrawerDescription className="text-white/80">Data Made Easy</DrawerDescription>
           </DrawerHeader>
