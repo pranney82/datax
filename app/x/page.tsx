@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { PlusCircle, ExternalLink, Map, BarChart3, Zap, BookOpen, Settings2, Rocket, CheckCircle2, Play, HeartHandshake, LifeBuoy } from 'lucide-react'
+import { PlusCircle, ExternalLink, Map, BarChart3, Box, BookOpen, Settings2, Rocket, CheckCircle2, Play, HeartHandshake, LifeBuoy } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useAuth } from "@/lib/context/auth-context"
@@ -376,7 +376,7 @@ export default function HomePage() {
                 <div className="grid grid-cols-2 gap-4">
                   {[
                     { icon: BarChart3, label: 'Dashboard', href: '/x/dashboard' },
-                    { icon: Zap, label: 'Toolbox', href: '/x/toolbox' },
+                    { icon: Box, label: 'Toolbox', href: '/x/toolbox' },
                     { icon: BookOpen, label: 'Library', href: '/x/library/templates' },
                     { icon: Settings2, label: 'Settings', href: '/x/settings' }
                   ].map((action, index) => (

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Home, Settings2, SquareChevronLeft, SquareChevronRight, BarChart3, Zap, BookOpen, Landmark, HelpCircle } from 'lucide-react'
+import { Home, Settings2, SquareChevronLeft, SquareChevronRight, BarChart3, Box, BookOpen, Landmark, HelpCircle } from 'lucide-react'
 
 import {
   Sidebar,
@@ -44,7 +44,7 @@ export function AppSidebar(props: React.ComponentPropsWithoutRef<typeof Sidebar>
           {
             title: "Toolbox",
             url: "/x/toolbox",
-            icon: Zap,
+            icon: Box,
           },
           {
             title: "Library",

@@ -149,7 +149,7 @@ const Navbar1 = () => {
                         <li>
                           <NavigationMenuLink asChild>
                             <Link
-                              href="/#datax"
+                              href="/datax"
                               className={cn(
                                 "flex select-none items-center gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#ffd400]/10 focus:bg-[#ffd400]/10 group",
                               )}
@@ -157,7 +157,7 @@ const Navbar1 = () => {
                               {iconMap.Code2}
                               <div className="transition-transform duration-300 transform group-hover:translate-x-1">
                                 <div className="text-base font-semibold text-black group-hover:text-[#ffd400] transition-colors duration-200">
-                                  DATAx
+                                  DATAx Software
                                 </div>
                                 <p className="text-sm leading-snug text-gray-600 group-hover:text-black transition-colors duration-200 mt-1">
                                   Already built automations, just turn on
@@ -189,7 +189,7 @@ const Navbar1 = () => {
                         <li>
                           <NavigationMenuLink asChild>
                             <Link
-                              href="/#courses"
+                              href="/courses"
                               className={cn(
                                 "flex select-none items-center gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#ffd400]/10 focus:bg-[#ffd400]/10 group",
                               )}
@@ -200,7 +200,7 @@ const Navbar1 = () => {
                                   Automation Courses
                                 </div>
                                 <p className="text-sm leading-snug text-gray-600 group-hover:text-black transition-colors duration-200 mt-1">
-                                  Work with an expert to with your automations
+                                  Guided automation building - DIY
                                 </p>
                               </div>
                             </Link>
@@ -275,7 +275,7 @@ const Navbar1 = () => {
                       onMouseEnter={() => setIsHoveringSignUp(true)}
                       onMouseLeave={() => setIsHoveringSignUp(false)}
                     >
-                      <span className="relative z-10 transition-colors duration-300">Try Free</span>
+                      <span className="relative z-10 transition-colors duration-300">Unlock Automation</span>
                       <Zap
                         className={`ml-2 h-5 w-5 relative z-10 transition-all duration-300 ${isHoveringSignUp ? "rotate-[360deg] scale-125" : ""}`}
                       />
@@ -313,7 +313,7 @@ const Navbar1 = () => {
                     setShowAuthDialog(true)
                   }}
                 >
-                  <span>Try Free</span>
+                  <span>Unlock</span>
                   <Zap className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
@@ -340,13 +340,13 @@ const Navbar1 = () => {
                     <span className="ml-2">Home</span>
                   </Link>
                   <Link
-                    href="/#datax"
+                    href="/datax"
                     className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200"
                   >
                     <div className="p-2 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
                       <Code2 className="size-6 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
                     </div>
-                    <span className="ml-2">DATAx</span>
+                    <span className="ml-2">DATAx Software</span>
                   </Link>
                   <Link
                     href="/#cto"
@@ -358,7 +358,7 @@ const Navbar1 = () => {
                     <span className="ml-2">CTO Consulting</span>
                   </Link>
                   <Link
-                    href="/#courses"
+                    href="/courses"
                     className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200"
                   >
                     <div className="p-2 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
