@@ -4,13 +4,21 @@ import { useState, useEffect, useCallback } from "react"
 import { ArrowUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { usePathname } from "next/navigation"
 
 interface ScrollToTopButtonProps {
   scrollThreshold?: number
+  excludePaths?: string[]
 }
 
-export function ScrollToTopButton({ scrollThreshold = 300 }: ScrollToTopButtonProps) {
+export function ScrollToTopButton({ scrollThreshold = 300, excludePaths = ["/x"] }: ScrollToTopButtonProps) {
   const [isVisible, setIsVisible] = useState(false)
+  const pathname = usePathname()
+
+  // Check if current path is in excluded paths
+  if (excludePaths.includes(pathname)) {
+    return null
+  }
 
   const debounce = <T extends (...args: unknown[]) => void>(
     func: T,
@@ -31,7 +39,7 @@ export function ScrollToTopButton({ scrollThreshold = 300 }: ScrollToTopButtonPr
         setIsVisible(false)
       }
     }, 100),
-    [scrollThreshold],
+    [],
   )
 
   useEffect(() => {

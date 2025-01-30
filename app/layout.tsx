@@ -3,6 +3,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/lib/context/auth-context"
 import type { Metadata } from "next"
 import dynamic from "next/dynamic"
+import type React from "react" // Added import for React
 
 const ScrollToTopButton = dynamic(
   () => import("@/components/scroll-to-top-button").then((mod) => mod.ScrollToTopButton),
@@ -48,7 +49,10 @@ export default function RootLayout({
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
             {children}
-            <ScrollToTopButton scrollThreshold={400} />
+            <ScrollToTopButton
+              scrollThreshold={400}
+              excludePaths={["/x"]} // Add any other paths you want to exclude
+            />
           </ThemeProvider>
         </AuthProvider>
       </body>
