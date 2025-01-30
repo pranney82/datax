@@ -1,11 +1,18 @@
 "use client"
 
-import { useState, useEffect, useCallback, useMemo } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { ArrowUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { usePathname } from "next/navigation"
 
+function debounce<T extends (...args: unknown[]) => void>(func: T, wait: number): (...args: Parameters<T>) => void {
+  let timeout: NodeJS.Timeout | null = null
+  return (...args: Parameters<T>) => {
+    if (timeout) clearTimeout(timeout)
+    timeout = setTimeout(() => func(...args), wait)
+  }
+}
 interface ScrollToTopButtonProps {
   scrollThreshold?: number
   excludePaths?: string[]
@@ -15,20 +22,14 @@ export function ScrollToTopButton({ scrollThreshold = 300, excludePaths = ["/x"]
   const [isVisible, setIsVisible] = useState(false)
   const pathname = usePathname()
 
-  const debounce = useMemo(() => {
-    return <T extends (...args: never[]) => void>(
-      func: T,
-      wait: number
-    ): ((...args: Parameters<T>) => void) => {
-      let timeout: NodeJS.Timeout | null = null
-      return (...args: Parameters<T>) => {
-        if (timeout) clearTimeout(timeout)
-        timeout = setTimeout(() => func(...args), wait)
-      }
-    }
-  }, [])
 
-  const handleScroll = useCallback(() => {
+  // Check if the current path should exclude the button
+  const shouldExclude = useCallback(() => {
+    return excludePaths.some((path) => pathname.startsWith(path))
+  }, [pathname, excludePaths])
+
+  const toggleVisibility = useCallback(() => {
+
     if (window.pageYOffset > scrollThreshold) {
       setIsVisible(true)
     } else {
@@ -36,25 +37,28 @@ export function ScrollToTopButton({ scrollThreshold = 300, excludePaths = ["/x"]
     }
   }, [scrollThreshold])
 
-  const debouncedHandleScroll = useMemo(() => {
-    return debounce(handleScroll, 100)
-  }, [debounce, handleScroll])
+  const debouncedToggleVisibility = useCallback(
+    debounce(toggleVisibility, 100),
+    [toggleVisibility], //Corrected dependency here.
+  )
 
   useEffect(() => {
-    window.addEventListener("scroll", debouncedHandleScroll)
-    return () => window.removeEventListener("scroll", debouncedHandleScroll)
-  }, [debouncedHandleScroll])
+    if (shouldExclude()) return
 
-  const scrollToTop = useCallback(() => {
+    window.addEventListener("scroll", debouncedToggleVisibility)
+    return () => window.removeEventListener("scroll", debouncedToggleVisibility)
+  }, [debouncedToggleVisibility, shouldExclude])
+
+  // Don't render the button if we're on an excluded path
+  if (shouldExclude()) {
+    return null
+  }
+
+  const scrollToTop = () => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     })
-  }, [])
-
-  // Check if current path is in excluded paths
-  if (excludePaths.includes(pathname)) {
-    return null
   }
 
   return (
