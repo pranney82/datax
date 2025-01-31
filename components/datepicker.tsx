@@ -15,7 +15,7 @@ import {
   endOfYear,
   sub,
 } from "date-fns"
-import { CalendarIcon, ChevronDown } from "lucide-react"
+import { CalendarIcon, ChevronDown, Loader2 } from "lucide-react"
 import type { DateRange } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
@@ -55,7 +55,9 @@ export function DatePickerWithRange({ className }: React.HTMLAttributes<HTMLDivE
     to: new Date(),
   })
   const [isPopoverOpen, setIsPopoverOpen] = React.useState(false)
-  const [selectedPreset, setSelectedPreset] = React.useState<string>("Today")
+  const [selectedPreset, setSelectedPreset] = React.useState<string>("This Month")
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [isSelectingEndDate, setIsSelectingEndDate] = React.useState(false)
   const isMobile = useMediaQuery("(max-width: 640px)")
 
   const presets: { [key: string]: DateRange | null } = {
@@ -141,18 +143,30 @@ export function DatePickerWithRange({ className }: React.HTMLAttributes<HTMLDivE
               id="date"
               variant={"outline"}
               className={cn("w-[300px] justify-start text-left font-normal", !date && "text-muted-foreground")}
+              disabled={isLoading}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {date?.from ? (
+              {isLoading ? (
+                <span className="flex items-center">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Loading...
+                </span>
+              ) : date?.from ? (
                 date.to ? (
-                  <>
-                    {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
-                  </>
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium">{format(date.from, "LLL dd, yyyy")}</span>
+                    <span className="mx-2 text-muted-foreground">to</span>
+                    <span className="text-sm font-medium">{format(date.to, "LLL dd, yyyy")}</span>
+                  </div>
                 ) : (
-                  format(date.from, "LLL dd, y")
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium">{format(date.from, "LLL dd, yyyy")}</span>
+                    <span className="mx-2 text-muted-foreground">to</span>
+                    <span className="text-sm font-medium">Pick end date</span>
+                  </div>
                 )
               ) : (
-                <span>Pick a date</span>
+                <span>Pick a date range</span>
               )}
             </Button>
           </PopoverTrigger>
@@ -163,13 +177,25 @@ export function DatePickerWithRange({ className }: React.HTMLAttributes<HTMLDivE
               defaultMonth={date?.from}
               selected={date}
               onSelect={(newDate) => {
-                setDate(newDate)
-                if (isMobile && newDate?.from && newDate?.to) {
-                  setIsPopoverOpen(false)
+                setIsLoading(true)
+                if (newDate?.from) {
+                  if (!isSelectingEndDate) {
+                    setDate({ from: newDate.from, to: undefined })
+                    setIsSelectingEndDate(true)
+                  } else if (newDate.to) {
+                    setDate({ from: date?.from as Date, to: newDate.to })
+                    setIsSelectingEndDate(false)
+                    setIsPopoverOpen(false)
+                    setIsLoading(false)
+                  }
+                } else {
+                  setDate(undefined)
+                  setIsSelectingEndDate(false)
                 }
+                setIsLoading(false)
               }}
               numberOfMonths={isMobile ? 1 : 2}
-              className="max-w-[300px] sm:max-w-none"
+              className={cn("max-w-[300px] sm:max-w-none", isMobile && "max-w-[280px]")}
             />
           </PopoverContent>
         </Popover>
