@@ -39,7 +39,7 @@ export function ScrollToTopButton({ scrollThreshold = 300, excludePaths = ["/x"]
 
   const debouncedToggleVisibility = useCallback(
     debounce(toggleVisibility, 100),
-    [toggleVisibility], //Corrected dependency here.
+    [toggleVisibility],
   )
 
   useEffect(() => {

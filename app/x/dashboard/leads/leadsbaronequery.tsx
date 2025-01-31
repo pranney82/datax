@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { queryCFLeads } from '@/app/x/dashboard/leads/query';
@@ -44,8 +44,7 @@ export default function LeadsBarOneQuery({ selectedField }: { selectedField?: st
   const [isLoading, setIsLoading] = useState(true);
   const { dateRange } = useLeadsCount();
   
-  
-  const fetchLeadsData = async (orgID: string, grantKey: string, cfName: string, page?: string) => {
+  const fetchLeadsData = useCallback(async (orgID: string, grantKey: string, cfName: string, page?: string) => {
     try {
       const response = await fetch('/api/jtfetch', {
         method: 'POST',
@@ -77,15 +76,14 @@ export default function LeadsBarOneQuery({ selectedField }: { selectedField?: st
       }
 
       const result = await response.json();
-      //console.log('Query Result for page:', page, result);
       return result;
     } catch (error) {
       console.error('Error:', error);
       return null;
     }
-  };
+  }, [dateRange]);
 
-  const fetchAllPages = async (orgID: string, grantKey: string, leadsbarcfv: string, leadsbarcfvName: string) => {
+  const fetchAllPages = useCallback(async (orgID: string, grantKey: string, leadsbarcfv: string, leadsbarcfvName: string) => {
     let currentPage = "";
     let allResults: CustomFieldValue[] = [];
     let hasNextPage = true;
@@ -157,7 +155,7 @@ export default function LeadsBarOneQuery({ selectedField }: { selectedField?: st
     };
 
     return finalResult;
-  };
+  }, [fetchLeadsData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -198,7 +196,7 @@ export default function LeadsBarOneQuery({ selectedField }: { selectedField?: st
     };
 
     fetchData();
-  }, [dateRange, selectedField]);
+  }, [dateRange, selectedField, fetchAllPages]);
 
   return { queryResult, isLoading };
 }

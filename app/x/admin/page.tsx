@@ -67,53 +67,53 @@ function FeatureCard({ title, description, href, isPopular, status }: FeatureCar
 
 export default function FeaturesPage() {
   const [searchQuery, setSearchQuery] = useState("")
- 
-
-  const allFeatures = [
-    {
-      title: "Stripe Transactions",
-      description: "Track and manage your Stripe transactions.",
-      href: "/x/admin/stripe",
-      isPopular: false,
-      status: "Active"
-    },
-    {
-      title: "User Management",
-      description: "Manage your users and their permissions.",
-      href: "/x/admin/users",
-      isPopular: false,
-      status: "Active"
-    },
-    {
-      title: "Feature Requests",
-      description: "Feature requests from the users.",
-      href: "/x/admin/fr",
-      isPopular: false,
-      status: "Active"
-    },
-    {
-      title: "Logs",
-      description: "View and manage user logs.",
-      href: "/x/admin/logs",
-      isPopular: false,  
-      status: "Active"
-    },
-    {
-      title: "Support Requests",
-      description: "View and manage support requests from users.",
-      href: "/x/admin/sr",
-      isPopular: false,
-      status: "Active"
-    }
-  ]
 
   const filteredAndSortedFeatures = useMemo(() => {
+    const allFeatures = [
+      {
+        title: "Stripe Transactions",
+        description: "Track and manage your Stripe transactions.",
+        href: "/x/admin/stripe",
+        isPopular: false,
+        status: "Active"
+      },
+      {
+        title: "User Management",
+        description: "Manage your users and their permissions.",
+        href: "/x/admin/users",
+        isPopular: false,
+        status: "Active"
+      },
+      {
+        title: "Feature Requests",
+        description: "Feature requests from the users.",
+        href: "/x/admin/fr",
+        isPopular: false,
+        status: "Active"
+      },
+      {
+        title: "Logs",
+        description: "View and manage user logs.",
+        href: "/x/admin/logs",
+        isPopular: false,  
+        status: "Active"
+      },
+      {
+        title: "Support Requests",
+        description: "View and manage support requests from users.",
+        href: "/x/admin/sr",
+        isPopular: false,
+        status: "Active"
+      }
+    ];
+
     return allFeatures
       .filter(feature => 
         (feature.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         feature.description.toLowerCase().includes(searchQuery.toLowerCase()))
       )
-  }, [allFeatures, searchQuery]);
+  }, [searchQuery]);
+
   return (
     <main className="flex flex-col flex-1 p-0">
       <header className="flex h-16 shrink-0 items-center gap-2">

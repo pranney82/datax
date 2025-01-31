@@ -1,11 +1,9 @@
 import { AppSidebar } from "@/components/app-sidebar"
 import { BottomMenu } from "@/components/bottom-menu"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
-import Link from "next/link"
 
 export default function XLayout({ children }: { children: React.ReactNode }) {
   return (
