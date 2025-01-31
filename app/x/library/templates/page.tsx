@@ -107,7 +107,7 @@ export default function TemplatesPage() {
   return (
     <main className="flex-grow container mx-auto px-4 py-8">
       <div className="flex justify-between items-center gap-2 mb-4">
-        <h1 className="text-2xl font-bold">Templates</h1>
+        <h1 className="text-2xl font-bold mb-2 sm:mb-0">Templates</h1>
         <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

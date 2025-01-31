@@ -2,10 +2,11 @@
 
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Zap, TrendingUp } from "lucide-react"
+import { Zap, TrendingUp, ChevronDown, Check } from "lucide-react"
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useState, useMemo } from "react"
 
 interface FeatureCardProps {
@@ -207,26 +208,70 @@ export default function FeaturesPage() {
 
   return (
     <div className="flex flex-col min-h-screen w-full max-w-full overflow-x-hidden bg-gray-50">
-      <main className="flex-grow container mx-auto px-4 py-8 sm:py-12">
+      <main className="flex-grow container mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-6">
-          <h2 className="text-3xl font-bold text-gray-800">Toolbox</h2>
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          <div className="flex flex-row justify-between items-center w-full">
+            <h1 className="text-2xl font-bold mb-2 sm:mb-0">Toolbox</h1>
+            <div className="flex flex-row gap-4 sm:hidden">
+              <Input
+                placeholder="Search tools..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-32 bg-white"
+              />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="w-24">
+                    {selectedTier === "all" ? "All Tiers" : selectedTier.toUpperCase()}
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onSelect={() => setSelectedTier("all")}>
+                    <Check className={`mr-2 h-4 w-4 ${selectedTier === "all" ? "opacity-100" : "opacity-0"}`} />
+                    All Tiers
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => setSelectedTier("core")}>
+                    <Check className={`mr-2 h-4 w-4 ${selectedTier === "core" ? "opacity-100" : "opacity-0"}`} />
+                    CORE
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => setSelectedTier("pro")}>
+                    <Check className={`mr-2 h-4 w-4 ${selectedTier === "pro" ? "opacity-100" : "opacity-0"}`} />
+                    PRO
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+          <div className="hidden sm:flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Input
               placeholder="Search tools..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full sm:w-64 bg-white"
             />
-            <Select value={selectedTier} onValueChange={(value: "all" | "core" | "pro") => setSelectedTier(value)}>
-              <SelectTrigger className="w-full sm:w-40 bg-white">
-                <SelectValue placeholder="Filter by tier" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Tiers</SelectItem>
-                <SelectItem value="core">CORE</SelectItem>
-                <SelectItem value="pro">PRO</SelectItem>
-              </SelectContent>
-            </Select>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  {selectedTier === "all" ? "All Tiers" : selectedTier.toUpperCase()}
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onSelect={() => setSelectedTier("all")}>
+                  <Check className={`mr-2 h-4 w-4 ${selectedTier === "all" ? "opacity-100" : "opacity-0"}`} />
+                  All Tiers
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setSelectedTier("core")}>
+                  <Check className={`mr-2 h-4 w-4 ${selectedTier === "core" ? "opacity-100" : "opacity-0"}`} />
+                  CORE
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setSelectedTier("pro")}>
+                  <Check className={`mr-2 h-4 w-4 ${selectedTier === "pro" ? "opacity-100" : "opacity-0"}`} />
+                  PRO
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
