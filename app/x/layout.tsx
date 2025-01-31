@@ -14,14 +14,7 @@ export default function XLayout({ children }: { children: React.ReactNode }) {
       <SidebarInset>
         <div className="flex flex-col min-h-screen">
           <div className="flex-grow pb-16 md:pb-0">
-          <div className="mb-6">
-            <Alert variant="default" className="bg-primary text-black">
-              <AlertTitle><span className="text-2xl font-bold">We are now Official JobTread Partners!!</span></AlertTitle>
-              <AlertDescription>
-                So we can officially offer our services: Tech Consulting, and Courses. <Link href="https://winyourdata.com/#cto" className="text-blue-500">Find out more here!</Link>
-              </AlertDescription>
-            </Alert>
-          </div>
+          
             {children}
           </div>
           <BottomMenu />
