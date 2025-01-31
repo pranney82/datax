@@ -21,9 +21,18 @@ export default function Page() {
 
   return (
     <main className="flex-grow container mx-auto px-4 py-8">
-      <div className="flex items-center gap-2 justify-between mb-4">
-        <h1 className="text-2xl font-bold">Dashboard</h1>    
-        <DatePickerWithRange />
+      <div className="flex flex-col mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
+          <div className="flex items-center justify-between sm:justify-start">
+            <h1 className="text-2xl font-bold mb-2 sm:mb-0">Dashboard</h1>
+            <div className="sm:ml-4 hidden sm:block">
+              <DatePickerWithRange />
+            </div>
+          </div>
+          <div className="sm:hidden mt-2">
+            <DatePickerWithRange />
+          </div>
+        </div>
       </div>
       <Tabs value={tab} onValueChange={handleTabChange}>
         <TabsList className="inline-flex h-10 items-center justify-start rounded-md bg-muted p-1 text-muted-foreground">
@@ -37,7 +46,7 @@ export default function Page() {
             Sales
           </TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="summary">
           <Summary />
         </TabsContent>
