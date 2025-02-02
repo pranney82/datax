@@ -183,24 +183,44 @@ export const zQuery2 = ({ locID, orgID }: QueryParams1) => ({
   }
 });
 
-export const updateLocJT = ({ locID, zestimateField, zestimate, zestimateUrlField, zestimateURL, orgID, yearBuiltField, yearbuilt, bedBathField, bedbath, livingAreaField, livingArea, latestSalePriceField, latestSalePrice, latestSaleDateField, lastestSaleDate, formattedAddress }: QueryParams1) => ({
+export const updateLocJT = ({ locID, zestimateField, zestimate, zestimateUrlField, zestimateURL, orgID, yearBuiltField, yearbuilt, bedBathField, bedbath, livingAreaField, livingArea, latestSalePriceField, latestSalePrice, latestSaleDateField, lastestSaleDate, formattedAddress }: QueryParams1) => {
+  // Build customFieldValues object dynamically
+  const customFieldValues: Record<string, string | number | undefined> = {};
+
+  // Only add fields if both the field name and value are defined
+  if (zestimateField && zestimate) {
+    customFieldValues[zestimateField] = zestimate;
+  }
+  if (zestimateUrlField && zestimateURL) {
+    customFieldValues[zestimateUrlField] = zestimateURL;
+  }
+  if (yearBuiltField && yearbuilt) {
+    customFieldValues[yearBuiltField] = yearbuilt;
+  }
+  if (bedBathField && bedbath) {
+    customFieldValues[bedBathField] = bedbath;
+  }
+  if (livingAreaField && livingArea) {
+    customFieldValues[livingAreaField] = livingArea;
+  }
+  if (latestSalePriceField && latestSalePrice) {
+    customFieldValues[latestSalePriceField] = latestSalePrice;
+  }
+  if (latestSaleDateField && lastestSaleDate) {
+    customFieldValues[latestSaleDateField] = lastestSaleDate;
+  }
+
+  return {
     "updateLocation": {
       "$": {
         "id": locID,
         "organizationId": orgID,
-        "customFieldValues": {
-          [(zestimateField as string)]: zestimate,
-          [(zestimateUrlField as string)]: zestimateURL,
-          [(yearBuiltField as string)]: yearbuilt,
-          [(bedBathField as string)]: bedbath,
-          [(livingAreaField as string)]: livingArea,
-          [(latestSalePriceField as string)]: latestSalePrice,
-          [(latestSaleDateField as string)]: lastestSaleDate
-        },
-        "address": formattedAddress
+        "customFieldValues": customFieldValues,
+        ...(formattedAddress ? { "address": formattedAddress } : {})
       }
     }
-  });
+  };
+};
 
     export const searchLocCF = ({ orgID }: QueryParams1) => ({
         "organization": {
