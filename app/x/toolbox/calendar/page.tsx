@@ -1,32 +1,16 @@
-'use client'
+"use client"
 
-import { ArrowUpRight, ChevronLeft, ChevronRight, LayoutGrid, List, Plus } from 'lucide-react'
-import { useState, useCallback, useEffect } from 'react'
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-  } from "@/components/ui/breadcrumb"
-  import { Separator } from "@/components/ui/separator"
-  import { SidebarTrigger } from "@/components/ui/sidebar"
-  import { Button } from "@/components/ui/button"
-  import { Badge } from "@/components/ui/badge"
-  import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-  } from "@/components/ui/dialog"
-  import { getDoc, doc } from 'firebase/firestore'
-  import { useAuth } from "@/lib/context/auth-context"
-  import { calQuery1 } from './calquery'
-  import { db } from '@/lib/firebase'
-  import Link from 'next/link'
-  import { TTSelector } from './ttselector'
-  import FeatureProtect from '@/components/admin/featureProtect'
+import { ArrowUpRight, ChevronLeft, ChevronRight, CalendarDays, List, Plus, YoutubeIcon as YouTube } from "lucide-react"
+import { useState, useCallback, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { getDoc, doc } from "firebase/firestore"
+import { useAuth } from "@/lib/context/auth-context"
+import { calQuery1 } from "./calquery"
+import { db } from "@/lib/firebase"
+import Link from "next/link"
+import { TTSelector } from "./ttselector"
+import FeatureProtect from "@/components/admin/featureProtect"
 
 interface Task {
   id: string
@@ -39,8 +23,16 @@ interface Task {
   }
 }
 
+const getWeekNumber = (date: Date) => {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+  const dayNum = d.getUTCDay() || 7
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum)
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+  return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7)
+}
+
 export default function Calendar() {
-  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Totals']
+  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
   const [currentDate, setCurrentDate] = useState(new Date())
   const today = new Date()
   const [isCalendarView, setIsCalendarView] = useState(true)
@@ -52,11 +44,12 @@ export default function Calendar() {
   const [orgId, setOrgId] = useState<string | null>(null)
   const [grantKey, setGrantKey] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [taskID, setTaskID] = useState<string | null>(null) 
+  const [taskID, setTaskID] = useState<string | null>(null)
+  const [isTutorialOpen, setIsTutorialOpen] = useState(false) // Added tutorial dialog state
 
-  const monthYear = currentDate.toLocaleString('default', { 
-    month: 'long',
-    year: 'numeric'
+  const monthYear = currentDate.toLocaleString("default", {
+    month: "short",
+    year: "numeric",
   })
 
   const handlePreviousMonth = () => {
@@ -79,261 +72,297 @@ export default function Calendar() {
     if (!user) return
     const fetchUserSettings = async () => {
       try {
-        const userDocRef = doc(db, 'users', user.uid)
+        const userDocRef = doc(db, "users", user.uid)
         const userDoc = await getDoc(userDocRef)
         const userData = userDoc.data()
-        const orgDocRef = doc(db, 'orgs', userData?.org)
+        const orgDocRef = doc(db, "orgs", userData?.org)
         const orgDoc = await getDoc(orgDocRef)
         const orgData = orgDoc.data()
-        
+
         if (!orgData?.orgID || !orgData?.grantKey) {
-          setError('Organization settings not found')
+          setError("Organization settings not found")
           return
         }
         setTaskID(orgData.calTaskType)
         setOrgId(orgData.orgID)
         setGrantKey(orgData.grantKey)
       } catch (error) {
-        console.error('Error fetching user settings:', error)
-        setError('Failed to load organization settings')
+        console.error("Error fetching user settings:", error)
+        setError("Failed to load organization settings")
       }
     }
-    
+
     fetchUserSettings()
   }, [user])
 
   const fetchTasks = useCallback(async () => {
-    if (!orgId || !grantKey) return;
+    if (!orgId || !grantKey) return
 
     try {
-      setLoading(true);
+      setLoading(true)
 
-      // Calculate first and last day of current month in local timezone
-      const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59);
+      // Calculate first day of current month
+      const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+      // Calculate last day of current month
+      const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
+
+      // Extend the date range to include the last week of previous month and first week of next month
+      const extendedStartDate = new Date(firstDay)
+      extendedStartDate.setDate(extendedStartDate.getDate() - 7)
+      const extendedEndDate = new Date(lastDay)
+      extendedEndDate.setDate(extendedEndDate.getDate() + 7)
 
       // Format dates for API in ISO format and handle timezone offset
       const formatDateForAPI = (date: Date) => {
-        // Get timezone offset in minutes
-        const tzOffset = date.getTimezoneOffset();
-        
-        // Create new date adjusted for timezone
-        const localDate = new Date(date.getTime() - (tzOffset * 60000));
-        
-        // Return in YYYY-MM-DD format
-        return localDate.toISOString().split('T')[0];
-      };
+        const tzOffset = date.getTimezoneOffset()
+        const localDate = new Date(date.getTime() - tzOffset * 60000)
+        return localDate.toISOString().split("T")[0]
+      }
 
-      const startDate = formatDateForAPI(firstDay);
-      const endDate = formatDateForAPI(lastDay);
+      const startDate = formatDateForAPI(extendedStartDate)
+      const endDate = formatDateForAPI(extendedEndDate)
 
-      //console.log('Date Range:', { startDate, endDate });
-
-      const response = await fetch('/api/jtfetch', {
-        method: 'POST',
+      const response = await fetch("/api/jtfetch", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           query: {
-            "$": { "grantKey": grantKey },
-            ...calQuery1({ 
+            $: { grantKey: grantKey },
+            ...calQuery1({
               orgID: orgId,
               cfName2: taskID || "",
               startDate,
-              endDate
-            })
-          }
-        })
-      });
+              endDate,
+            }),
+          },
+        }),
+      })
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Error Response:', errorText);
-        throw new Error(`API error: ${response.status}`);
+        const errorText = await response.text()
+        console.error("API Error Response:", errorText)
+        throw new Error(`API error: ${response.status}`)
       }
 
-      const data = await response.json();
-      //console.log('API Response:', data);
-      const fetchedTasks = data?.organization?.tasks?.nodes || [];
-      setTasks(fetchedTasks);
+      const data = await response.json()
+      const fetchedTasks = data?.organization?.tasks?.nodes || []
+      setTasks(fetchedTasks)
     } catch (error) {
-      console.error('Error in fetchTasks:', error);
-      throw error;
+      console.error("Error in fetchTasks:", error)
+      throw error
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, [orgId, grantKey, currentDate, taskID]);
+  }, [orgId, grantKey, taskID])
 
   // Fetch tasks when month changes
   useEffect(() => {
     fetchTasks()
-  }, [fetchTasks, currentDate])
+  }, [fetchTasks])
 
   const parseTaskDate = (dateString: string) => {
     // Split the date string to get just the date part
-    const [year, month, day] = dateString.split('T')[0].split('-').map(Number);
+    const [year, month, day] = dateString.split("T")[0].split("-").map(Number)
     // Create date in local timezone
-    return new Date(year, month - 1, day);
-  };
+    return new Date(year, month - 1, day)
+  }
 
   const generateCalendarDays = () => {
     const daysInMonth = getDaysInMonth(currentDate)
     const firstDay = getFirstDayOfMonth(currentDate)
-    
-    // Calculate how many weeks we need
+    const lastMonthDays = getDaysInMonth(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))
+
     const totalDays = firstDay + daysInMonth
     const numberOfWeeks = Math.ceil(totalDays / 7)
-    const totalSlots = numberOfWeeks * 8 // 8 columns (7 days + totals column)
+    const totalSlots = numberOfWeeks * 7 // 7 columns (7 days of the week)
 
     return [...Array(totalSlots)].map((_, index) => {
-      const isEighthColumn = (index + 1) % 8 === 0
-      const adjustedIndex = index - Math.floor(index / 8)
+      const isSunday = index % 7 === 0
+      const adjustedIndex = index
       const dayNumber = adjustedIndex - firstDay + 1
-      const isValidDay = dayNumber > 0 && dayNumber <= daysInMonth
-      
-      const isToday = isValidDay && 
-        dayNumber === today.getDate() && 
-        currentDate.getMonth() === today.getMonth() && 
+      const isCurrentMonth = dayNumber > 0 && dayNumber <= daysInMonth
+      const displayDate = isCurrentMonth
+        ? dayNumber
+        : dayNumber <= 0
+          ? lastMonthDays + dayNumber
+          : dayNumber - daysInMonth
+
+      const isToday =
+        isCurrentMonth &&
+        dayNumber === today.getDate() &&
+        currentDate.getMonth() === today.getMonth() &&
         currentDate.getFullYear() === today.getFullYear()
 
-      // Calculate weekly totals for the 8th column
-      if (isEighthColumn) {
-        const weekStart = index - 7
-        const weeklyInvoices = tasks.filter(task => {
-          const taskDate = parseTaskDate(task.startDate);
-          for (let i = weekStart; i < index; i++) {
-            const dayIndex = i - Math.floor(i / 8)
+      // Calculate the date for this cell
+      const cellDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), dayNumber)
+
+      // Filter tasks for this day, including tasks from adjacent months
+      const dayTasks = tasks.filter((task) => {
+        const taskDate = parseTaskDate(task.startDate)
+        return (
+          taskDate.getDate() === cellDate.getDate() &&
+          taskDate.getMonth() === cellDate.getMonth() &&
+          taskDate.getFullYear() === cellDate.getFullYear()
+        )
+      })
+
+      // Calculate weekly total for Sundays
+      let weeklyTotal = 0
+      if (isSunday) {
+        const weekStart = index
+        const weekEnd = index + 6
+        const weeklyInvoices = tasks.filter((task) => {
+          const taskDate = parseTaskDate(task.startDate)
+          for (let i = weekStart; i <= weekEnd; i++) {
+            const dayIndex = i
             const day = dayIndex - firstDay + 1
-            if (day > 0 && day <= daysInMonth &&
-                taskDate.getDate() === day &&
-                taskDate.getMonth() === currentDate.getMonth() &&
-                taskDate.getFullYear() === currentDate.getFullYear()) {
+            const checkDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
+            if (
+              taskDate.getDate() === checkDate.getDate() &&
+              taskDate.getMonth() === checkDate.getMonth() &&
+              taskDate.getFullYear() === checkDate.getFullYear()
+            ) {
               return true
             }
           }
           return false
         })
-        const weeklyTotal = weeklyInvoices.reduce((sum, task) => sum + (parseFloat(task.description) || 0), 0)
-
-        return (
-          <div
-            key={index}
-            className="aspect-square border rounded-lg p-2 bg-gray-50 flex flex-col justify-center items-center"
-          >
-            <div className="text-sm font-medium text-gray-600">Weekly Total</div>
-            <div className="text-sm font-semibold">
-              ${weeklyTotal.toLocaleString()}
-            </div>
-          </div>
-        )
+        weeklyTotal = weeklyInvoices.reduce((sum, task) => sum + (Number.parseFloat(task.description) || 0), 0)
       }
-
-      // Filter tasks for this day
-      const dayTasks = tasks.filter(task => {
-        const taskDate = parseTaskDate(task.startDate);
-        return isValidDay &&
-          taskDate.getDate() === dayNumber &&
-          taskDate.getMonth() === currentDate.getMonth() &&
-          taskDate.getFullYear() === currentDate.getFullYear()
-      })
 
       return (
         <div
           key={index}
-          className={`aspect-square border rounded-lg p-2 ${
-            isToday ? 'bg-blue-50 hover:bg-blue-100' :
-            'hover:bg-gray-50'
-          } cursor-pointer flex flex-col gap-1`}
+          className={`aspect-square border border-gray-200 rounded-lg p-0.5 sm:p-1 md:p-2 lg:p-3 ${
+            isToday
+              ? "bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 shadow-md"
+              : isCurrentMonth
+                ? "hover:bg-black/5"
+                : "bg-gray-50 text-gray-400 hover:bg-gray-100"
+          } cursor-pointer flex flex-col gap-0.5 sm:gap-1`}
         >
-          {isValidDay && (
-            <>
-              <span className={`text-sm ${isToday ? 'font-semibold' : ''}`}>
-                {dayNumber}
-              </span>
-              {dayTasks.map(task => (
-                <div
-                  key={task?.id || 'unknown'}
-                  onClick={() => {
-                    if (task) {
-                      setSelectedTask({
-                        id: task.id || "",
-                        name: task.name || "Unnamed Task",
-                        description: task.description || "",
-                        startDate: task.startDate || "",
-                        job: task.job || { id: "", name: "" }
-                      });
-                      setIsDialogOpen(true);
-                    }
-                  }}
-                  className="bg-yellow-100 rounded p-1 text-xs hover:bg-yellow-200 transition-colors cursor-pointer"
-                >
-                  <div className="font-medium truncate">{task?.name || "Unnamed Task"}</div>
-                  <div className="font-small text-gray-500">{task?.job?.name || "No Job"}</div>
-                  <div className="text-black">
-                    ${parseFloat(task?.description || '0').toLocaleString()}
+          <span
+            className={`text-sm ${isToday ? "font-semibold" : ""} ${
+              isCurrentMonth ? "text-gray-700" : "text-gray-400"
+            } mb-1`}
+          >
+            {displayDate}
+          </span>
+          {dayTasks.map((task) => (
+            <div
+              key={task?.id || "unknown"}
+              onClick={() => {
+                if (task) {
+                  setSelectedTask({
+                    id: task.id || "",
+                    name: task.name || "Unnamed Task",
+                    description: task.description || "",
+                    startDate: task.startDate || "",
+                    job: task.job || { id: "", name: "" },
+                  })
+                  setIsDialogOpen(true)
+                }
+              }}
+              className="bg-gradient-to-r from-[#FFF9C4] to-[#FFFDE7] rounded-sm p-0.5 text-xs hover:from-[#FFF59D] hover:to-[#FFF9C4] transition-all duration-200 cursor-pointer border-l-2 border-l-[#FFD400] transform hover:scale-[1.02] shadow-sm hover:shadow-md w-full"
+            >
+              <div className="w-full space-y-0">
+                <div className="font-medium w-full overflow-hidden text-ellipsis whitespace-nowrap text-[10px] sm:text-[13px] hidden sm:block">
+                  {task?.name || "Unnamed Task"}
+                </div>
+                <div className="font-small text-gray-600 w-full overflow-hidden text-ellipsis whitespace-nowrap text-[9px] sm:text-[12px] hidden sm:block">
+                  {task?.job?.name || "No Job"}
+                </div>
+                <div className="text-[8px] sm:text-[10px] md:text-[10px] lg:text-xs xl:text-sm text-black font-semibold mt-0.5">
+                  ${Number.parseFloat(task?.description || "0").toLocaleString()}
+                </div>
+              </div>
+            </div>
+          ))}
+          {isSunday && (
+            <div className="mt-auto pt-1 border-t border-gray-200">
+              <div className="bg-gradient-to-r from-[#FFD400] via-[#FFE666] to-[#FFF9C4] rounded-md py-0.5 px-1 relative overflow-hidden flex">
+                <div className="bg-black w-0.5 absolute left-0 top-0 bottom-0"></div>
+                <div className="pl-0 flex-grow space-y-0">
+                  {/* Updated padding class here */}
+                  <div className="text-[10px] sm:text-[12px] md:text-[12px] lg:text-base xl:text-lg font-bold tracking-wide text-black text-left leading-tight">
+                    ${weeklyTotal.toLocaleString()}
+                  </div>
+                  <div className="text-[7px] sm:text-[10px] md:text-xs font-semibold text-black text-left leading-tight">
+                    Week {getWeekNumber(new Date(currentDate.getFullYear(), currentDate.getMonth(), dayNumber))}
                   </div>
                 </div>
-              ))}
-            </>
+              </div>
+            </div>
           )}
         </div>
       )
     })
   }
 
-  // Add this function to calculate monthly total
+  // Replace the existing getMonthlyTotal function with this updated version
   const getMonthlyTotal = () => {
-    return tasks.reduce((sum, task) => sum + (parseFloat(task.description) || 0), 0)
+    const currentMonthTasks = tasks.filter((task) => {
+      const taskDate = parseTaskDate(task.startDate)
+      return taskDate.getMonth() === currentDate.getMonth() && taskDate.getFullYear() === currentDate.getFullYear()
+    })
+    return currentMonthTasks.reduce((sum, task) => sum + (Number.parseFloat(task.description) || 0), 0)
   }
 
   const generateListView = () => {
-    const filteredInvoices = tasks.filter(task => {
-      const taskDate = parseTaskDate(task.startDate);
-      return taskDate.getMonth() === currentDate.getMonth() &&
-        taskDate.getFullYear() === currentDate.getFullYear();
+    const filteredInvoices = tasks.filter((task) => {
+      const taskDate = parseTaskDate(task.startDate)
+      return taskDate.getMonth() === currentDate.getMonth() && taskDate.getFullYear() === currentDate.getFullYear()
     })
 
     if (filteredInvoices.length === 0) {
       return (
-        <div className="flex items-center justify-center p-8 border rounded-lg">
+        <div className="flex items-center justify-center p-8 border border-gray-200 rounded-lg">
           <span className="text-gray-500">No Pay Phases Found</span>
         </div>
       )
     }
 
     return (
-      <div className="flex flex-col gap-4">        
+      <div className="flex flex-col gap-4">
         {filteredInvoices
           .sort((a, b) => parseTaskDate(a.startDate).getTime() - parseTaskDate(b.startDate).getTime())
-          .map(task => (
-            <div 
+          .map((task) => (
+            <div
               key={task.id}
               onClick={() => {
-                setSelectedTask(task);
-                setIsDialogOpen(true);
+                setSelectedTask(task)
+                setIsDialogOpen(true)
               }}
-              className="flex flex-col p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+              className="flex flex-col p-6 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-all duration-200 border-l-4 border-l-[#FFD400] shadow-sm hover:shadow-md relative"
             >
-              <div className="flex justify-between items-start mb-2">
-                <div className="flex flex-col">
-                  <span className="font-semibold text-lg">{task.name}</span>
+              <div className="flex justify-between items-start gap-4">
+                <div className="flex flex-col gap-2">
+                  <h3 className="font-semibold text-xl text-gray-900">{task.name}</h3>
                   <span className="text-sm text-gray-600">
-                    {parseTaskDate(task.startDate).toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
+                    {parseTaskDate(task.startDate).toLocaleDateString("en-US", {
+                      weekday: "long",
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
                     })}
                   </span>
-                  <span className="text-sm text-gray-600">{task.job.name}</span>                  
-                </div>
-                <div className="flex flex-col items-end">
-                  <span className="font-bold text-lg">
-                    ${parseFloat(task.description).toLocaleString()}
+                  <span className="text-sm bg-gray-100 text-gray-700 px-3 py-1.5 rounded-md inline-block w-fit">
+                    {task.job.name}
                   </span>
-                  <Link href={`https://app.jobtread.com/jobs/${task.job.id}/schedule?taskId=${task.id}`} target="_blank" className="text-xs text-gray-500 hover:underline">
-                    <ArrowUpRight className="w-4 h-4" />
+                </div>
+                <div className="flex flex-col items-end gap-2">
+                  <span className="font-bold text-xl bg-[#FFD400] px-4 py-2 rounded-lg">
+                    ${Number.parseFloat(task.description).toLocaleString()}
+                  </span>
+                  <Link
+                    href={`https://app.jobtread.com/jobs/${task.job.id}/schedule?taskId=${task.id}`}
+                    target="_blank"
+                    className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1 transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    View in JobTread <ArrowUpRight className="w-4 h-4" />
                   </Link>
                 </div>
               </div>
@@ -355,159 +384,179 @@ export default function Calendar() {
         await fetchTasks()
       }
     } catch (error) {
-      console.error('Error fetching tasks:', error)
+      console.error("Error fetching tasks:", error)
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    
-      <main className="flex flex-col flex-1 p-0">
-        {error && (
-          <div className="p-4 bg-red-100 text-red-700 rounded-md m-4">
-            {error}
-          </div>
-        )}
-        
-        {loading ? (
-          <div className="flex items-center justify-center p-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-          </div>
-        ) : (
-          <>
-            <header className="flex h-16 shrink-0 items-center gap-2">
-              <div className="flex items-center gap-2 px-4">
-                <SidebarTrigger className="-ml-1" />
-                <Separator orientation="vertical" className="mr-2 h-4" />
-                <Breadcrumb>
-                  <BreadcrumbList>
-                    <BreadcrumbItem className="hidden md:block">
-                      <BreadcrumbLink href="/x/toolbox">Toolbox</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator className="hidden md:block" />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage>Calendar</BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </BreadcrumbList>
-                </Breadcrumb>
-              </div>
-            </header>
-            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex">
-                  <TTSelector onTaskTypeSelect={handleTaskTypeSelect} />
-                  <Button
-                    variant="outline"
-                    className="gap-2"
-                    onClick={() => setIsCalendarView(!isCalendarView)}
-                    >
-                    {isCalendarView ? (
-                      <>
-                        <List className="h-4 w-4" />
-                        <span>List View</span>
-                      </>
-                    ) : (
-                      <>
-                        <LayoutGrid className="h-4 w-4" />
-                        <span>Calendar View</span>
-                      </>
-                    )}
-                  </Button>
-                </div>
-                <div className="flex items-center gap-4">
-                  <button 
-                    className="p-2 hover:bg-gray-100 rounded-full"
-                    onClick={handlePreviousMonth}
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                  <div className="flex flex-col items-center">
-                    <h2 className="text-2xl font-semibold">{monthYear}</h2>
-                    <h3 className="text-sm text-gray-500">
-                      ${getMonthlyTotal().toLocaleString()}
-                    </h3>
-                  </div>
-                  <button 
-                    className="p-2 hover:bg-gray-100 rounded-full"
-                    onClick={handleNextMonth}
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" className="gap-2">
-                    <Plus className="w-4 h-4" />
-                    <span>Add Task <Badge variant="secondary">Coming Soon</Badge></span>
-                  </Button>
-                </div>
-              </div>
-              
+    <main className="flex flex-col flex-1 p-0">
+      {error && <div className="p-4 bg-red-100 text-red-700 rounded-md m-4 border border-gray-200">{error}</div>}
 
-              {/* Conditional render based on view type */}
-              {isCalendarView ? (
-                <FeatureProtect featureName="Cash Flow Calendar">
-                <div className="grid grid-cols-8 gap-2">
+      {loading ? (
+        <div className="flex items-center justify-center p-8">
+          <div className="animate-spin rounded-full h-10 w-10 border-4 border-[#FFD400] border-t-transparent"></div>
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-1 flex-col gap-2 p-2 pt-0 border-r border-l border-b border-gray-200">
+            <div className="flex flex-col sm:flex-row items-center justify-between mb-4 px-2 space-y-2 sm:space-y-0">
+              <div className="flex items-center space-x-2 w-full justify-center sm:justify-start order-1 sm:order-none sm:w-auto">
+                <Button
+                  variant="outline"
+                  className="focus:ring-2 focus:ring-yellow-400 focus:outline-none hover:bg-accent"
+                  onClick={() => setIsCalendarView(!isCalendarView)}
+                >
+                  {isCalendarView ? <List className="h-4 w-4" /> : <CalendarDays className="h-4 w-4" />}
+                </Button>
+                <TTSelector onTaskTypeSelect={handleTaskTypeSelect} />
+                <Button
+                  variant="outline"
+                  className="gap-2 text-black border-2 border-[#FFD400] bg-[#FFD400] transition-colors duration-300 shadow-lg hover:bg-[#FFD400]/80 sm:hidden"
+                  onClick={() => setIsTutorialOpen(true)}
+                >
+                  <YouTube className="w-5 h-5" />
+                </Button>
+                <Button
+                  variant="outline"
+                  className="gap-2 text-black hover:bg-accent border border-gray-200 relative sm:hidden"
+                >
+                  <Plus className="w-4 h-4 z-10 relative" />
+                  <span className="absolute -right-1 -top-1 bg-[#eee] text-[#4c545e] text-[8px] font-bold px-2 py-1 transform rotate-12 rounded-full leading-tight whitespace-nowrap">
+                    Coming
+                    <br />
+                    Soon
+                  </span>
+                </Button>
+              </div>
+
+              <div className="flex flex-col items-center w-full sm:w-auto order-2 sm:order-none mt-2 sm:mt-0">
+                <div className="flex items-center space-x-6 mb-2">
+                  <button
+                    className="p-2 bg-[#FFD400] rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#000] hover:bg-[#FFD400]/80"
+                    onClick={handlePreviousMonth}
+                    aria-label="Previous month"
+                  >
+                    <ChevronLeft className="w-6 h-6 text-[#000]" />
+                  </button>
+                  <h2 className="text-4xl font-bold text-[#000] tracking-tight">{monthYear}</h2>
+                  <button
+                    className="p-2 bg-[#FFD400] rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#000] hover:bg-[#FFD400]/80"
+                    onClick={handleNextMonth}
+                    aria-label="Next month"
+                  >
+                    <ChevronRight className="w-6 h-6 text-[#000]" />
+                  </button>
+                </div>
+                <div className="bg-[#FFD400] px-6 py-2 rounded-full text-lg font-semibold text-[#000] shadow-md transition-all duration-200 hover:bg-[#FFD400]/80">
+                  ${getMonthlyTotal().toLocaleString()}
+                </div>
+              </div>
+
+              <div className="w-full sm:w-auto hidden sm:flex justify-center sm:justify-end space-x-2">
+                <Button
+                  variant="outline"
+                  className="gap-2 text-black border-2 border-[#FFD400] bg-[#FFD400] transition-colors duration-300 shadow-lg hover:bg-[#FFD400]/80"
+                  onClick={() => setIsTutorialOpen(true)}
+                >
+                  <YouTube className="w-5 h-5" />
+                  <span className="font-semibold">Tutorial</span>
+                </Button>
+                <Button variant="outline" className="gap-2 text-black hover:bg-accent border border-gray-200 relative">
+                  <Plus className="w-4 h-4 z-10 relative" />
+                  <span className="z-10 relative">Add Task</span>
+                  <span className="absolute right-1 -top-1 bg-[#eee] text-[#4c545e] text-[8px] font-bold px-2 py-1 transform rotate-12 rounded-full leading-tight whitespace-nowrap">
+                    Coming Soon
+                  </span>
+                </Button>
+              </div>
+            </div>
+            {/* Conditional render based on view type */}
+            {isCalendarView ? (
+              <FeatureProtect featureName="Cash Flow Calendar">
+                <div className="grid grid-cols-7 gap-0">
                   {weekDays.map((day) => (
-                    <div key={day} className="text-center font-medium text-gray-500 py-2">
+                    <div
+                      key={day}
+                      className={`text-center font-semibold py-3 bg-gray-100 text-gray-600 rounded-t-lg border-b-2 border-[#FFD400]/30`}
+                    >
                       {day}
                     </div>
                   ))}
                   {generateCalendarDays()}
                 </div>
-                </FeatureProtect>
-              ) : (
-                <FeatureProtect featureName="Cash Flow Calendar">
-                  {generateListView()}
-                </FeatureProtect>
-              )}
+              </FeatureProtect>
+            ) : (
+              <FeatureProtect featureName="Cash Flow Calendar">
+                <div className="border border-gray-200">{generateListView()}</div>
+              </FeatureProtect>
+            )}
+          </div>
+        </>
+      )}
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[425px] max-w-[90vw] w-full border-l-4 border-l-[#FFD400] bg-white rounded-lg shadow-lg">
+          <DialogHeader className="border-b border-b-black/10 pb-4">
+            <DialogTitle className="text-xl font-semibold text-black">{selectedTask?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-6 py-6">
+            <div className="grid gap-2.5">
+              <div className="text-sm text-black/60 font-medium">Due Date</div>
+              <div className="font-medium text-black">
+                {selectedTask?.startDate
+                  ? parseTaskDate(selectedTask.startDate).toLocaleDateString("en-US", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })
+                  : ""}
+              </div>
             </div>
-          </>
-        )}
-        
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-semibold">
-                {selectedTask?.name}
-              </DialogTitle>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <div className="text-sm text-gray-500">
-                  Due Date
-                </div>
-                <div className="font-medium">
-                  {selectedTask?.startDate ? 
-                    parseTaskDate(selectedTask.startDate).toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    }) : ''
-                  }
-                </div>
+            <div className="grid gap-2.5">
+              <div className="text-sm text-black/60 font-medium">Amount</div>
+              <div className="font-bold text-2xl text-black bg-[#FFD400] inline-block px-3 py-1 rounded">
+                ${Number.parseFloat(selectedTask?.description || "0").toLocaleString()}
               </div>
-              <div className="grid gap-2">
-                <div className="text-sm text-gray-500">
-                  Amount
-                </div>
-                <div className="font-medium">
-                  ${parseFloat(selectedTask?.description || '0').toLocaleString()}
-                </div>
-              </div>
-              <div className="grid gap-2">
-                <div className="text-sm text-gray-500">
-                  Job ID
-                </div>
-                <div className="font-medium">
-                  {selectedTask?.job.id}
-                </div>
-              </div>
-              {/* Add more invoice details as needed */}
             </div>
-          </DialogContent>
-        </Dialog>
-      </main>
+            <div className="grid gap-2.5">
+              <div className="text-sm text-black/60 font-medium">Job Details</div>
+              <div className="flex items-center justify-between">
+                <div className="font-medium text-black">{selectedTask?.job.name}</div>
+                <Link
+                  href={`https://app.jobtread.com/jobs/${selectedTask?.job.id}/schedule?taskId=${selectedTask?.id}`}
+                  target="_blank"
+                  className="text-black hover:text-[#FFD400] transition-colors"
+                >
+                  <ArrowUpRight className="w-5 h-5" />
+                </Link>
+              </div>
+              <div className="text-sm text-black/60">ID: {selectedTask?.job.id}</div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isTutorialOpen} onOpenChange={setIsTutorialOpen}>
+        <DialogContent className="sm:max-w-[800px] max-w-[90vw] w-full bg-white rounded-lg shadow-lg">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold text-black">Tutorial Video</DialogTitle>
+          </DialogHeader>
+          <div className="aspect-video">
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/FEptwBb7IrM"
+              title="Tutorial Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </main>
   )
 }
+
