@@ -11,9 +11,11 @@ import { doc, getDoc } from "firebase/firestore"
 import { useAuth } from "@/lib/context/auth-context"
 import { useState, useEffect } from "react"
 import { db } from "@/lib/firebase"
-import { Loader2 } from 'lucide-react'
+import { Loader2, YoutubeIcon as YouTube } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import FeatureProtect from "@/components/admin/featureProtect"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+
 interface Webhook {
   id: string
   url: string
@@ -26,6 +28,7 @@ export default function GMapCoverPhotoPage() {
   const [webhookExists, setWebhookExists] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isTutorialOpen, setIsTutorialOpen] = useState(false)
 
   useEffect(() => {
     if (!user) return
@@ -92,9 +95,21 @@ export default function GMapCoverPhotoPage() {
   return (
     <main className="flex-grow container mx-auto px-4 py-8">
       <div className="space-y-8">
-        <header>
-          <h1 className="text-2xl font-bold mb-2">Google Maps Job Cover Photo</h1>
-          <p className="text-muted-foreground">Manage automatic cover photo updates for your jobs</p>
+        <header className="flex justify-between items-center">
+          <div>
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold">Google Maps Job Cover Photo</h1>
+              <Button
+                variant="outline"
+                className="gap-2 text-black border-2 border-[#FFD400] bg-[#FFD400] transition-colors duration-300 shadow-lg hover:bg-[#FFD400]/80 ml-4"
+                onClick={() => setIsTutorialOpen(true)}
+              >
+                <YouTube className="w-5 h-5" />
+                <span className="font-semibold">Tutorial</span>
+              </Button>
+            </div>
+            <p className="text-muted-foreground mt-2">Manage automatic cover photo updates for your jobs</p>
+          </div>
         </header>
         <FeatureProtect featureName="Google Maps Job Cover Photo">
         <div className="grid gap-6 md:grid-cols-2">
@@ -143,7 +158,25 @@ export default function GMapCoverPhotoPage() {
         </section>
         </FeatureProtect>
       </div>
+
+      <Dialog open={isTutorialOpen} onOpenChange={setIsTutorialOpen}>
+        <DialogContent className="sm:max-w-[800px] max-w-[90vw] w-full bg-white rounded-lg shadow-lg">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold text-black">Tutorial Video</DialogTitle>
+          </DialogHeader>
+          <div className="aspect-video">
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/YwqPPWUjjyw"
+              title="Tutorial Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </DialogContent>
+      </Dialog>
     </main>
   )
 }
-

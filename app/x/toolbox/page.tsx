@@ -101,7 +101,7 @@ const allFeatures: FeatureCardProps[] = [
     tier: "core",
   },
   {
-    title: "Google Maps Cover Photos",
+    title: "Google Cover Photo",
     description: "Automatically fetch Google Maps images and assign to Job Cover Photo.",
     href: "/x/toolbox/coverphoto",
     isPopular: true,
