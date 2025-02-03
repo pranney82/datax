@@ -12,7 +12,7 @@ import { db } from "@/lib/firebase"
 import { useAuth } from "@/lib/context/auth-context"
 import { CreateWebhookButton } from "./zwebhook"
 import { Button } from "@/components/ui/button"
-import { Loader2, YoutubeIcon as YouTube } from 'lucide-react'
+import { Loader2, YoutubeIcon as YouTube } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import FeatureProtect from "@/components/admin/featureProtect"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -22,7 +22,7 @@ interface Webhook {
   cfType: string
 }
 
-export default function ZillowPage() {
+export default function GoogleMapsPage() {
   const { user } = useAuth()
   const [orgId, setOrgId] = useState<string | null>(null)
   const [grantKey, setGrantKey] = useState<string | null>(null)
@@ -82,7 +82,7 @@ export default function ZillowPage() {
         const data = await response.json()
 
         const webhooks = data?.organization?.webhooks?.nodes || []
-        const exists = webhooks.some((webhook: Webhook) => webhook.url === "https://winyourdata.com/api/zillow")
+        const exists = webhooks.some((webhook: Webhook) => webhook.url === "https://winyourdata.com/api/googlemaps")
         setWebhookExists(exists)
       } catch (error) {
         console.error("Error fetching webhooks:", error)
@@ -94,25 +94,27 @@ export default function ZillowPage() {
   return (
     <main className="flex-grow container mx-auto px-4 py-8">
       <div className="space-y-8">
-        <header className="flex items-center justify-between">
+        <header className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold mb-2">Zillow Integration</h1>
-            <p className="text-muted-foreground">Import property data from Zillow to custom fields on the location record</p>
+            <div className="flex items-left justify-start">
+              <h1 className="text-2xl font-bold">Zillow Integration</h1>
+              <Button
+                variant="outline"
+                className="gap-2 text-black border-2 border-[#FFD400] bg-[#FFD400] transition-colors duration-300 shadow-lg hover:bg-[#FFD400]/80 ml-4"
+                onClick={() => setIsTutorialOpen(true)}
+              >
+                <YouTube className="w-5 h-5" />
+                <span className="font-semibold">Tutorial</span>
+              </Button>
+            </div>
+            <p className="text-muted-foreground mt-2">Import property data from Zillow to custom fields to a location record.</p>
           </div>
-          <Button
-            variant="outline"
-            className="gap-2 text-black border-2 border-[#FFD400] bg-[#FFD400] transition-colors duration-300 shadow-lg hover:bg-[#FFD400]/80"
-            onClick={() => setIsTutorialOpen(true)}
-          >
-            <YouTube className="w-5 h-5" />
-            <span className="font-semibold">Tutorial</span>
-          </Button>
         </header>
         <FeatureProtect featureName="Zillow Integration">
-          <div className="grid grid-cols-1 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
             <ModernDashboardCard
-              title="Automatic Zillow Data"
-              description="Import on location creation. This will create Zillow data on your location record in JobTread."
+              title="Automatic Cover Photo Updates"
+              description="Import on location creation. This will update cover photos for your job locations in Google Maps."
             >
               <div className="space-y-4">
                 <div>
@@ -123,7 +125,7 @@ export default function ZillowPage() {
                     className="w-full"
                     type="text"
                     id="webhook-url"
-                    value="https://winyourdata.com/api/zillow"
+                    value="https://winyourdata.com/api/googlemaps"
                     disabled
                   />
                 </div>
@@ -166,3 +168,4 @@ export default function ZillowPage() {
     </main>
   )
 }
+
