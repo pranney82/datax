@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { queryCFLeads } from '@/app/x/dashboard/leads/query';
@@ -36,7 +36,7 @@ export default function LeadsPieQuery({ selectedField }: { selectedField?: strin
   const [isLoading, setIsLoading] = useState(true);
   const { dateRange } = useLeadsCount();
 
-  const fetchLeadsData = async (orgID: string, grantKey: string, cfName: string, page?: string) => {
+  const fetchLeadsData = useCallback(async (orgID: string, grantKey: string, cfName: string, page?: string) => {
     try {
       const response = await fetch('/api/jtfetch', {
         method: 'POST',
@@ -66,9 +66,9 @@ export default function LeadsPieQuery({ selectedField }: { selectedField?: strin
       console.error('Error:', error);
       return null;
     }
-  };
+  }, [dateRange]);
 
-  const fetchAllPages = async (orgID: string, grantKey: string, leadspiecfv: string, leadspiecfvName: string) => {
+  const fetchAllPages = useCallback(async (orgID: string, grantKey: string, leadspiecfv: string, leadspiecfvName: string) => {
     let currentPage = "";
     let allResults: CustomFieldValue[] = [];
     let hasNextPage = true;
@@ -122,7 +122,7 @@ export default function LeadsPieQuery({ selectedField }: { selectedField?: strin
         }
       }
     };
-  };
+  }, [fetchLeadsData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -155,7 +155,7 @@ export default function LeadsPieQuery({ selectedField }: { selectedField?: strin
     };
 
     fetchData();
-  }, [dateRange, selectedField]);
+  }, [dateRange, selectedField, fetchAllPages]);
 
   return { queryResult, isLoading };
 } 

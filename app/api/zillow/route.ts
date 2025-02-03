@@ -182,40 +182,40 @@ export async function POST(request: Request) {
     )?.areaSquareFeet;
     const transactionURL = bridgeResponse2?.bundle?.[0]?.transactionsUrl;
 
-    // console.log('Bridge API response2:', { 
-    //     yearbuilt, 
-    //     bedrooms,
-    //     bedbath,
-    //     livingArea, 
-    // });
+    // Initialize these variables
+    let latestSalePrice;
+    let latestSaleRecord;
 
-    //one more bridge call for transactions
-    const bridgeResponse3 = await fetch(
-      `${transactionURL}?access_token=${process.env.NEXT_PUBLIC_BRIDGE_API_TOKEN}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
+    // Only make the third API call if we have a transaction URL
+    if (transactionURL) {
+      //one more bridge call for transactions
+      const bridgeResponse3 = await fetch(
+        `${transactionURL}?access_token=${process.env.NEXT_PUBLIC_BRIDGE_API_TOKEN}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
         }
-      }
-    ).then(async (res) => {
-      if(!res.ok) {
-        throw new Error(`Bridge API responded with status: ${res.status}`);
-      }
-      return res.json();
-    });
+      ).then(async (res) => {
+        if(!res.ok) {
+          throw new Error(`Bridge API responded with status: ${res.status}`);
+        }
+        return res.json();
+      });
 
-    //console.log('Bridge API response3:', bridgeResponse3);
+      //console.log('Bridge API response3:', bridgeResponse3);
 
-    // Get the latest sale record with both price and date in one operation
-    const latestSaleRecord = bridgeResponse3?.bundle
-      ?.filter((item: { salesPrice: number | null }) => item.salesPrice !== null)
-      ?.sort((a: { recordingDate: string }, b: { recordingDate: string }) => 
-        new Date(b.recordingDate).getTime() - new Date(a.recordingDate).getTime()
-      )?.[0];
+      // Get the latest sale record with both price and date in one operation
+      latestSaleRecord = bridgeResponse3?.bundle
+        ?.filter((item: { salesPrice: number | null }) => item.salesPrice !== null)
+        ?.sort((a: { recordingDate: string }, b: { recordingDate: string }) => 
+          new Date(b.recordingDate).getTime() - new Date(a.recordingDate).getTime()
+        )?.[0];
 
-    // Extract values from the record
-    const latestSalePrice = latestSaleRecord?.salesPrice;
+      // Extract values from the record
+      latestSalePrice = latestSaleRecord?.salesPrice;
+    }
 
     // Convert the date if we have it
     if (latestSaleRecord?.recordingDate) {

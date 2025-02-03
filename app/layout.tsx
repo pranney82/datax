@@ -1,6 +1,7 @@
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/lib/context/auth-context"
+import { UserProvider } from "@/lib/providers/user-provider"
 import type { Metadata } from "next"
 import dynamic from "next/dynamic"
 
@@ -46,10 +47,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <AuthProvider>
-          <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
-            {children}
-            <ScrollToTopButton scrollThreshold={400} />
-          </ThemeProvider>
+          <UserProvider>
+            <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
+              {children}
+              <ScrollToTopButton scrollThreshold={400} />
+            </ThemeProvider>
+          </UserProvider>
         </AuthProvider>
       </body>
     </html>

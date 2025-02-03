@@ -126,7 +126,7 @@ export const Card4 = () => {
               {isLoading ? 'Creating...' : 'Create Custom Field: Zillow URL'}
             </Button>
             <Button 
-              onClick={() => handleCreateField("Year Built", "number")}
+              onClick={() => handleCreateField("Year Built", "text")}
               disabled={isLoading}
               className="w-full"
             >

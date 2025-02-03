@@ -22,35 +22,13 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { useEffect } from "react"
 import { auth } from "@/lib/firebase"
-import { onAuthStateChanged, signOut } from "firebase/auth"
+import { signOut } from "firebase/auth"
 import { useUserStore } from "@/lib/stores/user-store"
-
-// No-op function to use variables
-function useVariables(...args: unknown[]) {
-  // Reference args to avoid unused parameter warning
-  args.forEach(() => {});
-}
 
 export function NavUser() {
   const { isMobile } = useSidebar()
-  const { uid, name, email, avatar, org, subscriptionStatus, subscriptionType, admin, fetchUser } = useUserStore()
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
-      if (authUser) {
-        await fetchUser(authUser.uid)
-      } else {
-        useUserStore.getState().clearUser()
-      }
-    })
-
-    return () => unsubscribe()
-  }, [fetchUser])
-
-  // Use the no-op function to avoid unused variable warnings
-  useVariables(uid, org, subscriptionStatus, subscriptionType, admin)
+  const { name, email, avatar, subscriptionStatus } = useUserStore()
 
   const upgradeMenuItem = () => {
     if (subscriptionStatus === 'active') {
@@ -60,23 +38,23 @@ export function NavUser() {
       <>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-      <DropdownMenuItem asChild>
-        <div className="group">
-          <Link 
-            href="/pricing" 
-            className="flex items-center justify-between w-full px-2 py-1.5 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary-foreground hover:text-primary rounded-md transition-all duration-200 ease-in-out transform hover:scale-105"
-          >
-            <span className="flex items-center">
-              <Sparkles className="mr-2 h-4 w-4" />
-              Upgrade to {' '}
-              <span className="ml-1 text-xs bg-primary-foreground text-primary px-1.5 py-0.5 rounded-full transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
-                CORE
-              </span>
-            </span>
-          </Link>
-          </div>
-        </DropdownMenuItem>
-      </DropdownMenuGroup>
+          <DropdownMenuItem asChild>
+            <div className="group">
+              <Link 
+                href="/pricing" 
+                className="flex items-center justify-between w-full px-2 py-1.5 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary-foreground hover:text-primary rounded-md transition-all duration-200 ease-in-out transform hover:scale-105"
+              >
+                <span className="flex items-center">
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Upgrade to {' '}
+                  <span className="ml-1 text-xs bg-primary-foreground text-primary px-1.5 py-0.5 rounded-full transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
+                    CORE
+                  </span>
+                </span>
+              </Link>
+            </div>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </>
     )
   }
@@ -125,7 +103,6 @@ export function NavUser() {
             {upgradeMenuItem()}
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              {/* TODO: Add account settings */}
               <DropdownMenuItem>
                 <CreditCard className="mr-2 h-4 w-4" />
                 <Link href="/x/settings">
