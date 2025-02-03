@@ -92,7 +92,7 @@ const allFeatures: FeatureCardProps[] = [
     tier: "core",
   },
   {
-    title: "Zillow Data Import",
+    title: "Zillow Integration",
     description: "Import property data from Zillow and assign to custom fields.",
     href: "/x/toolbox/zillow",
     isPopular: true,

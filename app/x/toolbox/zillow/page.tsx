@@ -96,7 +96,7 @@ export default function ZillowPage() {
   return (
     <main className="flex-grow container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold">Zillow Data Import</h1>
+        <h1 className="text-2xl font-bold">Zillow Integration</h1>
         <Button
           variant="outline"
           className="gap-2 text-black border-2 border-[#FFD400] bg-[#FFD400] transition-colors duration-300 shadow-lg hover:bg-[#FFD400]/80"
@@ -106,7 +106,7 @@ export default function ZillowPage() {
           <span className="font-semibold">Tutorial</span>
         </Button>
       </div>
-      <FeatureProtect featureName="Zillow Data Import">
+      <FeatureProtect featureName="Zillow Integration">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <ModernDashboardCard 
           title="Automatic Zillow Data"
