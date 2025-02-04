@@ -12,7 +12,7 @@ import { db } from "@/lib/firebase"
 import { useAuth } from "@/lib/context/auth-context"
 import { CreateWebhookButton } from "./zwebhook"
 import { Button } from "@/components/ui/button"
-import { Loader2, YoutubeIcon as YouTube } from "lucide-react"
+import { Loader2, YoutubeIcon as YouTube } from 'lucide-react'
 import { Input } from "@/components/ui/input"
 import FeatureProtect from "@/components/admin/featureProtect"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -94,24 +94,22 @@ export default function GoogleMapsPage() {
   return (
     <main className="flex-grow container mx-auto px-4 py-8">
       <div className="space-y-8">
-        <header className="flex justify-between items-center">
-          <div>
-            <div className="flex items-left justify-start">
-              <h1 className="text-2xl font-bold">Zillow Integration</h1>
-              <Button
-                variant="outline"
-                className="gap-2 text-black border-2 border-[#FFD400] bg-[#FFD400] transition-colors duration-300 shadow-lg hover:bg-[#FFD400]/80 ml-4"
-                onClick={() => setIsTutorialOpen(true)}
-              >
-                <YouTube className="w-5 h-5" />
-                <span className="font-semibold">Tutorial</span>
-              </Button>
-            </div>
-            <p className="text-muted-foreground mt-2">Import property data from Zillow to custom fields to a location record.</p>
+        <header className="space-y-4 sm:space-y-0 sm:flex sm:justify-between sm:items-center">
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold">Zillow Integration</h1>
+            <p className="text-muted-foreground">Import property data from Zillow to custom fields to a location record</p>
           </div>
+          <Button
+            variant="outline"
+            className="w-full sm:w-auto gap-2 text-black border-2 border-[#FFD400] bg-[#FFD400] transition-colors duration-300 shadow-lg hover:bg-[#FFD400]/80"
+            onClick={() => setIsTutorialOpen(true)}
+          >
+            <YouTube className="w-5 h-5" />
+            <span className="font-semibold">Tutorial</span>
+          </Button>
         </header>
-        <FeatureProtect featureName="Zillow Integration">
-        <div className="grid gap-6 md:grid-cols-2">
+        <FeatureProtect featureName="Google Maps Job Cover Photo">
+          <div className="grid gap-6 md:grid-cols-2">
             <ModernDashboardCard
               title="Automatic Cover Photo Updates"
               description="Import on location creation. This will update cover photos for your job locations in Google Maps."
@@ -168,4 +166,3 @@ export default function GoogleMapsPage() {
     </main>
   )
 }
-
