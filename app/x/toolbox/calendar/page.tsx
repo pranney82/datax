@@ -286,7 +286,7 @@ export default function Calendar() {
                 <div className="bg-black w-0.5 absolute left-0 top-0 bottom-0"></div>
                 <div className="pl-0 flex-grow space-y-0">
                   {/* Updated padding class here */}
-                  <div className="text-[10px] sm:text-[12px] md:text-[12px] lg:text-base xl:text-lg font-bold tracking-wide text-black text-left leading-tight">
+                  <div className="text-[8px] sm:text-[10px] md:text-[10px] lg:text-xs xl:text-sm font-bold tracking-wide text-black text-left leading-tight">
                     ${weeklyTotal.toLocaleString()}
                   </div>
                   <div className="text-[7px] sm:text-[10px] md:text-xs font-semibold text-black text-left leading-tight">
@@ -391,9 +391,8 @@ export default function Calendar() {
   }
 
   return (
-    <main className="flex flex-col flex-1 p-0">
+    <main className="flex flex-col flex-1 p-0 pt-12">
       {error && <div className="p-4 bg-red-100 text-red-700 rounded-md m-4 border border-gray-200">{error}</div>}
-
       {loading ? (
         <div className="flex items-center justify-center p-8">
           <div className="animate-spin rounded-full h-10 w-10 border-4 border-[#FFD400] border-t-transparent"></div>
@@ -413,13 +412,6 @@ export default function Calendar() {
                 <TTSelector onTaskTypeSelect={handleTaskTypeSelect} />
                 <Button
                   variant="outline"
-                  className="gap-2 text-black border-2 border-[#FFD400] bg-[#FFD400] transition-colors duration-300 shadow-lg hover:bg-[#FFD400]/80 sm:hidden"
-                  onClick={() => setIsTutorialOpen(true)}
-                >
-                  <YouTube className="w-5 h-5" />
-                </Button>
-                <Button
-                  variant="outline"
                   className="gap-2 text-black hover:bg-accent border border-gray-200 relative sm:hidden"
                 >
                   <Plus className="w-4 h-4 z-10 relative" />
@@ -428,6 +420,13 @@ export default function Calendar() {
                     <br />
                     Soon
                   </span>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="gap-2 text-black border-2 border-[#FFD400] bg-[#FFD400] transition-colors duration-300 shadow-lg hover:bg-[#FFD400]/80 sm:hidden"
+                  onClick={() => setIsTutorialOpen(true)}
+                >
+                  <YouTube className="w-5 h-5" />
                 </Button>
               </div>
 
@@ -455,6 +454,13 @@ export default function Calendar() {
               </div>
 
               <div className="w-full sm:w-auto hidden sm:flex justify-center sm:justify-end space-x-2">
+                <Button variant="outline" className="gap-2 text-black hover:bg-accent border border-gray-200 relative">
+                  <Plus className="w-4 h-4 z-10 relative" />
+                  <span className="z-10 relative">Add Task</span>
+                  <span className="absolute right-1 -top-1 bg-[#eee] text-[#4c545e] text-[8px] font-bold px-2 py-1 transform rotate-12 rounded-full leading-tight whitespace-nowrap">
+                    Coming Soon
+                  </span>
+                </Button>
                 <Button
                   variant="outline"
                   className="gap-2 text-black border-2 border-[#FFD400] bg-[#FFD400] transition-colors duration-300 shadow-lg hover:bg-[#FFD400]/80"
@@ -463,16 +469,8 @@ export default function Calendar() {
                   <YouTube className="w-5 h-5" />
                   <span className="font-semibold">Tutorial</span>
                 </Button>
-                <Button variant="outline" className="gap-2 text-black hover:bg-accent border border-gray-200 relative">
-                  <Plus className="w-4 h-4 z-10 relative" />
-                  <span className="z-10 relative">Add Task</span>
-                  <span className="absolute right-1 -top-1 bg-[#eee] text-[#4c545e] text-[8px] font-bold px-2 py-1 transform rotate-12 rounded-full leading-tight whitespace-nowrap">
-                    Coming Soon
-                  </span>
-                </Button>
               </div>
             </div>
-            {/* Conditional render based on view type */}
             {isCalendarView ? (
               <FeatureProtect featureName="Cash Flow Calendar">
                 <div className="grid grid-cols-7 gap-0">
@@ -495,7 +493,6 @@ export default function Calendar() {
           </div>
         </>
       )}
-
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[425px] max-w-[90vw] w-full border-l-4 border-l-[#FFD400] bg-white rounded-lg shadow-lg">
           <DialogHeader className="border-b border-b-black/10 pb-4">
@@ -541,7 +538,7 @@ export default function Calendar() {
       <Dialog open={isTutorialOpen} onOpenChange={setIsTutorialOpen}>
         <DialogContent className="sm:max-w-[800px] max-w-[90vw] w-full bg-white rounded-lg shadow-lg">
           <DialogHeader>
-            <DialogTitle className="text-xl font-semibold text-black">Tutorial Video</DialogTitle>
+            <DialogTitle className="text-xl font-semibold text-black">Cash Flow Calendar Walkthrough</DialogTitle>
           </DialogHeader>
           <div className="aspect-video">
             <iframe
