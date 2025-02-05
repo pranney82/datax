@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import { doc, getDoc, updateDoc, collection } from "firebase/firestore"
+import { doc, getDoc, updateDoc, collection, addDoc, getFirestore } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -53,9 +53,12 @@ export default function SettingsPage() {
 
   const [grantKeyDialogOpen, setGrantKeyDialogOpen] = useState(false)
   const [supportDialogOpen, setSupportDialogOpen] = useState(false)
-  const [supportMessage, setSupportMessage] = useState('')
+  
 
   const [resetEmailSent, setResetEmailSent] = useState(false)
+
+  const [supportTitle, setSupportTitle] = useState('')
+  const [supportDescription, setSupportDescription] = useState('')
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -203,26 +206,64 @@ export default function SettingsPage() {
 
   const handleSupportSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the support message to your backend
-    console.log('Support message submitted:', supportMessage)
-    // Reset the form and close the dialog
-    setSupportMessage('')
-    setSupportDialogOpen(false)
-    // You might want to show a success message to the user here
+
+    if (!user?.email || !supportTitle.trim() || !supportDescription.trim()) {
+      const missingFields: string[] = [];
+      if (!user?.email) missingFields.push('Email');
+      if (!supportTitle.trim()) missingFields.push('Title');
+      if (!supportDescription.trim()) missingFields.push('Description');
+      
+      console.error(`Missing required fields: ${missingFields.join(', ')}`);
+      alert(`Please fill in the following required fields: ${missingFields.join(', ')}`);
+      return;
+    }
+
+    try {
+      const db = getFirestore()
+      await addDoc(collection(db, "supportRequests"), {
+        email: user?.email,
+        title: supportTitle,
+        description: supportDescription,
+        createdAt: new Date(),
+        status: "new",
+      })
+
+      // Send Discord notification
+      await fetch("/api/discord-notify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "support-request",
+          data: {
+            title: supportTitle,
+            description: supportDescription,
+            email: user?.email,
+            status: "new",
+          },
+        }),
+      })
+
+      setSupportTitle("")
+      setSupportDescription("")
+    } catch (error) {
+      console.error("Error submitting support request:", error)
+    }
   }
 
   const handleResetPassword = async () => {
-    if (!user?.email) return
-    
-    try {
-      await sendPasswordResetEmail(auth, user.email)
-      setResetEmailSent(true)
-      setTimeout(() => setResetEmailSent(false), 3000) // Clear message after 3 seconds
-    } catch (error) {
-      console.error('Error sending reset email:', error)
-      alert('Failed to send reset email. Please try again.')
+    if (!user || !user.email) {
+      alert('User not authenticated');
+      return;
     }
-  }
+    try {
+      await sendPasswordResetEmail(auth, user.email);
+      setResetEmailSent(true);
+    } catch (error: unknown) {
+      console.error('Error sending reset password email:', error);
+    }
+  };
 
   return (
     <div className="flex-grow container mx-auto px-4 py-8">
@@ -432,9 +473,19 @@ export default function SettingsPage() {
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSupportSubmit}>
+            <Input
+              value={user?.email || ''}
+              disabled
+              placeholder="Email"
+            /><br />
+            <Input
+              value={supportTitle}
+              onChange={(e) => setSupportTitle(e.target.value)}
+              placeholder="Title"
+            /><br />            
             <Textarea
-              value={supportMessage}
-              onChange={(e) => setSupportMessage(e.target.value)}
+              value={supportDescription}
+              onChange={(e) => setSupportDescription(e.target.value)}
               placeholder="Describe your issue here..."
               className="min-h-[100px]"
             />

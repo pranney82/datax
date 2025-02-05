@@ -14,7 +14,7 @@ import { Loader2, YoutubeIcon as YouTube } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import FeatureProtect from "@/components/admin/featureProtect"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-
+import { CoverPhotoLogsTable } from "./cplogstable"
 interface Webhook {
   id: string
   url: string
@@ -143,95 +143,7 @@ export default function GMapCoverPhotoPage() {
             </ModernDashboardCard>
           </div>
 
-          <section className="mt-12">
-            <h2 className="text-2xl font-semibold mb-4">Cover Photo Logs</h2>
-            <div className="border rounded-lg overflow-hidden">
-              <div className="max-h-[400px] overflow-y-auto">
-                <div className="grid gap-4 p-4">
-                  <div className="bg-white rounded-lg border text-sm">
-                    <div className="md:flex md:items-center md:gap-4 md:p-4">
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Date & Time</div>
-                        <div>1/26/2025, 3:21:31 PM</div>
-                      </div>
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Status</div>
-                        <div className="text-green-600">Success</div>
-                      </div>
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Job ID</div>
-                        <div>22P3Kv2xn6T5</div>
-                      </div>
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Address</div>
-                        <div>3203 Lenox Rd NE unit 45, Atlanta, GA 30324, USA</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-white rounded-lg border text-sm">
-                    <div className="md:flex md:items-center md:gap-4 md:p-4">
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Date & Time</div>
-                        <div>1/25/2025, 2:15:22 PM</div>
-                      </div>
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Status</div>
-                        <div className="text-green-600">Success</div>
-                      </div>
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Job ID</div>
-                        <div>19L7Jm4xk2R8</div>
-                      </div>
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Address</div>
-                        <div>1180 Peachtree St NE, Atlanta, GA 30309, USA</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-white rounded-lg border text-sm">
-                    <div className="md:flex md:items-center md:gap-4 md:p-4">
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Date & Time</div>
-                        <div>1/24/2025, 11:05:47 AM</div>
-                      </div>
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Status</div>
-                        <div className="text-red-600">Failed</div>
-                      </div>
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Job ID</div>
-                        <div>31Q9Hs6yp4F2</div>
-                      </div>
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Address</div>
-                        <div>400 W Peachtree St NW, Atlanta, GA 30308, USA</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-white rounded-lg border text-sm">
-                    <div className="md:flex md:items-center md:gap-4 md:p-4">
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Date & Time</div>
-                        <div>1/23/2025, 9:30:15 AM</div>
-                      </div>
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Status</div>
-                        <div className="text-green-600">Success</div>
-                      </div>
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Job ID</div>
-                        <div>28T6Gf1zw9M3</div>
-                      </div>
-                      <div className="flex-1 p-4 md:p-0">
-                        <div className="font-medium mb-1">Address</div>
-                        <div>75 14th St NE, Atlanta, GA 30309, USA</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+          <CoverPhotoLogsTable />
         </FeatureProtect>
       </div>
 
