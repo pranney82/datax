@@ -41,7 +41,9 @@ function FeatureCard({ title, description, href, isPopular, status, footerTag }:
                 isPopular
                   ? "bg-[#ffd400] text-[#000] border-[#e6bf00]"
                   : status === "Coming Soon"
-                    ? "bg-gray-100 text-gray-600 border-gray-300"
+                    ? "bg-gray-100 text-gray-600"
+                    : status === "Active"
+                    ? "bg-gray-700 text-white border-yellow-300"
                     : status === "Request"
                       ? "bg-purple-100 text-purple-800 border-purple-300"
                       : ""
@@ -111,17 +113,8 @@ const allFeatures: FeatureCardProps[] = [
     tier: "core",
   },
   {
-    title: "AI Agent",
-    description: "Define workflows inside of JobTread for your AI Agent to run automously.",
-    href: "#",
-    isPopular: false,
-    status: "Coming Soon",
-    footerTag: "PRO",
-    tier: "pro",
-  },
-  {
-    title: "Voice to Estimate",
-    description: "Generate estimates for jobs using voice recordings and AI.",
+    title: "AIA Billing",
+    description: "Attach AIA billing PDF to JOBTREAD customer invoice.",
     href: "#",
     isPopular: false,
     status: "Coming Soon",
@@ -143,12 +136,30 @@ const allFeatures: FeatureCardProps[] = [
     href: "#",
     isPopular: false,
     status: "Coming Soon",
-    footerTag: "PRO",
-    tier: "pro",
+    footerTag: "CORE",
+    tier: "core",
   },
   {
     title: "Calendly Integration",
     description: "Automatically sync your Calendly events to JobTread.",
+    href: "#",
+    isPopular: false,
+    status: "Coming Soon",
+    footerTag: "CORE",
+    tier: "core",
+  },
+  {
+    title: "AI Agent",
+    description: "Define workflows inside of JobTread for your AI Agent to run automously.",
+    href: "#",
+    isPopular: false,
+    status: "Coming Soon",
+    footerTag: "PRO",
+    tier: "pro",
+  },
+  {
+    title: "Voice to Estimate",
+    description: "Generate estimates for jobs using voice recordings and AI.",
     href: "#",
     isPopular: false,
     status: "Coming Soon",
