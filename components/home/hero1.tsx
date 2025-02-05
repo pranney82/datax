@@ -30,7 +30,7 @@ const Hero1 = () => {
     question: "How does it work?",
     answer:
       "Getting started is easy! Simply enter your JOBTREAD grant key, and you're all set. From there, you can explore your dashboard, enable custom integrations, and unlock a variety of powerful features!",
-    videoId: "FiAXjvgV0Zc",
+    videoId: "kZoFzQK1Scg",
   }
 
   return (

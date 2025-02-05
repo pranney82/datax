@@ -2,11 +2,13 @@
 
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Zap, TrendingUp } from "lucide-react"
+import { Zap, TrendingUp, ChevronDown, Check, YoutubeIcon as YouTube } from "lucide-react"
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useState, useMemo } from "react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 interface FeatureCardProps {
   title: string
@@ -39,7 +41,9 @@ function FeatureCard({ title, description, href, isPopular, status, footerTag }:
                 isPopular
                   ? "bg-[#ffd400] text-[#000] border-[#e6bf00]"
                   : status === "Coming Soon"
-                    ? "bg-gray-100 text-gray-600 border-gray-300"
+                    ? "bg-gray-100 text-gray-600"
+                    : status === "Active"
+                    ? "bg-gray-700 text-white border-yellow-300"
                     : status === "Request"
                       ? "bg-purple-100 text-purple-800 border-purple-300"
                       : ""
@@ -91,7 +95,7 @@ const allFeatures: FeatureCardProps[] = [
     tier: "core",
   },
   {
-    title: "Zillow Data Import",
+    title: "Zillow Integration",
     description: "Import property data from Zillow and assign to custom fields.",
     href: "/x/toolbox/zillow",
     isPopular: true,
@@ -100,7 +104,7 @@ const allFeatures: FeatureCardProps[] = [
     tier: "core",
   },
   {
-    title: "Google Maps Cover Photos",
+    title: "Google Cover Photo",
     description: "Automatically fetch Google Maps images and assign to Job Cover Photo.",
     href: "/x/toolbox/coverphoto",
     isPopular: true,
@@ -109,17 +113,8 @@ const allFeatures: FeatureCardProps[] = [
     tier: "core",
   },
   {
-    title: "AI Agent",
-    description: "Define workflows inside of JobTread for your AI Agent to run automously.",
-    href: "#",
-    isPopular: false,
-    status: "Coming Soon",
-    footerTag: "PRO",
-    tier: "pro",
-  },
-  {
-    title: "Voice to Estimate",
-    description: "Generate estimates for jobs using voice recordings and AI.",
+    title: "AIA Billing",
+    description: "Attach AIA billing PDF to JOBTREAD customer invoice.",
     href: "#",
     isPopular: false,
     status: "Coming Soon",
@@ -141,12 +136,30 @@ const allFeatures: FeatureCardProps[] = [
     href: "#",
     isPopular: false,
     status: "Coming Soon",
-    footerTag: "PRO",
-    tier: "pro",
+    footerTag: "CORE",
+    tier: "core",
   },
   {
     title: "Calendly Integration",
     description: "Automatically sync your Calendly events to JobTread.",
+    href: "#",
+    isPopular: false,
+    status: "Coming Soon",
+    footerTag: "CORE",
+    tier: "core",
+  },
+  {
+    title: "AI Agent",
+    description: "Define workflows inside of JobTread for your AI Agent to run automously.",
+    href: "#",
+    isPopular: false,
+    status: "Coming Soon",
+    footerTag: "PRO",
+    tier: "pro",
+  },
+  {
+    title: "Voice to Estimate",
+    description: "Generate estimates for jobs using voice recordings and AI.",
     href: "#",
     isPopular: false,
     status: "Coming Soon",
@@ -194,6 +207,7 @@ const allFeatures: FeatureCardProps[] = [
 export default function FeaturesPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedTier, setSelectedTier] = useState<"all" | "core" | "pro">("all")
+  const [isTutorialOpen, setIsTutorialOpen] = useState(false)
 
   const filteredAndSortedFeatures = useMemo(() => {
     return allFeatures.filter((feature) => {
@@ -207,26 +221,55 @@ export default function FeaturesPage() {
 
   return (
     <div className="flex flex-col min-h-screen w-full max-w-full overflow-x-hidden bg-gray-50">
-      <main className="flex-grow container mx-auto px-4 py-8 sm:py-12">
+      <main className="flex-grow container mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-6">
-          <h2 className="text-3xl font-bold text-gray-800">Toolbox</h2>
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <Input
-              placeholder="Search tools..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full sm:w-64 bg-white"
-            />
-            <Select value={selectedTier} onValueChange={(value: "all" | "core" | "pro") => setSelectedTier(value)}>
-              <SelectTrigger className="w-full sm:w-40 bg-white">
-                <SelectValue placeholder="Filter by tier" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Tiers</SelectItem>
-                <SelectItem value="core">CORE</SelectItem>
-                <SelectItem value="pro">PRO</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full">
+            <div className="flex flex-col mb-4 sm:mb-0">
+              <h1 className="text-2xl font-bold">Toolbox</h1>
+              <p className="text-sm text-gray-600 mt-1">Specialized features for your JobTread</p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto items-start sm:items-center">
+              <div className="flex flex-row gap-2 w-full sm:w-auto order-1 sm:order-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="w-full sm:w-auto">
+                      {selectedTier === "all" ? "All Tiers" : selectedTier.toUpperCase()}
+                      <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onSelect={() => setSelectedTier("all")}>
+                      <Check className={`mr-2 h-4 w-4 ${selectedTier === "all" ? "opacity-100" : "opacity-0"}`} />
+                      All Tiers
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setSelectedTier("core")}>
+                      <Check className={`mr-2 h-4 w-4 ${selectedTier === "core" ? "opacity-100" : "opacity-0"}`} />
+                      CORE
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setSelectedTier("pro")}>
+                      <Check className={`mr-2 h-4 w-4 ${selectedTier === "pro" ? "opacity-100" : "opacity-0"}`} />
+                      PRO
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button
+                  variant="outline"
+                  className="w-full sm:w-auto gap-2 text-black border-2 border-[#FFD400] bg-[#FFD400] transition-colors duration-300 shadow-lg hover:bg-[#FFD400]/80"
+                  onClick={() => setIsTutorialOpen(true)}
+                >
+                  <YouTube className="w-5 h-5" />
+                  <span className="font-semibold">Tutorial</span>
+                </Button>
+              </div>
+              <div className="w-full sm:w-auto order-2 sm:order-1">
+                <Input
+                  placeholder="Search toolbox..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-white"
+                />
+              </div>
+            </div>
           </div>
         </div>
         <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -243,6 +286,24 @@ export default function FeaturesPage() {
             />
           ))}
         </div>
+        <Dialog open={isTutorialOpen} onOpenChange={setIsTutorialOpen}>
+          <DialogContent className="sm:max-w-[800px] max-w-[90vw] w-full bg-white rounded-lg shadow-lg">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-semibold text-black">Toolbox Walkthrough</DialogTitle>
+            </DialogHeader>
+            <div className="aspect-video">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/uSIgiQ4v_mk"
+                title="Tutorial Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   )

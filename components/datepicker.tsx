@@ -15,7 +15,7 @@ import {
   endOfYear,
   sub,
 } from "date-fns"
-import { CalendarIcon, ChevronDown, Loader2 } from "lucide-react"
+import { CalendarIcon, ChevronDown, Loader2, Check } from "lucide-react"
 import type { DateRange } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
@@ -130,7 +130,8 @@ export function DatePickerWithRange({ className }: React.HTMLAttributes<HTMLDivE
         <DropdownMenuContent className="w-[200px]">
           {Object.keys(presets).map((preset) => (
             <DropdownMenuItem key={preset} onSelect={() => handlePresetChange(preset)}>
-              {preset}
+              {selectedPreset === preset && <Check className="mr-2 h-4 w-4" />}
+              <span className={cn(selectedPreset === preset && "font-medium")}>{preset}</span>
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
