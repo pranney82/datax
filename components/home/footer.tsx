@@ -180,9 +180,7 @@ const Footer = () => {
               />
             </Link>
             <p className="text-xl text-gray-300 max-w-md font-medium leading-relaxed">
-              Data made easy. <br />
-              Unleash the power of <span className="font-normal">DATA</span>
-              <strong>x</strong>
+              Empower contractors with automation <br />
             </p>
             <div className="flex flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
               <div className="group w-auto flex items-center">
@@ -235,7 +233,7 @@ const Footer = () => {
           transition={{ duration: 0.5, delay: 0.4 }}
           className="mt-16 pt-8 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-400"
         >
-          <p className="font-medium">© 2025 A Contractor CTO Company. All rights reserved.</p>
+          <p className="font-medium">© 2025 A ContractorCTO LLC Company. All rights reserved.</p>
           <ul className="flex flex-wrap justify-center gap-4">
             <li>
               <Link href="/terms" className="font-medium hover:text-white transition-colors duration-200">

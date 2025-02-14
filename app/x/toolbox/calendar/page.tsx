@@ -155,9 +155,8 @@ export default function Calendar() {
     } finally {
       setLoading(false)
     }
-  }, [orgId, grantKey, taskID])
+  }, [orgId, grantKey, taskID, currentDate.getFullYear, currentDate.getMonth]) // Added currentDate.getFullYear and currentDate.getMonth to dependencies
 
-  // Fetch tasks when month changes
   useEffect(() => {
     fetchTasks()
   }, [fetchTasks])
@@ -265,7 +264,11 @@ export default function Calendar() {
                   setIsDialogOpen(true)
                 }
               }}
-              className="bg-gradient-to-r from-[#FFF9C4] to-[#FFFDE7] rounded-sm p-0.5 text-xs hover:from-[#FFF59D] hover:to-[#FFF9C4] transition-all duration-200 cursor-pointer border-l-2 border-l-[#FFD400] transform hover:scale-[1.02] shadow-sm hover:shadow-md w-full"
+              className={`bg-gradient-to-r ${
+                Number.parseFloat(task?.description || "0") >= 0
+                  ? "from-[#E8F5E9] to-[#F1F8E9] hover:from-[#C8E6C9] hover:to-[#DCEDC8] border-l-[#4CAF50]"
+                  : "from-[#FFEBEE] to-[#FFCDD2] hover:from-[#FFCDD2] hover:to-[#EF9A9A] border-l-[#F44336]"
+              } rounded-sm p-0.5 text-xs transition-all duration-200 cursor-pointer border-l-2 transform hover:scale-[1.02] shadow-sm hover:shadow-md w-full`}
             >
               <div className="w-full space-y-0">
                 <div className="font-medium w-full overflow-hidden text-ellipsis whitespace-nowrap text-[10px] sm:text-[13px] hidden sm:block">
@@ -274,24 +277,26 @@ export default function Calendar() {
                 <div className="font-small text-gray-600 w-full overflow-hidden text-ellipsis whitespace-nowrap text-[9px] sm:text-[12px] hidden sm:block">
                   {task?.job?.name || "No Job"}
                 </div>
-                <div className="text-[8px] sm:text-[10px] md:text-[10px] lg:text-xs xl:text-sm text-black font-semibold mt-0.5">
-                  ${Number.parseFloat(task?.description || "0").toLocaleString()}
+                <div
+                  className={`text-[8px] sm:text-[10px] md:text-[10px] lg:text-xs xl:text-sm font-semibold mt-0.5 ${
+                    Number.parseFloat(task?.description || "0") >= 0 ? "text-black" : "text-red-700"
+                  }`}
+                >
+                  {Number.parseFloat(task?.description || "0") >= 0
+                    ? `$${Math.round(Number.parseFloat(task?.description || "0")).toLocaleString()}`
+                    : `($${Math.abs(Math.round(Number.parseFloat(task?.description || "0"))).toLocaleString()})`}
                 </div>
               </div>
             </div>
           ))}
           {isSunday && (
             <div className="mt-auto pt-1 border-t border-gray-200">
-              <div className="bg-gradient-to-r from-[#FFD400] via-[#FFE666] to-[#FFF9C4] rounded-md py-0.5 px-1 relative overflow-hidden flex">
-                <div className="bg-black w-0.5 absolute left-0 top-0 bottom-0"></div>
-                <div className="pl-0 flex-grow space-y-0">
-                  {/* Updated padding class here */}
-                  <div className="text-[8px] sm:text-[10px] md:text-[10px] lg:text-xs xl:text-sm font-bold tracking-wide text-black text-left leading-tight">
-                    ${weeklyTotal.toLocaleString()}
-                  </div>
-                  <div className="text-[7px] sm:text-[10px] md:text-xs font-semibold text-black text-left leading-tight">
-                    Week {getWeekNumber(new Date(currentDate.getFullYear(), currentDate.getMonth(), dayNumber))}
-                  </div>
+              <div className="bg-[#FFD400] rounded-md py-0.5 px-1 relative overflow-hidden flex flex-col">
+                <div className="text-[7px] sm:text-[9px] md:text-[10px] font-normal text-black text-left leading-tight">
+                  Week {getWeekNumber(new Date(currentDate.getFullYear(), currentDate.getMonth(), dayNumber))} Total
+                </div>
+                <div className="text-[9px] sm:text-[11px] md:text-[12px] lg:text-sm xl:text-base font-bold tracking-wide text-black text-left leading-tight">
+                  ${Math.round(weeklyTotal).toLocaleString()}
                 </div>
               </div>
             </div>
@@ -449,7 +454,7 @@ export default function Calendar() {
                   </button>
                 </div>
                 <div className="bg-[#FFD400] px-6 py-2 rounded-full text-lg font-semibold text-[#000] shadow-md transition-all duration-200 hover:bg-[#FFD400]/80">
-                  ${getMonthlyTotal().toLocaleString()}
+                  ${Math.round(getMonthlyTotal()).toLocaleString()}
                 </div>
               </div>
 
@@ -494,7 +499,11 @@ export default function Calendar() {
         </>
       )}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[425px] max-w-[90vw] w-full border-l-4 border-l-[#FFD400] bg-white rounded-lg shadow-lg">
+        <DialogContent
+          className={`sm:max-w-[425px] max-w-[90vw] w-full border-l-4 ${
+            Number.parseFloat(selectedTask?.description || "0") >= 0 ? "border-l-[#4CAF50]" : "border-l-[#F44336]"
+          } bg-white rounded-lg shadow-lg`}
+        >
           <DialogHeader className="border-b border-b-black/10 pb-4">
             <DialogTitle className="text-xl font-semibold text-black">{selectedTask?.name}</DialogTitle>
           </DialogHeader>
@@ -514,8 +523,16 @@ export default function Calendar() {
             </div>
             <div className="grid gap-2.5">
               <div className="text-sm text-black/60 font-medium">Amount</div>
-              <div className="font-bold text-2xl text-black bg-[#FFD400] inline-block px-3 py-1 rounded">
-                ${Number.parseFloat(selectedTask?.description || "0").toLocaleString()}
+              <div
+                className={`font-bold text-2xl ${
+                  Number.parseFloat(selectedTask?.description || "0") >= 0
+                    ? "text-black bg-[#E8F5E9]"
+                    : "text-red-700 bg-[#FFEBEE]"
+                } inline-block px-3 py-1 rounded`}
+              >
+                {Number.parseFloat(selectedTask?.description || "0") >= 0
+                  ? `$${Math.round(Number.parseFloat(selectedTask?.description || "0")).toLocaleString()}`
+                  : `($${Math.abs(Math.round(Number.parseFloat(selectedTask?.description || "0"))).toLocaleString()})`}
               </div>
             </div>
             <div className="grid gap-2.5">

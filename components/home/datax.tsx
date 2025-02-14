@@ -4,18 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import {
-  ArrowRight,
-  BarChart3,
-  BookOpen,
-  Box,
-  ChevronDown,
-  Code,
-  Cpu,
-  Rocket,
-  Workflow,
-  Zap,
-} from "lucide-react"
+import { ArrowRight, BarChart3, BookOpen, Box, ChevronDown, Code, Cpu, Rocket, Workflow, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
@@ -205,6 +194,7 @@ const features = [
       { icon: BarChart3, text: "Sales - Total Revenue, By lead source, Set goals" },
     ],
     ctaText: "Unlock Dashboard",
+    videoId: "FiAXjvgV0Zc",
   },
   {
     id: "toolbox",
@@ -218,6 +208,7 @@ const features = [
       { icon: Box, text: "Cash Flow - Track with cash in and out" },
     ],
     ctaText: "Unlock Toolbox",
+    videoId: "uSIgiQ4v_mk",
   },
   {
     id: "library",
@@ -231,6 +222,7 @@ const features = [
       { icon: BookOpen, text: "API Scripts - Utilize in your own zaps" },
     ],
     ctaText: "Unlock Library",
+    videoId: "SxHCTr0IWSc",
   },
 ]
 
@@ -240,19 +232,26 @@ const FeatureCard = ({
   icon: Icon,
   features,
   ctaText,
+  videoId,
 }: {
   title: string
   description: string
   icon: React.ElementType
   features: { icon: React.ElementType; text: string }[]
   ctaText: string
+  videoId: string
 }) => {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.4, ease: "easeInOut" }}
+      initial={{ opacity: 0, scale: 0.9975 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9975 }}
+      transition={{
+        duration: 0.7,
+        ease: [0.22, 1, 0.36, 1],
+        opacity: { duration: 0.6 },
+        scale: { duration: 0.7 },
+      }}
       className="relative group p-[1px] bg-white rounded-lg overflow-hidden shadow-lg transition-all duration-300"
     >
       <Card className="bg-gradient-to-br from-white to-gray-100 bg-gradient-to-b from-[#FFD400] via-[#FFD400]/50 to-transparent opacity-95 text-gray-800 border-none overflow-hidden relative transition-all duration-300 shadow-2xl backdrop-blur-md rounded-lg border border-yellow-200/30">
@@ -262,9 +261,9 @@ const FeatureCard = ({
           <div className="space-y-8 relative z-10">
             <motion.div
               className="flex flex-col items-start space-y-4"
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.1 }}
             >
               <div className="flex items-center space-x-4">
                 <div className="p-3 bg-yellow-400 rounded-lg shadow-md">
@@ -278,20 +277,20 @@ const FeatureCard = ({
             </motion.div>
             <motion.div
               className="flex flex-col md:flex-row gap-8 md:gap-12 items-center"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.3 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
               layout
             >
               <motion.div
                 className="w-full md:w-1/2 relative overflow-hidden rounded-lg shadow-lg order-1"
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.2 }}
                 style={{ aspectRatio: "16/9" }}
               >
                 <iframe
-                  src="https://www.youtube.com/embed/FiAXjvgV0Zc"
+                  src={`https://www.youtube.com/embed/${videoId}`}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   className="absolute inset-0 w-full h-full"
@@ -299,22 +298,22 @@ const FeatureCard = ({
               </motion.div>
               <motion.div
                 className="w-full md:w-1/2 space-y-8 order-2"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.1, duration: 0.2 }}
               >
                 <motion.div
                   className="bg-white rounded-xl p-6 shadow-xl relative overflow-hidden border-2 border-yellow-200"
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.5, duration: 0.5 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.2 }}
                   whileHover={{ scale: 1.02, boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)" }}
                 >
                   <motion.div
                     className="flex items-center justify-between mb-6"
-                    initial={{ scale: 0 }}
+                    initial={{ scale: 1 }}
                     animate={{ scale: 1 }}
-                    transition={{ delay: 0.6, duration: 0.5, type: "spring" }}
+                    transition={{ delay: 0.3, duration: 0.2, type: "spring", stiffness: 200, damping: 20 }}
                   >
                     <h3 className="text-2xl font-extrabold text-gray-800">Key Features</h3>
                     <Zap className="w-6 h-6 text-yellow-500" />
@@ -326,7 +325,7 @@ const FeatureCard = ({
                       show: {
                         opacity: 1,
                         transition: {
-                          staggerChildren: 0.1,
+                          staggerChildren: 0.02,
                         },
                       },
                     }}
@@ -337,8 +336,8 @@ const FeatureCard = ({
                       <motion.div
                         key={index}
                         variants={{
-                          hidden: { opacity: 0, y: 20 },
-                          show: { opacity: 1, y: 0 },
+                          hidden: { opacity: 0 },
+                          show: { opacity: 1 },
                         }}
                       >
                         <FeatureItem {...feature} />
@@ -509,13 +508,13 @@ export default function Home() {
             </div>
           </nav>
 
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={activeFeature}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               className="mt-12"
             >
               <FeatureCard {...features.find((f) => f.id === activeFeature)!} />

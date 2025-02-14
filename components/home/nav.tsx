@@ -305,18 +305,32 @@ const Navbar1 = () => {
               <Button variant="outline" size="icon" id="menu-button" onClick={() => setIsOpen(!isOpen)}>
                 {isOpen ? <X className="size-4" /> : <Menu className="size-4" />}
               </Button>
-              <Link href="/pricing">
+              {loading ? (
+                <div className="flex gap-1">
+                  <div className="w-5 h-1 bg-muted animate-pulse rounded-md"></div>
+                  <div className="w-10 h-1 bg-muted animate-pulse rounded-md"></div>
+                </div>
+              ) : user ? (
                 <Button
-                  className="bg-[#FFD400] text-black font-bold py-2 px-4 rounded-md text-sm flex items-center"
-                  onClick={() => {
-                    setAuthType("signup")
-                    setShowAuthDialog(true)
-                  }}
+                  className="bg-[#FFD400] text-black font-bold py-2 px-4 rounded-md text-sm"
+                  onClick={() => router.push("/x")}
                 >
-                  <span>Unlock</span>
-                  <Zap className="ml-2 h-4 w-4" />
+                  Dashboard
                 </Button>
-              </Link>
+              ) : (
+                <Link href="/pricing">
+                  <Button
+                    className="bg-[#FFD400] text-black font-bold py-2 px-4 rounded-md text-sm flex items-center"
+                    onClick={() => {
+                      setAuthType("signup")
+                      setShowAuthDialog(true)
+                    }}
+                  >
+                    <span>Unlock</span>
+                    <Zap className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
 
@@ -343,7 +357,7 @@ const Navbar1 = () => {
                     href="/datax"
                     className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200"
                   >
-                    <div className="p-2 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
+                    <div className="p-2 rounded-full bg-[#A9A9A9]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
                       <Code2 className="size-6 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
                     </div>
                     <span className="ml-2">DATAx Software</span>
@@ -352,7 +366,7 @@ const Navbar1 = () => {
                     href="/#cto"
                     className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200"
                   >
-                    <div className="p-2 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
+                    <div className="p-2 rounded-full bg-[#A9A9A9]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
                       <Users className="size-6 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
                     </div>
                     <span className="ml-2">CTO Consulting</span>
@@ -361,7 +375,7 @@ const Navbar1 = () => {
                     href="/courses"
                     className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200"
                   >
-                    <div className="p-2 rounded-full bg-[#ffd400]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
+                    <div className="p-2 rounded-full bg-[#A9A9A9]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
                       <BookText className="size-6 text-[#ffd400] group-hover:text-black transition-colors duration-300" />
                     </div>
                     <span className="ml-2">Automation Courses</span>
@@ -381,16 +395,26 @@ const Navbar1 = () => {
                     <span className="ml-2">Pricing</span>
                   </Link>
                   <div className="flex flex-col gap-2 pt-4 border-t">
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      onClick={() => {
-                        setAuthType("login")
-                        setShowAuthDialog(true)
-                      }}
-                    >
-                      Log in
-                    </Button>
+                    {user ? (
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={handleSignOut}
+                      >
+                        Sign out
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => {
+                          setAuthType("login")
+                          setShowAuthDialog(true)
+                        }}
+                      >
+                        Log in
+                      </Button>
+                    )}
                   </div>
                 </nav>
               </motion.div>
