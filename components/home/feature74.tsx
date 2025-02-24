@@ -72,10 +72,6 @@ const EpicFeatures = () => {
   const [expandedRows, setExpandedRows] = useState<string[]>([])
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
 
-  const toggleRow = (label: string) => {
-    setExpandedRows((prev) => (prev.includes(label) ? prev.filter((item) => item !== label) : [...prev, label]))
-  }
-
   return (
     <section id="epic-solutions" className="py-12 sm:py-24 w-full bg-black">
       <div className="container mx-auto px-4">

@@ -283,7 +283,7 @@ export default function CTOPage() {
         </div>
 
         <motion.div className="grid md:grid-cols-3 gap-10 mt-20">
-          {services.map((service, index) => (
+          {services.map((service) => (
             <motion.div
               key={service.title}
               initial="hidden"
@@ -343,7 +343,7 @@ export default function CTOPage() {
         >
           <h2 className="text-4xl font-extrabold text-[#FFF] mb-8 text-center">Example Consulting Projects</h2>
           <div className="grid md:grid-cols-3 gap-10 mt-4">
-            {exampleProjects.map((project, index) => (
+          {exampleProjects.map((project, index) => (
               <motion.div
                 key={project.title}
                 variants={cardVariants}
