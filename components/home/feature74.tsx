@@ -26,7 +26,7 @@ const features: Feature[] = [
     subtitle: "AUTOMATIONS DONE FOR YOU ",
     id: "datax",
     description: "Access dashboards, specialized features and template library.",
-    list: ["Dashboards", "Toolbox", "Template Library"],
+    list: ["Dashboards", "Toolbox", "Template Library (FREE)"],
     image: "/assets/images/feature1.png",
     color: "#ffd400",
     icon: Code2,
