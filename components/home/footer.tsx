@@ -11,7 +11,7 @@ const footerLinks = [
   {
     title: "Solutions",
     links: [
-      { name: "DATAx", href: "/datax" },
+      { name: "DATAx Software", href: "/datax" },
       { name: "CTO Consulting", href: "/cto" },
       { name: "Automation Courses", href: "/courses" },
     ],

@@ -187,8 +187,8 @@ export default function Home() {
           <div className="text-center z-10 px-4">
             {/* Update 1 */}
             {/* Features Section */}
-            <motion.section id="features" className="relative py-12">
-              <div className="container mx-auto px-4">
+            <motion.section id="features" className="relative py-12 w-full">
+              <div className="container max-w-7xl mx-auto px-2 sm:px-4">
                 <motion.h1
                   className="text-7xl font-extrabold mb-4 glitch relative pt-16"
                   initial={{ opacity: 0, y: -50 }}
@@ -207,28 +207,26 @@ export default function Home() {
                 </motion.p>
 
                 <div className="flex justify-center mb-12 relative z-10">
-                  <div className="flex flex-wrap justify-center gap-1 sm:gap-2 border-b border-white/10 bg-white/5 backdrop-blur-sm px-2 sm:px-6 lg:px-8 rounded-t-lg">
+                  <div className="flex flex-wrap justify-center items-center gap-3 border-b border-white/10 bg-white/5 backdrop-blur-sm px-2 sm:px-6 lg:px-8 py-3 sm:py-1.5 rounded-t-lg w-full">
                   {features.map((feature) => (
                     <motion.div
                       key={feature.id}
-                      whileHover={{ scale: 1 }}
                       whileTap={{ scale: 0.98 }}
-                      className="relative"
+                      className="relative flex justify-center"
                     >
                       <Button
                         onClick={() => setActiveFeature(feature.id)}
-                        className={`text-xl sm:text-lg lg:text-xl px-2 sm:px-4 lg:px-6 py-3 sm:py-4 lg:py-6 rounded-none transition-colors duration-200 flex items-center relative bg-transparent hover:bg-transparent min-w-fit ${
+                        className={`text-lg sm:text-lg lg:text-xl px-4 sm:px-5 lg:px-6 py-4 sm:py-4 lg:py-5 rounded-none transition-colors duration-200 flex items-center relative bg-transparent hover:bg-transparent w-auto ${
                           activeFeature === feature.id
-                            ? "text-[#FFD400] after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#FFD400] after:scale-x-100 after:origin-bottom-left"
+                            ? "text-[#FFD400] bg-[#FFD400]/5 sm:bg-transparent after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#FFD400] after:scale-x-100 after:origin-bottom-left"
                             : "text-white/80 hover:text-[#FFD400] after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#FFD400] after:scale-x-0 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left"
                         }`}
                       >
-                        <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 mr-2" />
+                        <feature.icon className="w-6 h-6 sm:w-6 sm:h-6 lg:w-7 lg:h-7 mr-2.5" />
                         {feature.title}
                         {feature.id === 'library' && (
                           <Badge 
-                            className="ml-2 border-none font-bold bg-[#FFD400] text-black"
-                            variant="secondary"
+                            className="ml-2 border-none font-bold bg-[#FFD400] text-black hover:bg-[#FFD400]"
                           >
                             FREE
                           </Badge>
@@ -249,7 +247,7 @@ export default function Home() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -20 }}
                           transition={{ duration: 0.5 }}
-                          className="grid md:grid-cols-2 gap-8 items-center relative z-10"
+                          className="grid md:grid-cols-2 gap-8 items-center relative z-10 w-full"
                         >
                           <div className="text-left bg-black/30 backdrop-filter backdrop-blur-sm p-6 rounded-lg">
                             <h3 className="text-3xl font-bold mb-4 flex items-center">
@@ -257,8 +255,7 @@ export default function Home() {
                               {feature.title}
                               {feature.id === 'library' && (
                                 <Badge 
-                                  className="ml-3 bg-[#FFD400] text-black border-none font-bold text-sm"
-                                  variant="secondary"
+                                  className="ml-3 bg-[#FFD400] text-black border-none font-bold text-sm hover:bg-[#FFD400]"
                                 >
                                   FREE FOREVER
                                 </Badge>
