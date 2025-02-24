@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -29,7 +30,7 @@ import {
 } from "@/components/ui/pagination"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { collection, getDocs, deleteDoc, doc, getDoc } from "firebase/firestore"
+import { collection, getDocs, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { MoreHorizontal, ArrowUpDown, Download } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
@@ -39,14 +40,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 
 interface UserData {
   id: string
@@ -90,6 +83,11 @@ const formatDate = (dateObj: { toDate: () => Date } | undefined): string => {
     }
     return "Invalid date"
   }
+}
+
+const truncate = (str: string, length: number = 15): string => {
+  if (!str) return '';
+  return str.length > length ? `${str.substring(0, length)}...` : str;
 }
 
 type SortableField = keyof UserData | "stripeData.subscriptionStatus" | "stripeData.tier"
@@ -143,6 +141,8 @@ export default function UsersPage() {
   const [sortField, setSortField] = useState<SortableField>("createdAt")
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc")
   const [userToDelete, setUserToDelete] = useState<UserData | null>(null)
+  const [editUser, setEditUser] = useState<UserData & { stripeData?: StripeData } | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -257,6 +257,37 @@ export default function UsersPage() {
     }
   }
 
+  const handleEditSubmit = async () => {
+    if (!editUser || isSaving) return;
+    setIsSaving(true);
+    try {
+      const updatedUser = { ...editUser };
+      
+      await Promise.all([
+        updateDoc(doc(db, "users", updatedUser.id), {
+          name: updatedUser.name,
+          email: updatedUser.email,
+          org: updatedUser.org,
+          stripeCustomerId: updatedUser.stripeCustomerId
+        }),
+        updatedUser.stripeCustomerId && updatedUser.stripeData ? 
+          updateDoc(doc(db, "stripedata", updatedUser.stripeCustomerId), {
+            subscriptionStatus: updatedUser.stripeData.subscriptionStatus,
+            tier: updatedUser.stripeData.tier
+          }) : Promise.resolve()
+      ]);
+
+      setUsers(prevUsers => 
+        prevUsers.map(u => u.id === updatedUser.id ? updatedUser : u)
+      );
+    } catch (error: unknown) {
+      console.error("Error updating user:", error);
+    } finally {
+      setIsSaving(false);
+      setEditUser(null);
+    }
+  }
+
   return (
     <main className="flex flex-col flex-1 p-0">
       <header className="flex h-16 shrink-0 items-center gap-2">
@@ -285,6 +316,9 @@ export default function UsersPage() {
               {users.length}
             </Badge>
           </h1>
+          <div className="mt-2 p-3 bg-yellow-100 text-yellow-800 rounded-md text-sm">
+            To give a user temporary CORE access, change the stripeCustomerID to &quot;datax_core_paid&quot;
+          </div>
           <div className="flex items-center gap-2">
             <Input
               placeholder="Search users..."
@@ -319,9 +353,12 @@ export default function UsersPage() {
                 <TableHead>
                   Grant Key
                 </TableHead>
+                <TableHead onClick={() => handleSort("stripeCustomerId")} className="cursor-pointer">
+                  Stripe Customer ID <ArrowUpDown className="inline h-4 w-4" />
+                </TableHead> 
                 <TableHead onClick={() => handleSort("stripeData.subscriptionStatus")} className="cursor-pointer">
                   Status <ArrowUpDown className="inline h-4 w-4" />
-                </TableHead>
+                </TableHead>              
                 <TableHead onClick={() => handleSort("stripeData.tier")} className="cursor-pointer">
                   Tier <ArrowUpDown className="inline h-4 w-4" />
                 </TableHead>
@@ -348,9 +385,18 @@ export default function UsersPage() {
                 paginatedUsers.map((user) => (
                   <TableRow key={user.id}>
                     <TableCell>{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.org}</TableCell>
-                    <TableCell>{orgs[user.org]?.grantKey || 'No key'}</TableCell>
+                    <TableCell title={user.email}>
+                      {truncate(user.email)}
+                    </TableCell>
+                    <TableCell title={user.org}>
+                      {truncate(user.org)}
+                    </TableCell>
+                    <TableCell title={orgs[user.org]?.grantKey || 'No key'}>
+                      {truncate(orgs[user.org]?.grantKey || 'No key')}
+                    </TableCell>
+                    <TableCell title={user.stripeCustomerId}>
+                      {truncate(user.stripeCustomerId)}
+                    </TableCell>
                     <TableCell>{user.stripeData?.subscriptionStatus || 'free'}</TableCell>
                     <TableCell>{user.stripeData?.tier || 'free'}</TableCell>
                     <TableCell>
@@ -364,7 +410,24 @@ export default function UsersPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => {
+                            if (!user.stripeData && user.stripeCustomerId) {
+                              const { ...userWithoutStripe } = user;
+                              const stripeCustomerId: string = user.stripeCustomerId;
+                              setEditUser({
+                                ...(userWithoutStripe as UserData),
+                                stripeData: {
+                                  customerId: stripeCustomerId,
+                                  customerEmail: user.email,
+                                  subscriptionStatus: 'free',
+                                  tier: 'free',
+                                  createdAt: user.createdAt
+                                }
+                              });
+                            } else {
+                              setEditUser(user);
+                            }
+                          }}>Edit</DropdownMenuItem>
                           <DropdownMenuItem 
                             className="text-red-600"
                             onClick={() => setUserToDelete(user as UserData)}
@@ -411,29 +474,143 @@ export default function UsersPage() {
         </Pagination>
       </div>
 
-      <Dialog open={!!userToDelete} onOpenChange={() => setUserToDelete(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
-            <DialogDescription>
-              This action cannot be undone. This will permanently delete{' '}
-              <span className="font-medium">{userToDelete?.name}</span>&apos;s account
-              and remove their data from our servers.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setUserToDelete(null)}>
-              Cancel
-            </Button>
-            <Button 
-              variant="destructive"
-              onClick={handleDelete}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {editUser && createPortal(
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isSaving) {
+              setEditUser(null);
+            }
+          }}
+        >
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-[425px] max-w-[90vw]">
+            <div className="mb-4">
+              <h2 className="text-lg font-semibold">Edit User</h2>
+              <p className="text-sm text-gray-500">Modify the user details below.</p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium">Name</label>
+              <Input 
+                type="text" 
+                value={editUser?.name || ""} 
+                onChange={(e) => setEditUser(prev => prev ? { ...prev, name: e.target.value } : null)} 
+              />
+              <label className="text-sm font-medium">Email</label>
+              <Input 
+                type="email" 
+                value={editUser?.email || ""} 
+                onChange={(e) => setEditUser(prev => prev ? { ...prev, email: e.target.value } : null)} 
+              />
+              <label className="text-sm font-medium">Organization</label>
+              <Input 
+                type="text" 
+                value={editUser?.org || ""} 
+                onChange={(e) => setEditUser(prev => prev ? { ...prev, org: e.target.value } : null)} 
+              />
+              <label className="text-sm font-medium">Stripe Customer ID</label>
+              <Input 
+                type="text" 
+                value={editUser?.stripeCustomerId || ""} 
+                onChange={(e) => setEditUser(prev => prev ? { ...prev, stripeCustomerId: e.target.value } : null)} 
+              />
+              <label className="text-sm font-medium">Subscription Status</label>
+              <Input 
+                type="text" 
+                value={editUser?.stripeData?.subscriptionStatus || "free"} 
+                onChange={(e) => setEditUser(prev => {
+                  if (!prev) return null;
+                  const updatedStripeData = prev.stripeData ? {
+                    ...prev.stripeData,
+                    subscriptionStatus: e.target.value
+                  } : {
+                    customerId: prev.stripeCustomerId,
+                    customerEmail: prev.email,
+                    subscriptionStatus: e.target.value,
+                    tier: 'free',
+                    createdAt: prev.createdAt
+                  };
+                  return { ...prev, stripeData: updatedStripeData };
+                })} 
+              />
+              <label className="text-sm font-medium">Tier</label>
+              <Input 
+                type="text" 
+                value={editUser?.stripeData?.tier || "free"} 
+                onChange={(e) => setEditUser(prev => {
+                  if (!prev) return null;
+                  const updatedStripeData = prev.stripeData ? {
+                    ...prev.stripeData,
+                    tier: e.target.value
+                  } : {
+                    customerId: prev.stripeCustomerId,
+                    customerEmail: prev.email,
+                    subscriptionStatus: 'free',
+                    tier: e.target.value,
+                    createdAt: prev.createdAt
+                  };
+                  return { ...prev, stripeData: updatedStripeData };
+                })} 
+              />
+              <label className="text-sm font-medium">Created At</label>
+              <Input type="text" value={editUser ? formatDate(editUser.createdAt) : ""} readOnly />
+              <label className="text-sm font-medium">Grant Key</label>
+              <Input type="text" value={editUser ? (orgs[editUser.org]?.grantKey || "No key") : ""} readOnly />
+            </div>
+            <div className="mt-4 flex justify-end gap-2">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => !isSaving && setEditUser(null)}
+                disabled={isSaving}
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="button" 
+                onClick={handleEditSubmit}
+                disabled={isSaving}
+              >
+                {isSaving ? "Saving..." : "Save"}
+              </Button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {userToDelete && createPortal(
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setUserToDelete(null);
+            }
+          }}
+        >
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-[425px] max-w-[90vw]">
+            <div className="mb-4">
+              <h2 className="text-lg font-semibold">Are you absolutely sure?</h2>
+              <p className="text-sm text-gray-500">
+                This action cannot be undone. This will permanently delete{' '}
+                <span className="font-medium">{userToDelete?.name}</span>&apos;s account
+                and remove their data from our servers.
+              </p>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setUserToDelete(null)}>
+                Cancel
+              </Button>
+              <Button 
+                variant="destructive"
+                onClick={handleDelete}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </main>
   )
 }

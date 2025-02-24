@@ -16,6 +16,7 @@ import { MoreVertical } from 'lucide-react';
 export default function LeadsLost() {
     const [selectedField, setSelectedField] = useState("");
     const [selectedFieldName, setSelectedFieldName] = useState("");
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
     
     useEffect(() => {
         const fetchSavedCustomField = async () => {
@@ -91,13 +92,25 @@ export default function LeadsLost() {
       'rgba(60, 179, 113, 0.7)'   // #3CB371 with opacity
     ];
 
+    // Add cleanup on dialog close
+    const handleDialogChange = (open: boolean) => {
+        setIsDialogOpen(open);
+        if (!open) {
+            // Reset any necessary state here
+            setSelectedField(prev => prev); // Maintain existing selection
+        }
+    };
+
     return (
         <Card className="w-full h-full min-h-[300px] sm:min-h-[400px] md:min-h-[500px] flex flex-col">
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-m sm:text-base md:text-lg text-gray-800 dark:text-gray-100">
                     {selectedFieldName || "Select custom field, preferably Lead Lost Reason"}
                 </CardTitle>
-                <Dialog>
+                <Dialog
+                    open={isDialogOpen}
+                    onOpenChange={handleDialogChange}
+                >
                     <DialogTrigger asChild>
                         <Button variant="ghost" size="icon" aria-label="More options">
                             <MoreVertical className="h-4 w-4" />

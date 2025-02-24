@@ -13,6 +13,12 @@ interface FAQItem {
 
 const faqData: FAQItem[] = [
   {
+    id: "datax-info",
+    question: "What is DATAx?",
+    answer:
+      "DATAx is an innovative software company exclusively serving JOBTREAD users. We specialize in creating custom features and dashboards that seamlessly integrate with JOBTREAD, eliminating the need for you to build these solutions yourself. Our goal is to enhance your JOBTREAD experience with just a simple connection.",
+  },
+  {
     id: "api-purpose",
     question: "What is JOBTREAD API?",
     answer:
@@ -23,12 +29,6 @@ const faqData: FAQItem[] = [
     question: "Won't JOBTREAD develop these features themselves?",
     answer:
       "While JOBTREAD focuses on building the ultimate construction management platform, we at DATAx complement their efforts by developing specialized features and dashboards. This collaboration allows you to benefit from both JOBTREAD's core strengths and our tailored solutions.",
-  },
-  {
-    id: "datax-info",
-    question: "What is DATAx?",
-    answer:
-      "DATAx is an innovative software company exclusively serving JOBTREAD users. We specialize in creating custom features and dashboards that seamlessly integrate with JOBTREAD, eliminating the need for you to build these solutions yourself. Our goal is to enhance your JOBTREAD experience with just a simple connection.",
   },
   {
     id: "datax-features",
@@ -63,7 +63,7 @@ const EpicFAQ: React.FC = () => {
         >
           Unleash the Power of{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] to-yellow-500">
-            JOBTREAD API
+            AUTOMATION
           </span>
         </motion.h1>
         <motion.p

@@ -1,29 +1,15 @@
 "use client";
 
-import { useEffect, useState } from 'react'
-
-const quotes = [
-  { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-  { text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs" },
-  { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
-  { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
-  { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
-  { text: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt" },
-  { text: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
-]
+import { useEffect } from 'react'
+import { quotes } from '@/lib/quotes'
+import { useAppStore } from '@/lib/stores/app-store'
 
 const textShadowStyle = {
   textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
 };
 
-interface StoredQuote {
-  text: string;
-  author: string;
-  expirationDate: number;
-}
-
 export function InspirationQuote() {
-  const [quote, setQuote] = useState<StoredQuote | null>(null)
+  const { quote: storedQuote, setQuote } = useAppStore();
 
   useEffect(() => {
     const getRandomQuote = () => {
@@ -31,49 +17,36 @@ export function InspirationQuote() {
       return quotes[randomIndex]
     }
 
-    const getStoredQuote = (): StoredQuote | null => {
-      const storedQuote = localStorage.getItem('inspirationQuote')
-      return storedQuote ? JSON.parse(storedQuote) : null
-    }
-
     const setNewQuote = () => {
       const newQuote = getRandomQuote()
       const twoWeeksFromNow = Date.now() + 14 * 24 * 60 * 60 * 1000
-      const storedQuote: StoredQuote = {
+      setQuote({
         ...newQuote,
         expirationDate: twoWeeksFromNow
-      }
-      localStorage.setItem('inspirationQuote', JSON.stringify(storedQuote))
-      setQuote(storedQuote)
+      })
     }
 
-    const storedQuote = getStoredQuote()
-    if (storedQuote && storedQuote.expirationDate > Date.now()) {
-      setQuote(storedQuote)
-    } else {
+    if (!storedQuote || storedQuote.expirationDate <= Date.now()) {
       setNewQuote()
     }
 
-    const checkAndUpdateQuote = () => {
-      const currentStoredQuote = getStoredQuote()
-      if (!currentStoredQuote || currentStoredQuote.expirationDate <= Date.now()) {
+    const interval = setInterval(() => {
+      if (!storedQuote || storedQuote.expirationDate <= Date.now()) {
         setNewQuote()
       }
-    }
-
-    const interval = setInterval(checkAndUpdateQuote, 24 * 60 * 60 * 1000) // Check daily
+    }, 24 * 60 * 60 * 1000)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [storedQuote, setQuote])
 
-  if (!quote) {
-    return null // or a loading state
+  if (!storedQuote) {
+    return null
   }
 
   return (
     <div className="bg-gradient-to-r from-[#000] to-[#ffd400] p-6 rounded-lg shadow-md">
-      <blockquote className="text-xl font-semibold mb-2 text-white" style={textShadowStyle}>&ldquo;{quote.text}&rdquo;</blockquote>
-      <cite className="block text-sm text-white" style={textShadowStyle}>- {quote.author}</cite>
+      <blockquote className="text-xl font-semibold mb-2 text-white" style={textShadowStyle}>&ldquo;{storedQuote.text}&rdquo;</blockquote>
+      <cite className="block text-sm text-white" style={textShadowStyle}>- {storedQuote.author}</cite>
     </div>
   )
 }

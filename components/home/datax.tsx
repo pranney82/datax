@@ -1,573 +1,332 @@
 "use client"
 
-import type React from "react"
 import { useState } from "react"
-import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowRight, BarChart3, BookOpen, Box, ChevronDown, Code, Cpu, Rocket, Workflow, Zap } from "lucide-react"
+import {
+  BarChart3,
+  BookOpen,
+  Box,
+  PlayCircle,
+  Rocket,
+  Coins,
+  CheckCircle,
+  ArrowLeftRight,
+  ArrowRight,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
-
-// Styles
-const globalStyles = `
-  @keyframes shimmer {
-    0% { background-position: -1000px 0; }
-    100% { background-position: 1000px 0; }
-  }
-
-  .shimmer {
-    animation: shimmer 2s infinite linear;
-    background: linear-gradient(to right, #222 0%, #333 20%, #222 40%, #222 100%);
-    background-size: 1000px 100%;
-  }
-
-  .bg-grid-pattern {
-    background-image: 
-      linear-gradient(to right, rgba(255, 212, 0, 0.1) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 212, 0, 0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
-
-  @keyframes twinkle {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  }
-
-  @keyframes shooting-star {
-    0% {
-      transform: translateX(0) translateY(0) rotate(45deg);
-      opacity: 1;
-    }
-    100% {
-      transform: translateX(1000px) translateY(1000px) rotate(45deg);
-      opacity: 0;
-    }
-  }
-
-  .animate-twinkle {
-    animation: twinkle 4s infinite;
-  }
-
-  .shooting-star {
-    position: absolute;
-    width: 100px;
-    height: 1px;
-    background: linear-gradient(90deg, #FFD400, transparent);
-    animation: shooting-star 6s linear infinite;
-  }
-
-  .shooting-star::before {
-    content: '';
-    position: absolute;
-    top: calc(50% - 1px);
-    right: 0;
-    width: 15px;
-    height: 2px;
-    background: linear-gradient(90deg, #FFD400, transparent);
-    transform: translateX(50%) rotateZ(45deg);
-  }
-
-  .gradient-text {
-    background: linear-gradient(45deg, #FFD400, #FFF);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  @keyframes shine {
-    0% {
-      background-position: 200% center;
-    }
-    100% {
-      background-position: -200% center;
-    }
-  }
-
-  .animate-shine {
-    animation: shine 3s linear infinite;
-    background-size: 200% auto;
-  }
-  .animate-pulse {
-    animation: pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.5;
-      transform: scale(1.1);
-    }
-  }
-
-  .animate-text {
-    animation: animate-text 2s ease-in-out infinite;
-  }
-  @keyframes animate-text {
-    0%, 100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.1);
-    }
-  }
-`
-
-// Components
-const Sparkles = () => (
-  <>
-    {[...Array(50)].map((_, i) => (
-      <div
-        key={i}
-        className="absolute w-1 h-1 bg-yellow-400 rounded-full animate-pulse"
-        style={{
-          left: `${Math.random() * 100}%`,
-          top: `${Math.random() * 100}%`,
-          animation: `twinkle ${Math.random() * 4 + 2}s infinite, pulse 2s ease-in-out infinite`,
-        }}
-      />
-    ))}
-  </>
-)
-
-const FeatureItem = ({ icon: Icon, text }: { icon: React.ElementType; text: string }) => (
-  <motion.div
-    className="flex items-center space-x-4 py-3 px-4 bg-white bg-opacity-80 rounded-lg shadow-lg transition-all duration-300 hover:bg-opacity-100 hover:shadow-xl border border-white hover:border-yellow-500"
-    whileHover={{ scale: 1.05, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
-    transition={{ duration: 0.2 }}
-  >
-    <div className="bg-yellow-400 p-2 rounded-full transition-all duration-300 group-hover:bg-yellow-500 border border-white shadow-md">
-      <Icon className="w-5 h-5 text-black" />
-    </div>
-    <span className="text-sm font-semibold text-gray-800">{text}</span>
-  </motion.div>
-)
-
-const KeyFeatureCard = ({
-  icon,
-  title,
-  description,
-}: { icon: React.ReactNode; title: string; description: string }) => (
-  <motion.div
-    className="bg-gradient-to-br from-white via-yellow-50 to-gray-100 rounded-lg p-6 shadow-lg transition-all duration-300 overflow-hidden relative"
-    whileTap={{ scale: 0.95 }}
-  >
-    <div className="absolute inset-0 bg-gradient-to-b from-[#FFD400]/20 via-[#FFD400]/10 to-transparent opacity-80"></div>
-    <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5"></div>
-    <motion.div
-      className="flex items-center mb-4 relative z-10"
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <div className="mr-4 text-yellow-600 bg-yellow-100 p-3 rounded-full border-2 shadow-lg animate-pulse">{icon}</div>
-      <h3 className="text-xl font-semibold text-gray-800 border-b-2 inline-block pb-1">{title}</h3>
-    </motion.div>
-    <motion.p
-      className="text-gray-600 relative z-10"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-    >
-      {description}
-    </motion.p>
-    <motion.div
-      className="mt-4 h-1 bg-gradient-to-r from-black to-transparent"
-      initial={{ scaleX: 0 }}
-      animate={{ scaleX: 1 }}
-      transition={{ duration: 0.5, delay: 0.4 }}
-    />
-  </motion.div>
-)
+import { Badge } from "@/components/ui/badge"
+import { useRouter } from "next/navigation"
 
 const features = [
   {
     id: "dashboard",
     title: "Dashboard",
-    description:
-      "Transform your data into interactive charts and graphs for clear insights. Make informed decisions faster and smarter.",
     icon: BarChart3,
-    features: [
-      { icon: BarChart3, text: "Summary - Active jobs map, Monthly revenue" },
-      { icon: BarChart3, text: "Leads - Sources, Conversion rates, Stage" },
-      { icon: BarChart3, text: "Sales - Total Revenue, By lead source, Set goals" },
-    ],
-    ctaText: "Unlock Dashboard",
+    description: "Get a bird's-eye view of your business with real-time analytics and interactive charts.",
     videoId: "FiAXjvgV0Zc",
+    thumbnail: "/assets/thumbnails/dashboard.png",
+    details: [
+      "Summary of active jobs and monthly revenue",
+      "Lead sources and conversion rates",
+      "Sales performance and goal tracking",
+    ],
   },
   {
     id: "toolbox",
     title: "Toolbox",
-    description:
-      "Leverage a suite of specialized tools for automation and optimization. Streamline workflows, save time, and boost productivity.",
     icon: Box,
-    features: [
-      { icon: Box, text: "Zillow Data - Zestimate, SF, Date sold, etc" },
-      { icon: Box, text: "Job Cover Photo - Use the google street view" },
-      { icon: Box, text: "Cash Flow - Track with cash in and out" },
-    ],
-    ctaText: "Unlock Toolbox",
+    description: "Access a suite of powerful tools to streamline your workflow and boost productivity.",
     videoId: "uSIgiQ4v_mk",
+    thumbnail: "/assets/thumbnails/toolbox.png",
+    details: [
+      "Zillow data integration for property insights",
+      "Job cover photo generator using Google Street View",
+      "Cash flow tracker for financial management",
+    ],
   },
   {
     id: "library",
     title: "Library",
-    description:
-      "Access a comprehensive library of templates and resources. Get pre-built solutions and expert guidance from our extensive documentation.",
     icon: BookOpen,
-    features: [
-      { icon: BookOpen, text: "Cost Groups - By project" },
-      { icon: BookOpen, text: "Schedules - Pre-built templates" },
-      { icon: BookOpen, text: "API Scripts - Utilize in your own zaps" },
-    ],
-    ctaText: "Unlock Library",
+    description: "A community resource with templats from other JOBTREAD users, free for all users.",
     videoId: "SxHCTr0IWSc",
+    thumbnail: "/assets/thumbnails/library.png",
+    details: [
+      "Customizable cost group templates by project type",
+      "Pre-built schedule templates for efficient planning",
+      "API scripts for seamless integration with other tools",
+    ],
   },
 ]
 
-const FeatureCard = ({
-  title,
-  description,
-  icon: Icon,
-  features,
-  ctaText,
-  videoId,
-}: {
-  title: string
-  description: string
-  icon: React.ElementType
-  features: { icon: React.ElementType; text: string }[]
-  ctaText: string
-  videoId: string
-}) => {
+const sellingPoints = [
+  {
+    title: "Boost Efficiency",
+    description: "Streamline your workflow and increase productivity with our dashboard, toolbox and library.",
+    icon: Rocket,
+  },
+  {
+    title: "Seamless Integration",
+    description: "Efforless automation, easily connect using your JOBTREAD crendtials and you are ready to go!",
+    icon: ArrowLeftRight,
+  },
+  {
+    title: "Cost-Effective",
+    description: "Maximize your ROI with our features already built for you starting at $29/m.",
+    icon: Coins,
+  },
+]
+
+const ParticleField = () => {
+  const particleCount = 100
+  const speed = 10
+
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9975 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9975 }}
-      transition={{
-        duration: 0.7,
-        ease: [0.22, 1, 0.36, 1],
-        opacity: { duration: 0.6 },
-        scale: { duration: 0.7 },
-      }}
-      className="relative group p-[1px] bg-white rounded-lg overflow-hidden shadow-lg transition-all duration-300"
-    >
-      <Card className="bg-gradient-to-br from-white to-gray-100 bg-gradient-to-b from-[#FFD400] via-[#FFD400]/50 to-transparent opacity-95 text-gray-800 border-none overflow-hidden relative transition-all duration-300 shadow-2xl backdrop-blur-md rounded-lg border border-yellow-200/30">
-        <CardContent className="relative z-10 p-6 sm:p-8 md:p-10">
-          <div className="absolute inset-0 bg-white bg-opacity-60 z-0"></div>
-          <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5 z-0"></div>
-          <div className="space-y-8 relative z-10">
-            <motion.div
-              className="flex flex-col items-start space-y-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-            >
-              <div className="flex items-center space-x-4">
-                <div className="p-3 bg-yellow-400 rounded-lg shadow-md">
-                  <Icon className="w-10 h-10 text-white" />
-                </div>
-                <h2 className="text-4xl font-bold bg-clip-text text-gray-900 bg-gradient-to-r from-yellow-600 to-yellow-800">
-                  {title}
-                </h2>
-              </div>
-              <p className="text-xl text-gray-700 w-full leading-relaxed">{description}</p>
-            </motion.div>
-            <motion.div
-              className="flex flex-col md:flex-row gap-8 md:gap-12 items-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              layout
-            >
-              <motion.div
-                className="w-full md:w-1/2 relative overflow-hidden rounded-lg shadow-lg order-1"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.2 }}
-                style={{ aspectRatio: "16/9" }}
-              >
-                <iframe
-                  src={`https://www.youtube.com/embed/${videoId}`}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full"
-                />
-              </motion.div>
-              <motion.div
-                className="w-full md:w-1/2 space-y-8 order-2"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.1, duration: 0.2 }}
-              >
-                <motion.div
-                  className="bg-white rounded-xl p-6 shadow-xl relative overflow-hidden border-2 border-yellow-200"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2, duration: 0.2 }}
-                  whileHover={{ scale: 1.02, boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)" }}
-                >
-                  <motion.div
-                    className="flex items-center justify-between mb-6"
-                    initial={{ scale: 1 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.3, duration: 0.2, type: "spring", stiffness: 200, damping: 20 }}
-                  >
-                    <h3 className="text-2xl font-extrabold text-gray-800">Key Features</h3>
-                    <Zap className="w-6 h-6 text-yellow-500" />
-                  </motion.div>
-                  <motion.div
-                    className="grid grid-cols-1 gap-4"
-                    variants={{
-                      hidden: { opacity: 0 },
-                      show: {
-                        opacity: 1,
-                        transition: {
-                          staggerChildren: 0.02,
-                        },
-                      },
-                    }}
-                    initial="hidden"
-                    animate="show"
-                  >
-                    {features.map((feature, index) => (
-                      <motion.div
-                        key={index}
-                        variants={{
-                          hidden: { opacity: 0 },
-                          show: { opacity: 1 },
-                        }}
-                      >
-                        <FeatureItem {...feature} />
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                </motion.div>
-              </motion.div>
-            </motion.div>
+    <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
+      {[...Array(particleCount)].map((_, i) => {
+        const size = Math.random() > 0.8 ? 8 : Math.random() > 0.4 ? 6 : 4
+        const color = Math.random() > 0.6 ? "#FFD400" : "#FFFFFF"
+        const randomX = Math.random()
+        const randomY = Math.random()
+        const moveRange = Math.random() * 0.3 + 0.1 // 10-40% movement range
+
+        return (
+          <motion.div
+            key={i}
+            className="absolute rounded-full"
+            initial={{
+              x: randomX * window.innerWidth,
+              y: randomY * 1000,
+              scale: Math.random() * 0.3 + 0.7, // Random initial scale between 0.7-1
+            }}
+            animate={{
+              x: [
+                randomX * window.innerWidth,
+                (randomX + (Math.random() - 0.5) * moveRange) * window.innerWidth,
+                randomX * window.innerWidth,
+              ],
+              y: [randomY * 1000, (randomY + (Math.random() - 0.5) * moveRange) * 1000, randomY * 1000],
+              scale: [Math.random() * 0.3 + 0.7, Math.random() * 0.4 + 0.8, Math.random() * 0.3 + 0.7],
+            }}
+            transition={{
+              duration: Math.random() * speed + speed,
+              scale: {
+                duration: Math.random() * 2 + 1,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "easeInOut",
+              },
+              x: {
+                duration: Math.random() * speed + speed,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "easeInOut",
+                repeatType: "reverse",
+              },
+              y: {
+                duration: Math.random() * speed + speed,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "easeInOut",
+                repeatType: "reverse",
+              },
+            }}
+            style={{
+              width: `${size}px`,
+              height: `${size}px`,
+              backgroundColor: color,
+              opacity: 0.7,
+            }}
+          />
+        )
+      })}
+    </div>
+  )
+}
+
+const YouTubeEmbed = ({ videoId, thumbnail }: { videoId: string; thumbnail?: string }) => {
+  const [isPlaying, setIsPlaying] = useState(false)
+
+  return (
+    <div className="relative aspect-video rounded-lg overflow-hidden">
+      {!isPlaying ? (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <img
+            src={thumbnail || `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
+            alt="Video thumbnail"
+            className="w-full h-full object-cover rounded-lg"
+          />
+          <div
+            className="absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center cursor-pointer rounded-lg"
+            onClick={() => setIsPlaying(true)}
+          >
+            <PlayCircle className="w-16 h-16 text-white" />
           </div>
-        </CardContent>
-        <CardFooter className="relative z-10 p-6 sm:p-8 md:p-10">
-          <motion.div className="w-full" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link href={`/pricing/#xpricing`} passHref>
-              <Button
-                className="w-full bg-[#ffd400] text-black transition-all duration-300 text-xl py-7 font-bold rounded-full hover:bg-black hover:text-[#ffd400] focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:ring-opacity-50 relative overflow-hidden transform hover:scale-105 active:scale-95"
-                variant="secondary"
-              >
-                <span className="relative z-10 flex items-center justify-center">
-                  {ctaText}
-                  <ArrowRight className="ml-2 h-6 w-6 transition-transform duration-300 ease-in-out group-hover:translate-x-2" />
-                </span>
-              </Button>
-            </Link>
-          </motion.div>
-        </CardFooter>
-      </Card>
-    </motion.div>
+        </div>
+      ) : (
+        <iframe
+          width="100%"
+          height="100%"
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+          title="YouTube video player"
+          className="rounded-lg"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
+      )}
+    </div>
   )
 }
 
 export default function Home() {
+  const router = useRouter()
   const [activeFeature, setActiveFeature] = useState("dashboard")
-
   return (
-    <main className="flex flex-col min-h-screen bg-black text-white">
-      <style jsx global>
-        {globalStyles}
-      </style>
-
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute inset-0 bg-[url('/stars.png')] bg-repeat animate-twinkle"></div>
-          <div className="absolute inset-0 opacity-30 mix-blend-screen">
-            <div className="absolute inset-0 bg-gradient-radial from-[#FFD400]/30 via-transparent to-transparent"></div>
-            <div
-              className="absolute inset-0 bg-gradient-radial from-[#FFD400]/20 via-transparent to-transparent"
-              style={{ transform: "translate(25%, 25%)" }}
-            ></div>
-          </div>
-          <div className="absolute inset-0">
-            <div className="shooting-star"></div>
-            <div className="shooting-star" style={{ animationDelay: "2s" }}></div>
-            <div className="shooting-star" style={{ animationDelay: "4s" }}></div>
-          </div>
-          <Sparkles />
-        </div>
-        <div className="relative z-10 text-center max-w-5xl mx-auto px-4 py-20">
-          <motion.h1
-            className="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-[#FFD400] via-yellow-500 to-yellow-600 animate-text relative text-shadow"
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            Unleash Automations
-          </motion.h1>
-          <motion.p
-            className="text-3xl mb-8 text-white font-light leading-relaxed"
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            Powerful <span className="font-semibold text-[#FFD400]">automations</span>, done-for-
-            <span className="font-semibold text-[#FFD400]">you!</span>
-          </motion.p>
-          <motion.div
-            className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-16"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-            <Button
-              className="bg-[#ffd400] text-[#000] hover:bg-[#FFD400] hover:text-[#000] text-lg px-12 py-6 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-xl group"
-              onClick={() => {
-                const featuresSection = document.getElementById("features-section")
-                if (featuresSection) {
-                  featuresSection.scrollIntoView({ behavior: "smooth" })
-                }
-              }}
-            >
-              Get Started
-              <Rocket className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Button>
-          </motion.div>
-          <motion.div
-            className="absolute bottom-10 left-1/2 transform -translate-x-1/2 cursor-pointer"
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-            whileHover={{ scale: 1.1 }}
-            onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
-          >
-            <ChevronDown className="w-10 h-10 text-[#FFD400]" />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section
-        id="features-section"
-        className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white relative overflow-hidden border-t border-yellow-500/20"
-      >
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-        <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 via-transparent to-yellow-500/10 animate-gradient" />
-        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16 max-w-7xl">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16 space-y-4"
-          >
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-tight">
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, staggerChildren: 0.1 }}
-              >
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600">
-                  DATAx
-                </span>{" "}
-                your{" "}
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600">
-                  JOBTREAD
-                </span>
-              </motion.span>
-            </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Unlock automations for your JOBTREAD with our done-for-you solution.
-            </p>
-          </motion.div>
-
-          <nav className="flex justify-center mb-12 sticky top-4 z-40 px-4 sm:px-0" aria-label="Feature navigation">
-            <div className="relative flex w-full max-w-3xl justify-between bg-white/10 backdrop-blur-md p-1.5 rounded-full shadow-lg border border-white/20">
-              {features.map((feature) => (
-                <button
-                  key={feature.id}
-                  onClick={() => setActiveFeature(feature.id)}
-                  className={cn(
-                    "group relative px-4 sm:px-6 py-3.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-2 overflow-hidden flex-1",
-                    activeFeature === feature.id
-                      ? "text-gray-900 font-bold bg-yellow-400 shadow-md"
-                      : "text-gray-300 hover:text-yellow-400 hover:bg-white/20",
-                  )}
-                  aria-selected={activeFeature === feature.id}
-                  role="tab"
+    <main className="flex flex-col min-h-screen bg-black text-white relative overflow-hidden">
+      <div className="relative">
+        <ParticleField />
+        {/* Hero Section */}
+        <motion.section className="relative min-h-[90vh] flex items-center justify-center">
+          <div className="text-center z-10 px-4">
+            {/* Update 1 */}
+            {/* Features Section */}
+            <motion.section id="features" className="relative py-12">
+              <div className="container mx-auto px-4">
+                <motion.h1
+                  className="text-7xl font-extrabold mb-4 glitch relative pt-16"
+                  initial={{ opacity: 0, y: -50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8 }}
                 >
-                  <feature.icon
-                    className={cn(
-                      "w-6 h-6 transition-all duration-300",
-                      activeFeature === feature.id
-                        ? "text-gray-800 drop-shadow-[0_0_3px_rgba(0,0,0,0.3)]"
-                        : "text-gray-300 group-hover:text-yellow-400",
-                    )}
-                  />
-                  <span>{feature.title}</span>
-                </button>
-              ))}
-            </div>
-          </nav>
+                  <span className="text-[#FFD400]">DATAx</span> Software
+                </motion.h1>
+                <motion.p
+                  className="text-3xl mb-12"
+                  initial={{ opacity: 0, y: -30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                  Done for <span className="text-[#FFD400]">YOU</span> at $29/m
+                </motion.p>
 
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={activeFeature}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-12"
-            >
-              <FeatureCard {...features.find((f) => f.id === activeFeature)!} />
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </section>
+                <div className="flex justify-center mb-12 relative z-10">
+                  <div className="flex flex-wrap justify-center gap-1 sm:gap-2 border-b border-white/10 bg-white/5 backdrop-blur-sm px-2 sm:px-6 lg:px-8 rounded-t-lg">
+                  {features.map((feature) => (
+                    <motion.div
+                      key={feature.id}
+                      whileHover={{ scale: 1 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="relative"
+                    >
+                      <Button
+                        onClick={() => setActiveFeature(feature.id)}
+                        className={`text-xl sm:text-lg lg:text-xl px-2 sm:px-4 lg:px-6 py-3 sm:py-4 lg:py-6 rounded-none transition-colors duration-200 flex items-center relative bg-transparent hover:bg-transparent min-w-fit ${
+                          activeFeature === feature.id
+                            ? "text-[#FFD400] after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#FFD400] after:scale-x-100 after:origin-bottom-left"
+                            : "text-white/80 hover:text-[#FFD400] after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#FFD400] after:scale-x-0 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left"
+                        }`}
+                      >
+                        <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 mr-2" />
+                        {feature.title}
+                        {feature.id === 'library' && (
+                          <Badge 
+                            className="ml-2 border-none font-bold bg-[#FFD400] text-black"
+                            variant="secondary"
+                          >
+                            FREE
+                          </Badge>
+                        )}
+                      </Button>
+                    </motion.div>
+                  ))}
+                  </div>
+                </div>
 
-      {/* Key Features Section */}
-      <section className="py-24 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] opacity-10"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 via-transparent to-yellow-500/5 animate-gradient"></div>
-        <div className="px-4 max-w-7xl mx-auto relative z-10">
-          <motion.h2
-            className="text-5xl font-bold mb-16 text-center gradient-text"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            Unleash the Power of <span className="text-[#FFD400]">DATAx</span>
-          </motion.h2>
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
-            variants={{
-              hidden: { opacity: 0 },
-              show: {
-                opacity: 1,
-                transition: {
-                  staggerChildren: 0.2,
-                },
-              },
-            }}
-            initial="hidden"
-            animate="show"
-          >
-            <KeyFeatureCard
-              icon={<Code className="w-12 h-12" />}
-              title="Code-Free"
-              description="Just turn it on and go—we’ve done the heavy lifting for you! Effortlessly automate your workflows without writing a single line of code."
-            />
-            <KeyFeatureCard
-              icon={<Cpu className="w-12 h-12" />}
-              title="Headless"
-              description="Leverage JOBTREAD’s API without frontend limits. Custom solutions, automate workflows, and scale without constraints."
-            />
-            <KeyFeatureCard
-              icon={<Workflow className="w-12 h-12" />}
-              title="Seamless Integration"
-              description="Easily connect your tools and systems with the JOBTREAD API for a unified workflow and streamlined processes—effortless automation!"
-            />
-          </motion.div>
+                <AnimatePresence mode="wait">
+                  {features.map(
+                    (feature) =>
+                      feature.id === activeFeature && (
+                        <motion.div
+                          key={feature.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          transition={{ duration: 0.5 }}
+                          className="grid md:grid-cols-2 gap-8 items-center relative z-10"
+                        >
+                          <div className="text-left bg-black/30 backdrop-filter backdrop-blur-sm p-6 rounded-lg">
+                            <h3 className="text-3xl font-bold mb-4 flex items-center">
+                              <feature.icon className="w-8 h-8 mr-2 text-[#FFD400]" />
+                              {feature.title}
+                              {feature.id === 'library' && (
+                                <Badge 
+                                  className="ml-3 bg-[#FFD400] text-black border-none font-bold text-sm"
+                                  variant="secondary"
+                                >
+                                  FREE FOREVER
+                                </Badge>
+                              )}
+                            </h3>
+                            <p className="text-xl mb-6">{feature.description}</p>
+                            <ul className="space-y-2 mb-8">
+                              {feature.details.map((detail, index) => (
+                                <li key={index} className="flex items-start">
+                                  <CheckCircle className="w-6 h-6 text-[#FFD400] mr-2 flex-shrink-0 mt-1" />
+                                  <span>{detail}</span>
+                                </li>
+                              ))}
+                            </ul>
+                            <div className="text-left">
+                              <Button
+                                className="bg-[#FFD400] text-black hover:bg-[#FFD400]/90 px-4 sm:px-8 py-3 sm:py-4 rounded-lg transition-all duration-300 shadow-[0_0_10px_rgba(255,212,0,0.3)] hover:shadow-[0_0_15px_rgba(255,212,0,0.5)] hover:scale-[1.02] text-base sm:text-xl font-semibold flex items-center gap-2 w-full mx-auto"
+                                onClick={() => router.push("/sign-up")}
+                              >
+                                <span className="hidden sm:inline">Get Started with DATAx Software</span>
+                                <span className="sm:hidden">Get Started</span>
+                                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                              </Button>
+                            </div>
+                          </div>
+                          <div className="relative aspect-video rounded-lg overflow-hidden">
+                            <YouTubeEmbed videoId={feature.videoId} thumbnail={feature.thumbnail} />
+                          </div>
+                        </motion.div>
+                      ),
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.section>
+          </div>
+        </motion.section>
+      </div>
+
+      {/* Selling Points Section */}
+      <motion.section
+        className="relative py-16 bg-gradient-to-br from-black via-black to-[#FFD400]/20"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+      >
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <ParticleField />
         </div>
-      </section>
+        <div className="container mx-auto px-4 relative z-10">
+          <h2 className="text-4xl font-bold text-center mb-12 text-[#FFD400]">Why Choose DATAx?</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {sellingPoints.map((point, index) => (
+              <motion.div
+                key={index}
+                className="bg-black/50 backdrop-blur-sm border border-[#FFD400] rounded-lg p-6 flex flex-col items-center text-center"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.2 }}
+                whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(255, 212, 0, 0.3)" }}
+              >
+                <point.icon className="w-16 h-16 text-[#FFD400] mb-4" />
+                <h3 className="text-2xl font-bold mb-2 text-white">{point.title}</h3>
+                <p className="text-white/80">{point.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
     </main>
   )
 }

@@ -4,7 +4,7 @@ import React, { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { Zap, ArrowRight, Hammer, Paintbrush, Drill } from "lucide-react"
+import { Zap, ArrowRight, Hammer, Paintbrush, Drill, Circle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const footerLinks = [
@@ -12,9 +12,8 @@ const footerLinks = [
     title: "Solutions",
     links: [
       { name: "DATAx", href: "/datax" },
-      { name: "CTO Consulting", href: "/pricing/#cto-consulting" },
+      { name: "CTO Consulting", href: "/cto" },
       { name: "Automation Courses", href: "/courses" },
-      { name: "Pricing", href: "/pricing/#xpricing" },
     ],
   },
   {
@@ -22,14 +21,16 @@ const footerLinks = [
     links: [
       { name: "About", href: "/about" },
       { name: "Roadmap", href: "/roadmap" },
+      { name: "Contact", href: "/hello" },
+      { name: "Video", href: "/video" },
     ],
   },
   {
     title: "Free Resources",
     links: [
-      { name: "Library", href: "/pricing/#xpricing" },
-      { name: "Resources", href: "/pricing/#xpricing" },
-      { name: "Summary Dashboard", href: "/pricing/#xpricing" },
+      { name: "Library", href: "/sign-up" },
+      { name: "Resources", href: "/sign-up" },
+      { name: "Summary Dashboard", href: "/sign-up" },
     ],
   },
 ]
@@ -62,32 +63,108 @@ const Footer = () => {
 
   return (
     <footer className="relative text-white py-16 w-full overflow-hidden bg-black">
-      <div className="absolute inset-0 bg-[url('/assets/footer-bg.jpg')] bg-cover bg-center opacity-30"></div>
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-transparent to-[#FFD400] opacity-70"></div>
+      {/* Simplified background with animated gradient and noise texture */}
+      <motion.div 
+        className="absolute inset-0 bg-gradient-to-br from-black via-[rgba(0,0,0,0.7)] to-[#FFD400] opacity-80"
+        animate={{
+          background: [
+            'linear-gradient(to bottom right, black, rgba(0,0,0,0.7) 50%, #FFD400)',
+            'linear-gradient(to bottom right, black, rgba(0,0,0,0.65) 55%, #FFD400)',
+            'linear-gradient(to bottom right, black, rgba(0,0,0,0.7) 50%, #FFD400)',
+          ]
+        }}
+        transition={{
+          duration: 6,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+      
+      {/* Noise texture overlay */}
+      <div 
+        className="absolute inset-0 opacity-20 mix-blend-overlay"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'repeat',
+        }}
+      />
 
-      {/* Animated particles */}
-      {[...Array(15)].map((_, i) => (
+      {/* Floating construction-themed particles */}
+      {[...Array(30)].map((_, i) => (
         <motion.div
-          key={`dot-${i}`}
-          className="absolute w-1 h-1 bg-[#FFD400] rounded-full"
+          key={`particle-${i}`}
+          className="absolute text-[#FFD400]"
           animate={{
             x: ["0%", "100%"],
             y: ["0%", "100%"],
+            rotate: [0, 360],
             opacity: [0, 1, 0],
           }}
           transition={{
-            duration: Math.random() * 10 + 10,
-            repeat: Number.POSITIVE_INFINITY,
+            duration: Math.random() * 20 + 10,
+            repeat: Infinity,
             ease: "linear",
           }}
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
           }}
-        />
+        >
+          {i % 3 === 0 ? <Hammer size={12} /> : i % 3 === 1 ? <Paintbrush size={12} /> : <Drill size={12} />}
+        </motion.div>
       ))}
 
-      {/* Animated hammers and paintbrushes */}
+      {/* Lucide dots */}
+      {[...Array(15)].map((_, i) => (
+        <motion.div
+          key={`dot-${i}`}
+          className="absolute text-[#FFD400]"
+          animate={{
+            x: ["0%", "100%"],
+            y: ["0%", "100%"],
+            scale: [0.5, 1, 0.5],
+            opacity: [0.2, 0.7, 0.2],
+          }}
+          transition={{
+            duration: Math.random() * 20 + 15,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+          }}
+        >
+          <Circle size={4} fill="#FFD400" />
+        </motion.div>
+      ))}
+
+      {/* White Lucide dots */}
+      {[...Array(15)].map((_, i) => (
+        <motion.div
+          key={`white-dot-${i}`}
+          className="absolute text-white"
+          animate={{
+            x: ["0%", "100%"],
+            y: ["0%", "100%"],
+            scale: [0.5, 1, 0.5],
+            opacity: [0.2, 0.7, 0.2],
+          }}
+          transition={{
+            duration: Math.random() * 20 + 15,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+          }}
+        >
+          <Circle size={4} fill="white" />
+        </motion.div>
+      ))}
+
+      {/* Interactive floating tools with glow effect */}
       {[...Array(6)].map((_, i) => (
         <motion.div
           key={`hammer-${i}`}
@@ -98,21 +175,26 @@ const Footer = () => {
             rotate: [0, 360],
             opacity: [0, 1, 0],
           }}
+          whileHover={{
+            filter: "drop-shadow(0 0 8px rgba(255, 212, 0, 0.8))",
+            scale: 1.2,
+          }}
           transition={{
             duration: Math.random() * 15 + 15,
             repeat: Number.POSITIVE_INFINITY,
-            ease: "linear",
+            ease: "easeInOut",
           }}
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
+            transform: `translateZ(${(i + 1) * 10}px)`,
           }}
         >
-          <Hammer size={16} />
+          <Hammer size={16} className="filter drop-shadow-lg transition-all duration-300" />
         </motion.div>
       ))}
 
-      {/* Animated paintbrushes */}
+      {/* Parallax paintbrushes */}
       {[...Array(6)].map((_, i) => (
         <motion.div
           key={`paintbrush-${i}`}
@@ -126,18 +208,19 @@ const Footer = () => {
           transition={{
             duration: Math.random() * 15 + 15,
             repeat: Number.POSITIVE_INFINITY,
-            ease: "linear",
+            ease: "easeInOut",
           }}
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
+            transform: `translateZ(${(i + 1) * 15}px)`,
           }}
         >
-          <Paintbrush size={16} />
+          <Paintbrush size={16} className="filter drop-shadow-lg" />
         </motion.div>
       ))}
 
-      {/* Animated drills */}
+      {/* Parallax drills */}
       {[...Array(6)].map((_, i) => (
         <motion.div
           key={`drill-${i}`}
@@ -151,14 +234,15 @@ const Footer = () => {
           transition={{
             duration: Math.random() * 15 + 15,
             repeat: Number.POSITIVE_INFINITY,
-            ease: "linear",
+            ease: "easeInOut",
           }}
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
+            transform: `translateZ(${(i + 1) * 20}px)`,
           }}
         >
-          <Drill size={16} />
+          <Drill size={16} className="filter drop-shadow-lg" />
         </motion.div>
       ))}
 
@@ -180,7 +264,7 @@ const Footer = () => {
               />
             </Link>
             <p className="text-xl text-gray-300 max-w-md font-medium leading-relaxed">
-              Empower contractors with automation <br />
+              Empower contractors with automation. <br />
             </p>
             <div className="flex flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
               <div className="group w-auto flex items-center">
@@ -189,8 +273,8 @@ const Footer = () => {
                   onMouseEnter={() => setIsHoveringTry(true)}
                   onMouseLeave={() => setIsHoveringTry(false)}
                 >
-                  <Link href="/pricing/#xpricing" className="flex items-center">
-                    <span className="relative z-10 transition-colors duration-300">Unlock Automation</span>
+                  <Link href="/sign-up" className="flex items-center">
+                    <span className="relative z-10 transition-colors duration-300">Sign Up</span>
                     <Zap
                       className={`ml-2 h-5 w-5 relative z-10 transition-all duration-300 ${isHoveringTry ? "rotate-[360deg] scale-125" : ""}`}
                     />
@@ -237,7 +321,7 @@ const Footer = () => {
           <ul className="flex flex-wrap justify-center gap-4">
             <li>
               <Link href="/terms" className="font-medium hover:text-white transition-colors duration-200">
-                Terms and Conditions
+                Terms of Service
               </Link>
             </li>
             <li>

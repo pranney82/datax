@@ -1,43 +1,56 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Zap, Users, Target, Clock, Rocket, TrendingUp, HardHat, BotIcon as Robot } from "lucide-react"
+import {
+  ArrowRight,
+  Zap,
+  Users,
+  Target,
+  Clock,
+  Rocket,
+  TrendingUp,
+  HardHat,
+  BotIcon as Robot,
+  Sparkle,
+  Check,
+} from "lucide-react"
 import Image from "next/image"
+import { motion } from "framer-motion"
 
 // Hero Component
 function Hero() {
   return (
-    <section className="py-16 px-4 bg-[#000] bg-[url('/assets/images/stars.png')] bg-repeat">
-      <div className="container mx-auto text-center">
-        <h1 className="text-5xl md:text-7xl font-extrabold mb-6 animate-fade-in-up text-[#fff]">
-          Unleash JOBTREAD API with <span className="text-[#FFD400]">DATAx</span>
-        </h1>
-        <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto animate-fade-in-up animation-delay-200 text-[#fff]">
-          Transform your business operations with our cutting-edge automation solutions.
-        </p>
-        <Button
-          className="bg-[#FFD400] text-[#000] hover:bg-[#FFD400]/80 transition-all duration-300 text-lg py-6 px-8 rounded-full font-bold animate-fade-in-up animation-delay-400"
-          onClick={() => document.getElementById("jotform-section")?.scrollIntoView({ behavior: "smooth" })}
-        >
-          Get Started Now <ArrowRight className="ml-2" />
-        </Button>
-        <div className="mt-12 bg-[#ffd400] p-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl max-w-2xl mx-auto">
-          <h3 className="text-2xl font-bold text-[#000] mb-2">Our Mission</h3>
-          <p className="text-xl text-[#000] font-semibold">Empower contractors with automation.</p>
-          <div className="flex justify-center items-center mt-4">
-            <div className="flex space-x-4">
-              <HardHat className="w-8 h-8 text-[#000]" />
-              <ArrowRight className="w-8 h-8 text-[#000]" />
-              <Robot className="w-8 h-8 text-[#000]" />
+    <section className="py-16 px-4">
+      <div className="container mx-auto text-center relative">
+        <div className="relative z-10">
+          <div className="mb-12 bg-[#fff] p-8 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl max-w-3xl mx-auto animate-fade-in-up">
+            <h2 className="text-4xl md:text-6xl font-extrabold text-[#000] mb-4">Our Mission</h2>
+            <p className="text-2xl md:text-3xl text-[#000] font-bold mb-6">Empower contractors with automation.</p>
+            <div className="flex justify-center items-center">
+              <div className="flex space-x-6">
+                <HardHat className="w-12 h-12 text-[#FFD400]" />
+                <ArrowRight className="w-12 h-12 text-[#FFD400]" />
+                <Robot className="w-12 h-12 text-[#FFD400]" />
+              </div>
             </div>
           </div>
+          <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto animate-fade-in-up animation-delay-200 text-[#fff]">
+            Elevate your business operations with automation.
+          </p>
+          <Button
+            className="bg-[#FFD400] text-[#000] hover:bg-[#FFD400]/80 transition-all duration-300 text-lg py-6 px-8 rounded-full font-bold animate-fade-in-up animation-delay-400"
+            onClick={() => document.getElementById("jotform-section")?.scrollIntoView({ behavior: "smooth" })}
+          >
+            Get Started Now <ArrowRight className="ml-2" />
+          </Button>
         </div>
       </div>
     </section>
   )
 }
-
 // Features Component
 function Features() {
   const features = [
@@ -84,7 +97,7 @@ function Features() {
   ]
 
   return (
-    <section className="py-24 px-4 bg-[#000] bg-[url('/assets/images/stars.png')] bg-repeat">
+    <section className="py-24 px-4">
       <div className="container mx-auto">
         <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center text-[#fff]">
           Built by <span className="text-[#FFD400]">JOBTREAD</span> users, for{" "}
@@ -119,7 +132,7 @@ function Features() {
 // DataXInfo Component
 function DataXInfo() {
   return (
-    <section className="py-24 px-4 bg-[#000] bg-[url('/assets/images/stars.png')] bg-repeat">
+    <section className="py-24 px-4">
       <div className="container mx-auto">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
           <div className="lg:w-1/2">
@@ -127,9 +140,7 @@ function DataXInfo() {
               Revolutionize Your Business with <span className="text-[#FFD400]">DATAx</span>
             </h2>
             <p className="text-xl mb-8 text-[#fff]/80">
-              DATAx leverages the JOBTREAD API to transform raw data into actionable insights. With specialized
-              features, custom automations, and fractional CTO services, we provide tailored solutions to streamline
-              operations and maximize efficiency. Simple, powerful, and built for your business.
+            Our automation solutions optimize your business with specialized features, custom automations, and fractional CTO services—streamlining operations and maximizing efficiency. Simple, powerful, and built for you.
             </p>
             <ul className="space-y-4 mb-8 text-[#fff]">
               <li className="flex items-center">
@@ -142,7 +153,7 @@ function DataXInfo() {
               </li>
               <li className="flex items-center">
                 <ArrowRight className="text-[#FFD400] mr-2" />
-                <span>CTO Consulting for more help</span>
+                <span>Zapier build and implementation</span>
               </li>
             </ul>
             <Button
@@ -153,13 +164,28 @@ function DataXInfo() {
             </Button>
           </div>
           <div className="lg:w-1/2">
-            <Image
-              src="/assets/images/about.png"
-              alt="DataX Dashboard Example"
-              width={600}
-              height={400}
-              className="rounded-lg shadow-2xl"
-            />
+            <div className="relative flex justify-center">
+              <div className="absolute inset-0 bg-[#FFD400] rounded-2xl transform rotate-3 scale-105 z-0"></div>
+              <motion.div
+                className="relative w-full"
+                animate={{
+                  y: [0, -10, 0],
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Number.POSITIVE_INFINITY,
+                  ease: "easeInOut",
+                }}
+              >
+                <Image
+                  src="/assets/images/about.png"
+                  alt="DataX Dashboard Example"
+                  width={600}
+                  height={400}
+                  className="rounded-2xl object-cover shadow-2xl relative z-10 transform transition-transform duration-300 hover:scale-105"
+                />
+              </motion.div>
+            </div>
           </div>
         </div>
       </div>
@@ -198,19 +224,22 @@ function JotFormSection() {
   }
 
   return (
-    <section id="jotform-section" className="py-16 bg-[#000] bg-[url('/assets/images/stars.png')] bg-repeat">
+    <section id="jotform-section" className="py-16 relative">
       <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto bg-[#fff] rounded-3xl p-8 shadow-2xl">
-          <h2 className="text-3xl font-bold text-[#000] mb-6 text-center">Get Started with DATAx</h2>
+        <div className="max-w-3xl mx-auto bg-[#fff] rounded-3xl p-10 shadow-2xl border-2 border-[#FFD400]">
+          <h2 className="text-4xl font-extrabold text-[#000] mb-8 text-center">Get Started with CTO Services</h2>
           {showThankYou ? (
-            <div className="text-center py-6">
+            <div className="text-center py-8">
+              <div className="w-20 h-20 bg-[#FFD400] rounded-full flex items-center justify-center mx-auto mb-6">
+                <Check className="w-10 h-10 text-[#000]" />
+              </div>
               <h3 className="text-2xl font-bold text-[#000] mb-4">Thank You for Choosing DATAx!</h3>
               <p className="text-xl text-[#000]/80 mb-6">
                 We&apos;ve received your request and we&apos;ll be in touch shortly.
               </p>
               <Button
                 onClick={() => setShowThankYou(false)}
-                className="px-6 py-3 bg-[#000] text-[#fff] font-bold rounded-full transition-all duration-300 hover:bg-[#FFD400] hover:text-[#000] hover:shadow-lg transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:ring-opacity-50"
+                className="px-8 py-4 bg-[#FFD400] text-[#000] font-bold rounded-full text-lg transition-all duration-300 hover:bg-[#000] hover:text-[#FFD400] hover:shadow-lg transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:ring-opacity-50"
               >
                 Back to Form
               </Button>
@@ -226,8 +255,8 @@ function JotFormSection() {
               autoComplete="on"
               onSubmit={handleSubmit}
             >
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="first_3" className="block text-sm font-medium text-[#000] mb-1">
                       First Name
@@ -236,7 +265,7 @@ function JotFormSection() {
                       type="text"
                       id="first_3"
                       name="q3_yourName[first]"
-                      className="w-full px-4 py-2 border border-[#000]/20 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-gray-800"
+                      className="w-full px-4 py-3 border-2 border-[#000] rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-[#000]"
                       required
                     />
                   </div>
@@ -248,7 +277,7 @@ function JotFormSection() {
                       type="text"
                       id="last_3"
                       name="q3_yourName[last]"
-                      className="w-full px-4 py-2 border border-[#000]/20 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-gray-800"
+                      className="w-full px-4 py-3 border-2 border-[#000] rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-[#000]"
                       required
                     />
                   </div>
@@ -261,7 +290,7 @@ function JotFormSection() {
                     type="text"
                     id="input_17"
                     name="q17_businessName"
-                    className="w-full px-4 py-2 border border-[#000]/20 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-gray-800"
+                    className="w-full px-4 py-3 border-2 border-[#000] rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-[#000]"
                     required
                   />
                 </div>
@@ -273,16 +302,16 @@ function JotFormSection() {
                     type="text"
                     id="input_6_addr_line1"
                     name="q6_yourAddress[addr_line1]"
-                    className="w-full px-4 py-2 border border-[#000]/20 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-gray-800 mb-2"
+                    className="w-full px-4 py-3 border-2 border-[#000] rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-[#000] mb-4"
                     placeholder="Street Address"
                     required
                   />
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-4">
                     <input
                       type="text"
                       id="input_6_city"
                       name="q6_yourAddress[city]"
-                      className="w-full px-4 py-2 border border-[#000]/20 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-gray-800"
+                      className="w-full px-4 py-3 border-2 border-[#000] rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-[#000]"
                       placeholder="City"
                       required
                     />
@@ -290,57 +319,62 @@ function JotFormSection() {
                       type="text"
                       id="input_6_state"
                       name="q6_yourAddress[state]"
-                      className="w-full px-4 py-2 border border-[#000]/20 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-gray-800"
-                      placeholder="State"
+                      className="w-full px-4 py-3 border-2 border-[#000] rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-[#000]"
+                      placeholder="State (e.g., TX)"
+                      pattern="[A-Z]{2}"
+                      title="Please enter a valid two-letter state abbreviation (e.g., TX for Texas)"
                       required
                     />
                     <input
                       type="text"
                       id="input_6_postal"
                       name="q6_yourAddress[postal]"
-                      className="w-full px-4 py-2 border border-[#000]/20 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-gray-800"
-                      placeholder="Postal Code"
+                      className="w-full px-4 py-3 border-2 border-[#000] rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-[#000]"
+                      placeholder="Postal Code (5 digits)"
+                      pattern="[0-9]{5}"
+                      title="Please enter a valid 5-digit postal code"
                       required
                     />
                   </div>
                 </div>
-                <div>
-                  <label htmlFor="input_4_full" className="block text-sm font-medium text-[#000] mb-1">
-                    Contact Number
-                  </label>
-                  <input
-                    type="tel"
-                    id="input_4_full"
-                    name="q4_contactNumber[full]"
-                    className="w-full px-4 py-2 border border-[#000]/20 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-gray-800"
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="input_5" className="block text-sm font-medium text-[#000] mb-1">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    id="input_5"
-                    name="q5_emailAddress"
-                    className="w-full px-4 py-2 border border-[#000]/20 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-gray-800"
-                    required
-                  />
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="input_5" className="block text-sm font-medium text-[#000] mb-1">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      id="input_5"
+                      name="q5_emailAddress"
+                      className="w-full px-4 py-3 border-2 border-[#000] rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-[#000]"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="input_4_full" className="block text-sm font-medium text-[#000] mb-1">
+                      Contact Number
+                    </label>
+                    <input
+                      type="tel"
+                      id="input_4_full"
+                      name="q4_contactNumber[full]"
+                      className="w-full px-4 py-3 border-2 border-[#000] rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-[#000]"
+                      required
+                    />
+                  </div>
                 </div>
                 <div>
                   <label htmlFor="input_15" className="block text-sm font-medium text-[#000] mb-1">
                     Interested Services
                   </label>
                   <select
-                    className="w-full px-4 py-2 border border-[#000]/20 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 appearance-none bg-white text-gray-800"
+                    className="w-full px-4 py-3 border-2 border-[#000] rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 appearance-none bg-white text-[#000]"
                     id="input_15"
                     name="q15_whatServices15"
                     required
                   >
                     <option value="">Please Select</option>
                     <option value="Zapier Help">Zapier Help</option>
-                    <option value="Formula Help">Formula Help</option>
                     <option value="CTO Consulting">CTO Consulting</option>
                     <option value="Something Else">Something Else</option>
                   </select>
@@ -352,17 +386,25 @@ function JotFormSection() {
                   <textarea
                     id="input_10"
                     name="q10_additionalComments"
-                    className="w-full px-4 py-2 border border-[#000]/20 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-gray-800"
+                    className="w-full px-4 py-3 border-2 border-[#000] rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:border-[#FFD400] transition-all duration-300 text-[#000]"
                     rows={3}
                     placeholder="Tell us about your data challenges..."
                   ></textarea>
                 </div>
                 <Button
                   type="submit"
-                  className="w-full py-3 px-4 bg-[#000] text-[#fff] font-bold rounded-full transition-all duration-300 hover:bg-[#FFD400] hover:text-[#000] hover:shadow-lg transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:ring-opacity-50"
+                  className="w-full py-3 sm:py-4 px-4 sm:px-6 bg-[#FFD400] text-[#000] font-bold rounded-full text-base sm:text-lg transition-all duration-300 hover:bg-[#000] hover:text-[#FFD400] hover:shadow-lg transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#FFD400] focus:ring-opacity-50"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Submitting..." : "Get Your Free DATAx Consultation"}
+                  {isSubmitting ? (
+                    "Submitting..."
+                  ) : (
+                    <>
+                      <span className="hidden sm:inline">Get Your Free DATAx Consultation</span>
+                      <span className="sm:hidden">Free Consultation</span>
+                      <Sparkle className="ml-2 inline-block" />
+                    </>
+                  )}
                 </Button>
               </div>
             </form>
@@ -376,12 +418,37 @@ function JotFormSection() {
 // Main LandingPage Component
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-[#000] text-[#fff] bg-[url('/assets/images/stars.png')] bg-repeat">
-      <Hero />
-      <JotFormSection />
-      <Features />
-      <DataXInfo />
+    <main className="min-h-screen bg-[#000] text-[#fff] relative overflow-hidden">
+      <div className="absolute inset-0 bg-[#000]">
+        {[...Array(300)].map((_, i) => {
+          const size = Math.random() * 3 + 1 // Random size between 1px and 4px
+          return (
+            <div
+              key={i}
+              className="absolute bg-white rounded-full animate-twinkle"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                width: `${size}px`,
+                height: `${size}px`,
+                animationDelay: `${Math.random() * 15}s`,
+                opacity: Math.random() * 0.5 + 0.5,
+                filter: `blur(${size * 0.15}px) brightness(${Math.random() * 150 + 200}%)`,
+                boxShadow: `0 0 ${size * 4}px rgba(255, 255, 255, 0.${Math.floor(Math.random() * 7 + 3)})`,
+                transform: `scale(${Math.random() * 0.8 + 0.7})`,
+              }}
+            />
+          )
+        })}
+      </div>
+      <div className="relative z-10">
+        <Hero />
+        <DataXInfo />
+        <Features />
+        <JotFormSection />
+      </div>
     </main>
   )
 }
 
+  

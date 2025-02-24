@@ -1,14 +1,8 @@
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/lib/context/auth-context"
-import { UserProvider } from "@/lib/providers/user-provider"
 import type { Metadata } from "next"
-import dynamic from "next/dynamic"
-
-const ScrollToTopButton = dynamic(
-  () => import("@/components/scroll-to-top-button").then((mod) => mod.ScrollToTopButton),
-  { ssr: false },
-)
+import { ScrollToTopButton } from "@/components/scroll-to-top-button"
 
 export const metadata: Metadata = {
   title: "Win Your DATAx",
@@ -47,13 +41,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <AuthProvider>
-          <UserProvider>
             <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
               {children}
               <ScrollToTopButton scrollThreshold={400} />
             </ThemeProvider>
-          </UserProvider>
         </AuthProvider>
+        <div id="modal-root" />
       </body>
     </html>
   )

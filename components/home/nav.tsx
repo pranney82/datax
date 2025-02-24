@@ -6,7 +6,7 @@ import {
   Zap,
   Home,
   Car,
-  DollarSign,
+  UserPen,
   BookOpen,
   Map,
   Heart,
@@ -14,6 +14,7 @@ import {
   Code2,
   Users,
   BookText,
+  Video,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
@@ -31,8 +32,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { AuthDialog } from "@/components/home/signup1"
 import { useAuth } from "@/lib/context/auth-context"
-import { signOut } from "firebase/auth"
-import { auth } from "@/lib/firebase"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -71,7 +70,8 @@ const iconMap = {
   Home: <Home className="size-5 shrink-0" />,
   Heart: <Heart className="size-5 shrink-0" />,
   Car: <Car className="size-5 shrink-0" />,
-  DollarSign: <DollarSign className="size-5 shrink-0" />,
+  UserPen: <UserPen className="size-5 shrink-0" />,
+  Video: <Video className="size-5 shrink-0" />,
 }
 
 const Navbar1 = () => {
@@ -80,7 +80,6 @@ const Navbar1 = () => {
   const [showAuthDialog, setShowAuthDialog] = useState(false)
   const [authType, setAuthType] = useState<"login" | "signup">("signup")
   const router = useRouter()
-  const [isHoveringSignUp, setIsHoveringSignUp] = useState(false)
 
   // Add click outside handler
   useEffect(() => {
@@ -105,14 +104,6 @@ const Navbar1 = () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [isOpen])
-
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth)
-    } catch (error) {
-      console.error("Error signing out:", error)
-    }
-  }
 
   return (
     <section className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -169,7 +160,7 @@ const Navbar1 = () => {
                         <li>
                           <NavigationMenuLink asChild>
                             <Link
-                              href="/#cto"
+                              href="/cto"
                               className={cn(
                                 "flex select-none items-center gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#ffd400]/10 focus:bg-[#ffd400]/10 group",
                               )}
@@ -229,9 +220,9 @@ const Navbar1 = () => {
                   buttonVariants({ variant: "ghost" }),
                   'after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#ffd400] after:scale-x-0 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left',
                 )}
-                href="/pricing"
+                href="/hello"
               >
-                <span>Pricing</span>
+                <span>Contact</span>
               </Link>
             </div>
             <div className="flex gap-1">
@@ -240,53 +231,46 @@ const Navbar1 = () => {
                   <div className="w-5 h-1 bg-muted animate-pulse rounded-md"></div>
                   <div className="w-10 h-1 bg-muted animate-pulse rounded-md"></div>
                 </div>
-              ) : user ? (
-                <>
-                  <Button variant="outline" onClick={handleSignOut}>
-                    Sign out
-                  </Button>
-                  <Button
-                    className="bg-[#ffd400] text-black hover:bg-[#ffd400]/90"
-                    onClick={() => {
-                      router.push("/x")
-                    }}
-                  >
-                    Dashboard
-                  </Button>
-                </>
               ) : (
                 <>
+                  <Link href="/video">
+                    <Button
+                      className="bg-black hover:bg-black text-white hover:text-white hover:scale-102 font-bold transition-transform duration-200"
+                    >
+                      <Video className="size-5 text-[#ffd400]" />
+                      <span className="ml-2">Video</span>
+                    </Button>
+                  </Link>
+                  {user ? (
+                    <Button
+                      className="bg-[#ffd400] text-black hover:bg-[#ffd400]/90"
+                      onClick={() => router.push("/x")}
+                    >
+                      Dashboard
+                    </Button>
+                  ) : (
+                    <Link href="/sign-up">
+                      <Button
+                        className="bg-[#FFD400] text-black hover:bg-[#ffd400]/90 font-bold"
+                      >
+                        Sign Up
+                        <Zap className="ml-2 h-5 w-5" />
+                      </Button>
+                    </Link>
+                  )}
                   <Button
                     variant="outline"
                     onClick={() => {
-                      setAuthType("login")
-                      setShowAuthDialog(true)
+                      if (user) {
+                        router.push("/x")
+                      } else {
+                        setAuthType("login")
+                        setShowAuthDialog(true)
+                      }
                     }}
                   >
-                    Log in
+                    Sign In
                   </Button>
-                  <Link href="/pricing">
-                    <Button
-                      className="w-full sm:w-auto bg-[#FFD400] text-black font-bold py-3 px-6 rounded-m transition-all duration-300 transform hover:scale-105 hover:bg-white hover:text-black relative overflow-hidden group shadow-[0_0_15px_rgba(255,212,0,0.5)]"
-                      onClick={() => {
-                        setAuthType("signup")
-                        setShowAuthDialog(true)
-                      }}
-                      onMouseEnter={() => setIsHoveringSignUp(true)}
-                      onMouseLeave={() => setIsHoveringSignUp(false)}
-                    >
-                      <span className="relative z-10 transition-colors duration-300">Unlock Automation</span>
-                      <Zap
-                        className={`ml-2 h-5 w-5 relative z-10 transition-all duration-300 ${isHoveringSignUp ? "rotate-[360deg] scale-125" : ""}`}
-                      />
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-[#FFD400] to-white"
-                        initial={{ x: "100%" }}
-                        animate={isHoveringSignUp ? { x: "0%" } : { x: "100%" }}
-                        transition={{ duration: 0.3 }}
-                      />
-                    </Button>
-                  </Link>
                 </>
               )}
             </div>
@@ -318,15 +302,11 @@ const Navbar1 = () => {
                   Dashboard
                 </Button>
               ) : (
-                <Link href="/pricing">
+                <Link href="/sign-up">
                   <Button
                     className="bg-[#FFD400] text-black font-bold py-2 px-4 rounded-md text-sm flex items-center"
-                    onClick={() => {
-                      setAuthType("signup")
-                      setShowAuthDialog(true)
-                    }}
                   >
-                    <span>Unlock</span>
+                    <span>Sign Up</span>
                     <Zap className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
@@ -363,7 +343,7 @@ const Navbar1 = () => {
                     <span className="ml-2">DATAx Software</span>
                   </Link>
                   <Link
-                    href="/#cto"
+                    href="/cto"
                     className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200"
                   >
                     <div className="p-2 rounded-full bg-[#A9A9A9]/10 group-hover:bg-[#ffd400] transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
@@ -388,31 +368,40 @@ const Navbar1 = () => {
                     <span className="ml-2">About</span>
                   </Link>
                   <Link
-                    href="/pricing"
+                    href="/video"
                     className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200 text-lg"
                   >
-                    {iconMap.DollarSign}
-                    <span className="ml-2">Pricing</span>
+                    {iconMap.Video}
+                    <span className="ml-2">Video</span>
+                  </Link>
+                  <Link
+                    href="/hello"
+                    className="flex items-center text-base font-medium text-gray-800 hover:text-[#ffd400] transition-colors duration-200 text-lg"
+                  >
+                    {iconMap.UserPen}
+                    <span className="ml-2">Contact</span>
                   </Link>
                   <div className="flex flex-col gap-2 pt-4 border-t">
-                    {user ? (
-                      <Button
-                        variant="outline"
-                        className="w-full"
-                        onClick={handleSignOut}
-                      >
-                        Sign out
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="outline"
-                        className="w-full"
-                        onClick={() => {
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => {
+                        if (user) {
+                          router.push("/x")
+                        } else {
                           setAuthType("login")
                           setShowAuthDialog(true)
-                        }}
+                        }
+                      }}
+                    >
+                      Sign In
+                    </Button>
+                    {user && (
+                      <Button
+                        className="w-full bg-[#FFD400] text-black"
+                        onClick={() => router.push("/x")}
                       >
-                        Log in
+                        Dashboard
                       </Button>
                     )}
                   </div>

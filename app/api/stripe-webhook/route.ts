@@ -31,7 +31,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   typescript: true
 });
 
-async function notifyDiscordPayment(session: Stripe.Checkout.Session, productName: string) {
+async function notifyDiscord(
+  title: string,
+  fields: Array<{ name: string; value: string; inline?: boolean }>,
+  color?: number
+) {
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL_MONEY;
   if (!webhookUrl) return;
 
@@ -39,34 +43,28 @@ async function notifyDiscordPayment(session: Stripe.Checkout.Session, productNam
     const message = {
       username: 'DATAx Money Bot',
       embeds: [{
-        title: '💰 New Payment Received!',
-        color: 0x00ff00,
-        fields: [
-          {
-            name: 'Product',
-            value: productName,
-            inline: true
-          },
-          {
-            name: 'Amount',
-            value: `$${(session.amount_total! / 100).toFixed(2)} ${session.currency?.toUpperCase()}`,
-            inline: true
-          },
-          {
-            name: 'Customer',
-            value: session.customer_email || 'No email provided',
-            inline: true
-          }
-        ],
+        title,
+        color: color || 0x00ff00,
+        fields,
         timestamp: new Date().toISOString()
       }]
     };
 
     await axios.post(webhookUrl, message);
   } catch (error) {
-    console.error('Failed to send Discord payment notification:', error);
-    // Don't throw - we don't want to interrupt payment processing if notification fails
+    console.error('Failed to send Discord notification:', error);
   }
+}
+
+async function notifyDiscordPayment(session: Stripe.Checkout.Session, productName: string) {
+  await notifyDiscord(
+    '💰 New Payment Received!',
+    [
+      { name: 'Product', value: productName, inline: true },
+      { name: 'Amount', value: `$${(session.amount_total! / 100).toFixed(2)} ${session.currency?.toUpperCase()}`, inline: true },
+      { name: 'Customer', value: session.customer_email || 'No email provided', inline: true }
+    ]
+  );
 }
 
 async function handleNewSubscription(session: Stripe.Checkout.Session) {
@@ -125,6 +123,19 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
   
   const price = await stripe.prices.retrieve(subscription.items.data[0].price.id);
   const product = await stripe.products.retrieve(price.product as string);
+  const customer = await stripe.customers.retrieve(subscription.customer as string);
+  const customerEmail = (customer as Stripe.Customer).email || 'No email provided';
+
+  await notifyDiscord(
+    '🔄 Subscription Updated',
+    [
+      { name: 'Product', value: product.name, inline: true },
+      { name: 'Status', value: subscription.status, inline: true },
+      { name: 'Customer', value: customerEmail, inline: true },
+      { name: 'Amount', value: `$${(subscription.items.data[0].price.unit_amount! / 100).toFixed(2)} ${subscription.currency.toUpperCase()}`, inline: true }
+    ],
+    0x0099ff
+  );
 
   // Find the existing subscription document
   const querySnapshot = await db.collection('stripedata')
@@ -151,6 +162,20 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
 
 async function handleSubscriptionCancellation(subscription: Stripe.Subscription) {
   const db = getFirestore();
+
+  const customer = await stripe.customers.retrieve(subscription.customer as string);
+  const customerEmail = (customer as Stripe.Customer).email || 'No email provided';
+
+  await notifyDiscord(
+    '❌ Subscription Cancelled',
+    [
+      { name: 'Customer', value: customerEmail, inline: true },
+      { name: 'Status', value: subscription.status, inline: true },
+      { name: 'Cancelled At', value: new Date().toLocaleString(), inline: true }
+    ],
+    0xff0000
+  );
+
   const querySnapshot = await db.collection('stripedata')
     .where('customerId', '==', subscription.customer)
     .limit(1)
@@ -167,6 +192,20 @@ async function handleSubscriptionCancellation(subscription: Stripe.Subscription)
 
 async function handleFailedPayment(invoice: Stripe.Invoice) {
   const db = getFirestore();
+
+  const customer = await stripe.customers.retrieve(invoice.customer as string);
+  const customerEmail = (customer as Stripe.Customer).email || 'No email provided';
+
+  await notifyDiscord(
+    '⚠️ Payment Failed',
+    [
+      { name: 'Customer', value: customerEmail, inline: true },
+      { name: 'Amount', value: `$${(invoice.amount_due / 100).toFixed(2)} ${invoice.currency.toUpperCase()}`, inline: true },
+      { name: 'Attempt Count', value: invoice.attempt_count?.toString() || '1', inline: true }
+    ],
+    0xff9900
+  );
+
   const querySnapshot = await db.collection('stripedata')
     .where('customerId', '==', invoice.customer)
     .limit(1)
