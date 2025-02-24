@@ -97,24 +97,76 @@ const EpicFeatures = () => {
         </div>
 
         <div className="mb-12 sm:mb-16">
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            {features.map((feature) => (
-              <button
-                key={feature.id}
-                onClick={() => {
-                  setActiveTab(feature.id)
-                  setIsVideoPlaying(false)
-                }}
-                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-full text-sm sm:text-lg font-semibold transition-all duration-300 break-words ${
-                  activeTab === feature.id
-                    ? "bg-[#FFD400] text-black"
-                    : "bg-white bg-opacity-10 text-white hover:bg-[#FFD400] hover:text-black"
-                }`}
-              >
-                {feature.title}
-              </button>
-            ))}
-          </div>
+          <nav className="flex justify-center mb-8 px-2 sm:px-0">
+            <div className="flex sm:flex-wrap justify-center items-center gap-2 sm:gap-4 p-2 sm:p-2 rounded-2xl bg-gradient-to-tr from-white/5 via-white/10 to-transparent backdrop-blur-sm shadow-[0_8px_32px_-8px_rgba(255,212,0,0.15)]">
+              {features.map((feature) => {
+                const Icon = feature.icon
+                return (
+                  <motion.button
+                    key={feature.id}
+                    onClick={() => {
+                      setActiveTab(feature.id)
+                      setIsVideoPlaying(false)
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`
+                      relative px-3 sm:px-6 py-2 sm:py-3 text-sm sm:text-lg font-bold
+                      flex items-center gap-2.5 sm:gap-3 group sm:min-w-[140px]
+                      transition-all duration-300 ease-out
+                      ${activeTab === feature.id 
+                        ? "text-black bg-gradient-to-bl from-[#FFD400] via-[#FFD400] to-[#FFE55C] shadow-[0_4px_20px_rgba(255,212,0,0.25)] scale-105 relative overflow-hidden" 
+                        : "text-white hover:text-[#FFD400]"
+                      }
+                      after:content-[''] after:absolute after:bottom-0 after:left-0 
+                      after:w-full after:h-0.5 after:bg-[#FFD400] 
+                      after:scale-x-0 after:origin-bottom-right 
+                      after:transition-transform after:duration-500
+                      hover:after:scale-x-100 hover:after:origin-bottom-left
+                      rounded-xl
+                      ${activeTab === feature.id ? '' : 'hover:bg-white/5'}
+                    `}
+                  >
+                    {activeTab === feature.id && (
+                      <motion.div
+                        className="absolute inset-0"
+                        initial={false}
+                        animate={{ opacity: 1 }}
+                      >
+                        <motion.div
+                          className="absolute inset-0"
+                          initial={{ scale: 0, opacity: 0.5 }}
+                          animate={{ scale: 2, opacity: 0 }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            ease: "easeOut"
+                          }}
+                          style={{
+                            background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)'
+                          }}
+                        />
+                      </motion.div>
+                    )}
+                    <Icon className={`w-5 h-5 sm:w-6 sm:h-6 transition-all duration-300 
+                      ${activeTab === feature.id 
+                        ? 'text-black scale-110' 
+                        : 'text-[#FFD400] group-hover:text-[#FFD400] group-hover:scale-110'
+                      }`} 
+                    />
+                    <span className="relative z-10 tracking-wide whitespace-nowrap">
+                      <span className="hidden sm:inline">{feature.title}</span>
+                      <span className="sm:hidden">
+                        {feature.id === "datax" ? "DATAx" : 
+                         feature.id === "cto" ? "CTO" : 
+                         "Courses"}
+                      </span>
+                    </span>
+                  </motion.button>
+                )
+              })}
+            </div>
+          </nav>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="relative aspect-video w-full max-w-lg mx-auto md:max-w-none">
               <img
@@ -152,7 +204,7 @@ const EpicFeatures = () => {
                       <span className="text-sm sm:text-base flex items-center gap-2">
                         {item}
                         {item === "Template Library" && (
-                          <Badge variant="secondary" className="bg-[#FFD400] text-black text-xs">
+                          <Badge variant="secondary" className="bg-[#FFD400] hover:bg-[#FFD400] text-black text-xs">
                             FREE FOREVER
                           </Badge>
                         )}

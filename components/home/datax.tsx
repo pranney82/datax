@@ -226,36 +226,73 @@ export default function Home() {
                   Done for <span className="text-[#FFD400]">YOU</span> at $29/m
                 </motion.p>
 
-                <div className="flex justify-center mb-12 relative z-10">
-                  <div className="flex flex-wrap justify-center items-center gap-3 border-b border-white/10 bg-white/5 backdrop-blur-sm px-2 sm:px-6 lg:px-8 py-3 sm:py-1.5 rounded-t-lg w-full">
-                  {features.map((feature) => (
-                    <motion.div
-                      key={feature.id}
-                      whileTap={{ scale: 0.98 }}
-                      className="relative flex justify-center"
-                    >
-                      <Button
-                        onClick={() => setActiveFeature(feature.id)}
-                        className={`text-lg sm:text-lg lg:text-xl px-4 sm:px-5 lg:px-6 py-4 sm:py-4 lg:py-5 rounded-none transition-colors duration-200 flex items-center relative bg-transparent hover:bg-transparent w-auto ${
-                          activeFeature === feature.id
-                            ? "text-[#FFD400] bg-[#FFD400]/5 sm:bg-transparent after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#FFD400] after:scale-x-100 after:origin-bottom-left"
-                            : "text-white/80 hover:text-[#FFD400] after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#FFD400] after:scale-x-0 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left"
-                        }`}
-                      >
-                        <feature.icon className="w-6 h-6 sm:w-6 sm:h-6 lg:w-7 lg:h-7 mr-2.5" />
-                        {feature.title}
-                        {feature.id === 'library' && (
-                          <Badge 
-                            className="ml-2 border-none font-bold bg-[#FFD400] text-black hover:bg-[#FFD400]"
-                          >
-                            FREE
-                          </Badge>
-                        )}
-                      </Button>
-                    </motion.div>
-                  ))}
+                <nav className="flex justify-center mb-12 relative z-10 px-4">
+                  <div className="flex flex-wrap justify-center items-center gap-3 p-2 rounded-2xl bg-gradient-to-b from-white/10 to-transparent backdrop-blur-sm shadow-[0_8px_32px_-8px_rgba(255,212,0,0.2)]">
+                    {features.map((feature) => {
+                      const Icon = feature.icon
+                      return (
+                        <motion.button
+                          key={feature.id}
+                          onClick={() => setActiveFeature(feature.id)}
+                          className={`
+                            relative px-5 sm:px-6 py-3 text-base sm:text-lg font-bold
+                            flex items-center gap-2 sm:gap-3 group
+                            transition-all duration-300 ease-out
+                            ${activeFeature === feature.id 
+                              ? "bg-gradient-to-r from-[#FFD400] to-[#FFB800] text-black shadow-[0_4px_16px_rgba(255,212,0,0.3)] scale-105" 
+                              : "text-white hover:text-[#FFD400] hover:bg-white/5"
+                            }
+                            rounded-xl border border-transparent
+                            ${activeFeature === feature.id ? 'border-[#FFD400]/20' : 'hover:border-[#FFD400]/10'}
+                            overflow-hidden
+                          `}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          {activeFeature === feature.id && (
+                            <motion.div
+                              className="absolute inset-0"
+                              initial={false}
+                              animate={{ opacity: 1 }}
+                            >
+                              <motion.div
+                                className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)]"
+                                animate={{
+                                  x: ["100%", "-100%"],
+                                }}
+                                transition={{
+                                  duration: 1.5,
+                                  repeat: Infinity,
+                                  ease: "linear",
+                                }}
+                              />
+                            </motion.div>
+                          )}
+                          <Icon className={`w-5 h-5 sm:w-6 sm:h-6 transition-all duration-300 
+                            ${activeFeature === feature.id 
+                              ? 'text-black scale-110' 
+                              : 'text-[#FFD400] group-hover:text-[#FFD400] group-hover:scale-110'
+                            }`} 
+                          />
+                          <span className="relative z-10 tracking-wide whitespace-nowrap">
+                            {feature.title}
+                            {feature.id === 'library' && (
+                              <Badge 
+                                className={`ml-2 border-none font-bold ${
+                                  activeFeature === feature.id
+                                    ? 'bg-black/20 text-black hover:bg-black/20'
+                                    : 'bg-[#FFD400] text-black hover:bg-[#FFD400]'
+                                }`}
+                              >
+                                FREE
+                              </Badge>
+                            )}
+                          </span>
+                        </motion.button>
+                      )
+                    })}
                   </div>
-                </div>
+                </nav>
 
                 <AnimatePresence mode="wait">
                   {features.map(
