@@ -16,7 +16,7 @@ const faqData: FAQItem[] = [
     id: "datax-info",
     question: "What is DATAx?",
     answer:
-      "DATAx is an innovative software company exclusively serving JOBTREAD users. We specialize in creating custom features and dashboards that seamlessly integrate with JOBTREAD, eliminating the need for you to build these solutions yourself. Our goal is to enhance your JOBTREAD experience with just a simple connection.",
+      "DATAx is an innovative software company serving JOBTREAD users. We specialize in custom features, dashboards, CTO consulting, and automation courses to streamline your workflow—all seamlessly integrated with JOBTREAD.",
   },
   {
     id: "api-purpose",
