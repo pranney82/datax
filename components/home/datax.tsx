@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   BarChart3,
@@ -48,7 +48,7 @@ const features = [
     id: "library",
     title: "Library",
     icon: BookOpen,
-    description: "A community resource with templats from other JOBTREAD users, free for all users.",
+    description: "A community resource with templates from other JOBTREAD users, free for all users.",
     videoId: "SxHCTr0IWSc",
     thumbnail: "/assets/thumbnails/library.png",
     details: [
@@ -80,6 +80,26 @@ const sellingPoints = [
 const ParticleField = () => {
   const particleCount = 100
   const speed = 10
+  const [dimensions, setDimensions] = useState({ width: 1000, height: 1000 })
+
+  useEffect(() => {
+    // Update dimensions on mount
+    setDimensions({
+      width: window.innerWidth,
+      height: window.innerHeight
+    })
+
+    // Optional: Update on resize
+    const handleResize = () => {
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight
+      })
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
@@ -95,17 +115,17 @@ const ParticleField = () => {
             key={i}
             className="absolute rounded-full"
             initial={{
-              x: randomX * window.innerWidth,
-              y: randomY * 1000,
+              x: randomX * dimensions.width,
+              y: randomY * dimensions.height,
               scale: Math.random() * 0.3 + 0.7, // Random initial scale between 0.7-1
             }}
             animate={{
               x: [
-                randomX * window.innerWidth,
-                (randomX + (Math.random() - 0.5) * moveRange) * window.innerWidth,
-                randomX * window.innerWidth,
+                randomX * dimensions.width,
+                (randomX + (Math.random() - 0.5) * moveRange) * dimensions.width,
+                randomX * dimensions.width,
               ],
-              y: [randomY * 1000, (randomY + (Math.random() - 0.5) * moveRange) * 1000, randomY * 1000],
+              y: [randomY * dimensions.height, (randomY + (Math.random() - 0.5) * moveRange) * dimensions.height, randomY * dimensions.height],
               scale: [Math.random() * 0.3 + 0.7, Math.random() * 0.4 + 0.8, Math.random() * 0.3 + 0.7],
             }}
             transition={{

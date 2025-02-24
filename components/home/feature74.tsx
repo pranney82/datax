@@ -27,7 +27,7 @@ const features: Feature[] = [
     title: "DATAx Software",
     subtitle: "AUTOMATIONS DONE FOR YOU",
     id: "datax",
-    description: "Access dashboards, specialized features and template library all for $29/m.",
+    description: "Unlock full access to dashboards and premium features for just $29/month, plus get access to the free community template library!",
     list: ["Dashboards", "Toolbox", "Template Library"],
     image: "/assets/images/feature1.png",
     color: "#ffd400",
@@ -188,10 +188,10 @@ const EpicFeatures = () => {
                 </thead>
                 <tbody>
                   {[
-                    { label: "Main Benefit", values: ["Done For You", "Built For You", "Learn with Expert"] },
-                    { label: "Best For", values: ["All JT Users", "Custom Needs", "Learning & Growth"] },
-                    { label: "Key Value", values: ["Sign up and Go!", "Custom to Your Needs", "Knowledge"] },
-                    { label: "Cost", values: ["$", "$$$", "$$"] },
+                    { label: "Main Benefit", values: ["Simple, Done For You", "Custom For You", "Learn How To"] },
+                    { label: "Best For", values: ["All JT Users", "Custom Needs", "DIY"] },
+                    { label: "Key Value", values: ["Low Cost, Powerful Features!", "Built to Your Needs", "Learn From an Expert"] },
+                    { label: "Cost", values: ["FREE-$", "$$$", "$$"] },
                   ].map((row, rowIndex) => (
                     <React.Fragment key={row.label}>
                       <tr

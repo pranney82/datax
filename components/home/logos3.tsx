@@ -132,8 +132,8 @@ const EpicLogoShowcase = () => {
                     <Image
                       src={logo.image || "/placeholder.svg"}
                       alt={logo.description}
-                      layout="fill"
-                      objectFit="contain"
+                      fill
+                      style={{ objectFit: 'contain' }}
                       className="filter brightness-0 invert"
                     />
                   </div>

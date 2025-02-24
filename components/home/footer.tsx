@@ -65,12 +65,12 @@ const Footer = () => {
     <footer className="relative text-white py-16 w-full overflow-hidden bg-black">
       {/* Simplified background with animated gradient and noise texture */}
       <motion.div 
-        className="absolute inset-0 bg-gradient-to-br from-black via-[rgba(0,0,0,0.7)] to-[#FFD400] opacity-80"
+        className="absolute inset-0 bg-gradient-to-br from-black via-[rgba(0,0,0,0.85)] to-[rgba(255,212,0,0.15)] opacity-60"
         animate={{
           background: [
-            'linear-gradient(to bottom right, black, rgba(0,0,0,0.7) 50%, #FFD400)',
-            'linear-gradient(to bottom right, black, rgba(0,0,0,0.65) 55%, #FFD400)',
-            'linear-gradient(to bottom right, black, rgba(0,0,0,0.7) 50%, #FFD400)',
+            'linear-gradient(to bottom right, black, rgba(0,0,0,0.85) 70%, rgba(255,212,0,0.15))',
+            'linear-gradient(to bottom right, black, rgba(0,0,0,0.82) 75%, rgba(255,212,0,0.12))',
+            'linear-gradient(to bottom right, black, rgba(0,0,0,0.85) 70%, rgba(255,212,0,0.15))',
           ]
         }}
         transition={{
@@ -89,11 +89,12 @@ const Footer = () => {
         }}
       />
 
-      {/* Floating construction-themed particles */}
-      {[...Array(30)].map((_, i) => (
+      {/* Reduced floating construction-themed particles for better performance */}
+      {[...Array(15)].map((_, i) => (
         <motion.div
           key={`particle-${i}`}
           className="absolute text-[#FFD400]"
+          aria-hidden="true"
           animate={{
             x: ["0%", "100%"],
             y: ["0%", "100%"],
@@ -254,10 +255,11 @@ const Footer = () => {
             transition={{ duration: 0.5 }}
             className="space-y-8"
           >
-            <Link href="/" className="inline-block">
+            <Link href="/" className="inline-block" aria-label="Go to homepage">
               <Image
                 src="/assets/logos/10.png"
-                alt="logo"
+                alt="ContractorCTO Logo"
+                priority
                 width={240}
                 height={120}
                 className="h-16 w-auto filter drop-shadow-[0_0_0.3rem_#ffffff70]"
@@ -273,8 +275,8 @@ const Footer = () => {
                   onMouseEnter={() => setIsHoveringTry(true)}
                   onMouseLeave={() => setIsHoveringTry(false)}
                 >
-                  <Link href="/sign-up" className="flex items-center">
-                    <span className="relative z-10 transition-colors duration-300">Sign Up</span>
+            <Link href="/sign-up" className="flex items-center" aria-label="Sign up for ContractorCTO">
+              <span className="relative z-10 transition-colors duration-300">Sign Up</span>
                     <Zap
                       className={`ml-2 h-5 w-5 relative z-10 transition-all duration-300 ${isHoveringTry ? "rotate-[360deg] scale-125" : ""}`}
                     />
