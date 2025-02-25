@@ -53,7 +53,7 @@ export default function VideoGallery() {
   }, [])
 
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-[#000] relative overflow-hidden">
+    <section className="w-full py-8 md:py-16 lg:py-20 bg-[#000] relative overflow-hidden">
       <div className="absolute inset-0 bg-[#000]">
         {[...Array(300)].map((_, i) => {
           const size = Math.random() * 3 + 1
@@ -77,15 +77,15 @@ export default function VideoGallery() {
         })}
       </div>
       <div className="container mx-auto px-4 md:px-6 max-w-7xl relative z-10">
-        <div className="flex flex-col items-center justify-center space-y-6 text-center mb-16">
-          <h1 className="text-6xl md:text-7xl lg:text-8xl font-extrabold text-white mb-6 tracking-tight">
+        <div className="flex flex-col items-center justify-center space-y-4 text-center mb-8">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-4 tracking-tight">
             Video{" "}
             <span className="text-[#ffd400]">
               Resources
             </span>
           </h1>
 
-          <p className="max-w-[900px] text-[#ffffff] md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed opacity-80">
+          <p className="max-w-[900px] text-[#ffffff] md:text-lg/relaxed lg:text-base/relaxed xl:text-lg/relaxed opacity-90">
             Explore our collection of tutorials and guides to help you get the most out of DATAx.
           </p>
         </div>
