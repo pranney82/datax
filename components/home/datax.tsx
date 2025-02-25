@@ -22,39 +22,39 @@ const features = [
     id: "dashboard",
     title: "Dashboard",
     icon: BarChart3,
-    description: "Get a bird's-eye view of your business with real-time analytics and interactive charts.",
+    description: "Make smarter decisions with real-time analytics and interactive charts that turn your data into actionable insights.  ",
     videoId: "FiAXjvgV0Zc",
     thumbnail: "/assets/thumbnails/dashboard.png",
     details: [
-      "Summary of active jobs and monthly revenue",
-      "Lead sources and conversion rates",
-      "Sales performance and goal tracking",
+      "Summary - Active jobs map, monthly revenue",
+      "Leads - Sources, conversion rates, stage",
+      "Sales - Total revenue, by lead source, set goals",
     ],
   },
   {
     id: "toolbox",
     title: "Toolbox",
     icon: Box,
-    description: "Access a suite of powerful tools to streamline your workflow and boost productivity.",
+    description: "Unlock specialized features designed for JOBTREAD users to streamline workflows, and enhance productivity.",
     videoId: "uSIgiQ4v_mk",
     thumbnail: "/assets/thumbnails/toolbox.png",
     details: [
-      "Zillow data integration for property insights",
-      "Job cover photo generator using Google Street View",
-      "Cash flow tracker for financial management",
+      "Zillow Data - Zestimate, SF, date sold, and more",
+      "Job Cover Photo - Google street view of your job property",
+      "Cash Flow - Track cash in and out by task",
     ],
   },
   {
     id: "library",
     title: "Library",
     icon: BookOpen,
-    description: "A community resource with templates from other JOBTREAD users, free for all users.",
+    description: "Explore our free community repository of JOBTREAD templates—browse, use, and contribute to this shared resource.",
     videoId: "SxHCTr0IWSc",
     thumbnail: "/assets/thumbnails/library.png",
     details: [
-      "Customizable cost group templates by project type",
-      "Pre-built schedule templates for efficient planning",
-      "API scripts for seamless integration with other tools",
+      "Community Resource - For users by users, FREE FOREVER",
+      "JOBTREAD Templates - Cost Groups, Schedules, To-Dos",
+      "API scripts for advanced users",
     ],
   },
 ]
@@ -62,12 +62,12 @@ const features = [
 const sellingPoints = [
   {
     title: "Boost Efficiency",
-    description: "Streamline your workflow and increase productivity with our dashboard, toolbox and library.",
+    description: "Streamline your workflow and increase productivity with our dashboard, toolbox and free community library.",
     icon: Rocket,
   },
   {
     title: "Seamless Integration",
-    description: "Efforless automation, easily connect using your JOBTREAD crendtials and you are ready to go!",
+    description: "Efforless automation, easily connect using your JOBTREAD crendtials and it just works!",
     icon: ArrowLeftRight,
   },
   {
@@ -227,7 +227,7 @@ export default function Home() {
                 </motion.p>
 
                 <nav className="flex justify-center mb-12 relative z-10 px-4">
-                  <div className="flex flex-wrap justify-center items-center gap-3 p-2 rounded-2xl bg-gradient-to-b from-white/10 to-transparent backdrop-blur-sm shadow-[0_8px_32px_-8px_rgba(255,212,0,0.2)]">
+                  <div className="flex flex-nowrap sm:flex-wrap justify-center items-center gap-2 sm:gap-3 p-2 rounded-2xl bg-gradient-to-b from-white/10 to-transparent backdrop-blur-sm shadow-[0_8px_32px_-8px_rgba(255,212,0,0.2)] overflow-x-auto max-w-full">
                     {features.map((feature) => {
                       const Icon = feature.icon
                       return (
@@ -235,8 +235,8 @@ export default function Home() {
                           key={feature.id}
                           onClick={() => setActiveFeature(feature.id)}
                           className={`
-                            relative px-5 sm:px-6 py-3 text-base sm:text-lg font-bold
-                            flex items-center gap-2 sm:gap-3 group
+                            relative px-3 sm:px-6 py-2 sm:py-3 text-sm sm:text-lg font-bold
+                            flex flex-col items-center gap-1 sm:flex-row sm:gap-3 group
                             transition-all duration-300 ease-out
                             ${activeFeature === feature.id 
                               ? "bg-gradient-to-r from-[#FFD400] to-[#FFB800] text-black shadow-[0_4px_16px_rgba(255,212,0,0.3)] scale-105" 
@@ -268,13 +268,13 @@ export default function Home() {
                               />
                             </motion.div>
                           )}
-                          <Icon className={`w-5 h-5 sm:w-6 sm:h-6 transition-all duration-300 
+                          <Icon className={`w-6 h-6 sm:w-6 sm:h-6 transition-all duration-300
                             ${activeFeature === feature.id 
                               ? 'text-black scale-110' 
                               : 'text-[#FFD400] group-hover:text-[#FFD400] group-hover:scale-110'
                             }`} 
                           />
-                          <span className="relative z-10 tracking-wide whitespace-nowrap">
+                          <span className="relative z-10 tracking-wide sm:whitespace-nowrap flex items-center">
                             {feature.title}
                             {feature.id === 'library' && (
                               <Badge 

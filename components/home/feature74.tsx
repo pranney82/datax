@@ -112,7 +112,7 @@ const EpicFeatures = () => {
                     whileTap={{ scale: 0.98 }}
                     className={`
                       relative px-3 sm:px-6 py-2 sm:py-3 text-sm sm:text-lg font-bold
-                      flex items-center gap-2.5 sm:gap-3 group sm:min-w-[140px]
+                      flex flex-col sm:flex-row items-center gap-1 sm:gap-3 group sm:min-w-[140px]
                       transition-all duration-300 ease-out
                       ${activeTab === feature.id 
                         ? "text-black bg-gradient-to-bl from-[#FFD400] via-[#FFD400] to-[#FFE55C] shadow-[0_4px_20px_rgba(255,212,0,0.25)] scale-105 relative overflow-hidden" 
@@ -154,13 +154,8 @@ const EpicFeatures = () => {
                         : 'text-[#FFD400] group-hover:text-[#FFD400] group-hover:scale-110'
                       }`} 
                     />
-                    <span className="relative z-10 tracking-wide whitespace-nowrap">
-                      <span className="hidden sm:inline">{feature.title}</span>
-                      <span className="sm:hidden">
-                        {feature.id === "datax" ? "DATAx" : 
-                         feature.id === "cto" ? "CTO" : 
-                         "Courses"}
-                      </span>
+                    <span className="relative z-10 tracking-wide sm:whitespace-nowrap">
+                      {feature.title}
                     </span>
                   </motion.button>
                 )
