@@ -28,9 +28,8 @@ const footerLinks = [
   {
     title: "Free Resources",
     links: [
-      { name: "Library", href: "/sign-up" },
-      { name: "Resources", href: "/sign-up" },
       { name: "Summary Dashboard", href: "/sign-up" },
+      { name: "Community Templates", href: "/sign-up" },
     ],
   },
 ]

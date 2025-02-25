@@ -165,7 +165,7 @@ const YouTubeEmbed = ({ videoId, thumbnail }: { videoId: string; thumbnail?: str
   const [isPlaying, setIsPlaying] = useState(false)
 
   return (
-    <div className="relative aspect-video rounded-lg overflow-hidden">
+    <div className="relative aspect-video rounded-lg overflow-hidden w-[100%] px-2 sm:w-full sm:px-0 mx-auto">
       {!isPlaying ? (
         <div className="absolute inset-0 flex items-center justify-center">
           <img
@@ -208,7 +208,7 @@ export default function Home() {
             {/* Update 1 */}
             {/* Features Section */}
             <motion.section id="features" className="relative py-12 w-full">
-              <div className="container max-w-7xl mx-auto px-2 sm:px-4">
+              <div className="container max-w-7xl mx-auto px-4 md:px-6">
                 <motion.h1
                   className="text-7xl font-extrabold mb-4 glitch relative pt-16"
                   initial={{ opacity: 0, y: -50 }}
@@ -304,7 +304,7 @@ export default function Home() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -20 }}
                           transition={{ duration: 0.5 }}
-                          className="grid md:grid-cols-2 gap-8 items-center relative z-10 w-full"
+                          className="grid md:grid-cols-2 gap-8 items-center relative z-10 w-full max-w-6xl mx-auto"
                         >
                           <div className="text-left bg-black/30 backdrop-filter backdrop-blur-sm p-6 rounded-lg">
                             <h3 className="text-3xl font-bold mb-4 flex items-center">
@@ -338,7 +338,7 @@ export default function Home() {
                               </Button>
                             </div>
                           </div>
-                          <div className="relative aspect-video rounded-lg overflow-hidden">
+                          <div className="relative aspect-video rounded-lg overflow-hidden w-[95%] px-2 sm:w-full sm:px-0 mx-auto">
                             <YouTubeEmbed videoId={feature.videoId} thumbnail={feature.thumbnail} />
                           </div>
                         </motion.div>

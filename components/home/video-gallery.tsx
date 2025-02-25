@@ -1,139 +1,57 @@
+"use client"
+
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { PlayCircle } from 'lucide-react'
+import { PlayCircle, Loader2, Clock, TrendingUp, History } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Video, getChannelVideos } from "@/lib/services/youtube"
 
-interface Video {
-  id: string
-  title: string
-  description: string
-  duration: string
-  author: string
-  thumbnailUrl: string
-  videoUrl: string
-}
-
-const sampleVideos: Video[] = [
-  {
-    id: "1",
-    title: "Getting Started with DATAx",
-    description: "DATAx Software Walkthrough",
-    duration: "4:31",
-    author: "DATAx Team",
-    thumbnailUrl: "/assets/thumbnails/dataxwork.png",
-    videoUrl: "https://www.youtube.com/embed/FiAXjvgV0Zc",
-  },
-  {
-    id: "2",
-    title: "Unlocking JobTread's Full Potential: A Beginner's Guide to Automations and Integrations",
-    description: "Dominic Eidson and Elliott Wittstruck present their talk again through video from JobTread Connect User Conference 2025 in Dallas, TX.",
-    duration: "32:25",
-    author: "DATAx Team",
-    thumbnailUrl: "/assets/thumbnails/automationbeginner.png",
-    videoUrl: "https://www.youtube.com/embed/w7DycsGRJmQ",
-  },
-  {
-    id: "3",
-    title: "Cash Flow Calendar",
-    description: "Complete guide to integrating DataX with your existing tools.",
-    duration: "4:32",
-    author: "DATAx Team",
-    thumbnailUrl: "/assets/thumbnails/cashcal.png",
-    videoUrl: "https://www.youtube.com/embed/FEptwBb7IrM",
-  },
-  {
-    id: "4",
-    title: "Automation Kickstart - Course 1 - Intro",
-    description: "This is an intro video to our beginner course for automating your construction business. Start with the basics and work your way up to intermediate workflows with weekly classes, hands-on building, and a community to support you. ",
-    duration: "3:39",
-    author: "DATAx Team",
-    thumbnailUrl: "/assets/thumbnails/course1.png",
-    videoUrl: "https://www.youtube.com/embed/-N1rk-aY4tU",
-  },
-  {
-    id: "5",
-    title: "Introducing DATAx for Job Tread Users! 🚀",
-    description: "Introduction to DATAx for JOBTREAD users.",
-    duration: "0:18",
-    author: "DATAx Team",
-    thumbnailUrl: "/assets/thumbnails/dataxwhat.png",
-    videoUrl: "https://www.youtube.com/embed/54J9jKafVMc",
-  },
-  {
-    id: "6",
-    title: "Integration Guide",
-    description: "Complete guide to integrating DataX with your existing tools.",
-    duration: "4:99",
-    author: "DATAx Team",
-    thumbnailUrl: "/assets/thumbnails/3.png",
-    videoUrl: "https://www.youtube.com/embed/SxHCTr0IWSc",
-  },  {
-    id: "7",
-    title: "Integration Guide",
-    description: "Complete guide to integrating DataX with your existing tools.",
-    duration: "4:99",
-    author: "DATAx Team",
-    thumbnailUrl: "/assets/thumbnails/3.png",
-    videoUrl: "https://www.youtube.com/embed/SxHCTr0IWSc",
-  },  {
-    id: "8",
-    title: "Integration Guide",
-    description: "Complete guide to integrating DataX with your existing tools.",
-    duration: "4:99",
-    author: "DATAx Team",
-    thumbnailUrl: "/assets/thumbnails/3.png",
-    videoUrl: "https://www.youtube.com/embed/SxHCTr0IWSc",
-  },  {
-    id: "9",
-    title: "Integration Guide",
-    description: "Complete guide to integrating DataX with your existing tools.",
-    duration: "4:99",
-    author: "DATAx Team",
-    thumbnailUrl: "/assets/thumbnails/3.png",
-    videoUrl: "https://www.youtube.com/embed/SxHCTr0IWSc",
-  },  {
-    id: "10",
-    title: "Integration Guide",
-    description: "Complete guide to integrating DataX with your existing tools.",
-    duration: "4:99",
-    author: "DATAx Team",
-    thumbnailUrl: "/assets/thumbnails/3.png",
-    videoUrl: "https://www.youtube.com/embed/SxHCTr0IWSc",
-  },  {
-    id: "11",
-    title: "Integration Guide",
-    description: "Complete guide to integrating DataX with your existing tools.",
-    duration: "4:99",
-    author: "DATAx Team",
-    thumbnailUrl: "/assets/thumbnails/3.png",
-    videoUrl: "https://www.youtube.com/embed/SxHCTr0IWSc",
-  },  {
-    id: "12",
-    title: "Integration Guide",
-    description: "Complete guide to integrating DataX with your existing tools.",
-    duration: "4:99",
-    author: "DATAx Team",
-    thumbnailUrl: "/assets/thumbnails/3.png",
-    videoUrl: "https://www.youtube.com/embed/SxHCTr0IWSc",
-  },  {
-    id: "13",
-    title: "Integration Guide",
-    description: "Complete guide to integrating DataX with your existing tools.",
-    duration: "4:99",
-    author: "DATAx Team",
-    thumbnailUrl: "/assets/thumbnails/3.png",
-    videoUrl: "https://www.youtube.com/embed/SxHCTr0IWSc",
-  },  {
-    id: "14",
-    title: "Integration Guide",
-    description: "Complete guide to integrating DataX with your existing tools.",
-    duration: "4:99",
-    author: "DATAx Team",
-    thumbnailUrl: "/assets/thumbnails/3.png",
-    videoUrl: "https://www.youtube.com/embed/SxHCTr0IWSc",
-  },
-]
+type SortFilter = 'Latest' | 'Popular' | 'Oldest';
 
 export default function VideoGallery() {
+  const channelId = process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID
+  const [videos, setVideos] = useState<Video[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [filter, setFilter] = useState<SortFilter>('Latest')
+
+  // Sort videos based on current filter
+  const sortedVideos = videos.slice().sort((a, b) => {
+    switch (filter) {
+      case 'Popular':
+        return parseInt(b.views.replace(/[KM]/g, '')) - parseInt(a.views.replace(/[KM]/g, ''));
+      case 'Oldest':
+        return a.id.localeCompare(b.id);
+      case 'Latest':
+      default:
+        return b.id.localeCompare(a.id);
+    }
+  });
+
+  useEffect(() => {
+    async function fetchVideos() {
+      try {
+        setLoading(true)
+        setError(null)
+
+        if (!channelId) {
+          throw new Error("YouTube channel ID is not configured");
+        }
+        
+        // Fetch all videos from the channel
+        const channelVideos = await getChannelVideos(channelId)
+        setVideos(channelVideos)
+      } catch (err) {
+        console.error('Error fetching video details:', err)
+        setError('Failed to load video details. Please try again later.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchVideos()
+  }, [])
+
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-[#000] relative overflow-hidden">
       <div className="absolute inset-0 bg-[#000]">
@@ -159,15 +77,7 @@ export default function VideoGallery() {
         })}
       </div>
       <div className="container mx-auto px-4 md:px-6 max-w-7xl relative z-10">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          {/* EXISTING CODE: Original h1 element */}
-          {/*
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-4">
-            Video <span className="text-[#ffd400]">Resources</span>
-          </h1>
-          */}
-
-          {/* UPDATED CODE: Improved h1 element with brand colors */}
+        <div className="flex flex-col items-center justify-center space-y-6 text-center mb-16">
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-extrabold text-white mb-6 tracking-tight">
             Video{" "}
             <span className="text-[#ffd400]">
@@ -179,45 +89,105 @@ export default function VideoGallery() {
             Explore our collection of tutorials and guides to help you get the most out of DATAx.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12 max-w-6xl mx-auto">
-          {sampleVideos.map((video) => (
-            <Dialog key={video.id}>
-              <DialogTrigger asChild>
-                <Card className="cursor-pointer hover:shadow-lg transition-shadow flex flex-col h-full">
-                  <CardHeader className="p-0">
-                    <div className="relative aspect-video w-full overflow-hidden rounded-t-xl">
-                      <img
-                        src={video.thumbnailUrl || "/placeholder.svg"}
-                        alt={video.title}
-                        className="object-cover w-full h-full"
+
+        <nav className="flex justify-center mb-8">
+          <div className="flex overflow-x-auto justify-start sm:justify-center items-center gap-2 sm:gap-3 p-2.5 rounded-2xl bg-gradient-to-tr from-white/5 via-white/10 to-transparent backdrop-blur-sm shadow-[0_8px_32px_-8px_rgba(255,212,0,0.15)] max-w-full no-scrollbar">
+            {([
+              { id: 'Latest', icon: Clock },
+              { id: 'Popular', icon: TrendingUp },
+              { id: 'Oldest', icon: History }
+            ] as const).map((option) => {
+              const Icon = option.icon
+              return (
+                <button
+                  key={option.id}
+                  onClick={() => setFilter(option.id)}
+                  className={`
+                    relative text-sm sm:text-lg font-bold
+                    flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3 px-4 sm:px-6 py-3
+                    transition-all duration-300 ease-out rounded-xl w-[130px] sm:w-auto
+                    border border-transparent
+                    ${filter === option.id 
+                      ? "text-black bg-gradient-to-bl from-[#FFD400] via-[#FFD400] to-[#FFE55C] shadow-[0_4px_20px_rgba(255,212,0,0.25)] scale-105 border-[#FFD400]/20" 
+                      : "text-white hover:text-[#FFD400] hover:bg-white/5 hover:border-[#FFD400]/10"
+                    }
+                  `}
+                >
+                  {filter === option.id && (
+                    <div className="absolute inset-0 overflow-hidden rounded-xl">
+                      <div
+                        className="absolute inset-0 animate-ripple"
+                        style={{
+                          background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)'
+                        }}
                       />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
-                        <PlayCircle className="w-16 h-16 text-white opacity-90" />
-                      </div>
                     </div>
-                  </CardHeader>
-                  <CardContent className="p-4 flex-grow">
-                    <CardTitle className="line-clamp-1">{video.title}</CardTitle>
-                    <CardDescription className="line-clamp-2 mt-2">{video.description}</CardDescription>
-                  </CardContent>
-                  <CardFooter className="p-4 pt-0 justify-between mt-auto">
-                    <span className="text-sm text-zinc-500">{video.author}</span>
-                    <span className="text-sm text-zinc-500">{video.duration}</span>
-                  </CardFooter>
-                </Card>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[900px]">
-                <div className="aspect-video w-full">
-                  <iframe
-                    src={`${video.videoUrl}?autoplay=1`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full rounded-lg"
+                  )}
+                  <Icon className={`w-6 h-6 sm:w-6 sm:h-6 transition-all duration-300 
+                    ${filter === option.id 
+                      ? 'text-black scale-110' 
+                      : 'text-[#FFD400] group-hover:scale-110'
+                    }`} 
                   />
-                </div>
-              </DialogContent>
-            </Dialog>
-          ))}
+                  <span className="relative z-10 tracking-wide">{option.id}</span>
+                </button>
+              )
+            })}
+          </div>
+        </nav>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 max-w-6xl mx-auto">
+          {loading ? (
+            <div className="col-span-full flex justify-center items-center py-12">
+              <Loader2 className="w-8 h-8 text-white animate-spin" />
+            </div>
+          ) : error ? (
+            <div className="col-span-full text-center py-12">
+              <p className="text-red-500">{error}</p>
+            </div>
+          ) : (
+            sortedVideos.map((video) => (
+              <Dialog key={video.id}>
+                <DialogTrigger asChild>
+                  <Card className="cursor-pointer hover:shadow-lg transition-shadow flex flex-col h-full">
+                    <CardHeader className="p-0">
+                      <div className="relative aspect-video w-full overflow-hidden rounded-t-xl">
+                        <img
+                          src={video.thumbnailUrl || "/placeholder.svg"}
+                          alt={video.title}
+                          className="object-cover w-full h-full"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+                          <PlayCircle className="w-16 h-16 text-white opacity-90" />
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-4 flex-grow">
+                      <CardTitle className="line-clamp-1">{video.title}</CardTitle>
+                      <CardDescription className="line-clamp-2 mt-2">{video.description}</CardDescription>
+                    </CardContent>
+                    <CardFooter className="p-4 pt-0 justify-between mt-auto">
+                      <div className="flex flex-col items-start">
+                        <span className="text-sm text-zinc-500">{video.author}</span>
+                        <span className="text-xs text-zinc-400">{video.views} views</span>
+                      </div>
+                      <span className="text-sm text-zinc-500">{video.duration}</span>
+                    </CardFooter>
+                  </Card>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[900px]">
+                  <div className="aspect-video w-full">
+                    <iframe
+                      src={`${video.videoUrl}?autoplay=1`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full rounded-lg"
+                    />
+                  </div>
+                </DialogContent>
+              </Dialog>
+            ))
+          )}
         </div>
       </div>
     </section>
