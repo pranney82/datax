@@ -18,18 +18,18 @@ const logos = [
   },
   {
     id: "logo-3",
-    description: "???",
+    description: "Sunshineo on a Ranney Day",
     image: "/assets/lovedlogos/soard.png",
   },
   {
     id: "logo-4",
-    description: "React",
+    description: "Eidson Builders",
     image: "/assets/lovedlogos/eidson.png",
   },
   {
     id: "logo-5",
-    description: "shadcn/ui",
-    image: "/assets/lovedlogos/love.png",
+    description: "North Shore",
+    image: "/assets/lovedlogos/northshore.png",
   },
   {
     id: "Sunshine on a Ranney Day",
@@ -134,7 +134,7 @@ const EpicLogoShowcase = () => {
                       alt={logo.description}
                       fill
                       style={{ objectFit: 'contain' }}
-                      className="filter brightness-0 invert"
+                      className=""
                     />
                   </div>
                 </div>
@@ -174,7 +174,7 @@ const EpicLogoShowcase = () => {
           align-items: center;
           justify-content: center;
           padding: 20px;
-          background-color: rgba(31, 41, 55, 0.8);
+          background-color: rgba(255, 255, 255, 0.9);
           border-radius: 0.5rem;
           margin-right: 2rem;
           backdrop-filter: blur(4px);
