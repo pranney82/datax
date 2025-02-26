@@ -34,6 +34,7 @@ import { AuthDialog } from "@/components/home/signup1"
 import { useAuth } from "@/lib/context/auth-context"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
+import { auth } from "@/lib/firebase"
 
 const iconMap = {
   Code2: (
@@ -262,14 +263,16 @@ const Navbar1 = () => {
                     variant="outline"
                     onClick={() => {
                       if (user) {
-                        router.push("/x")
+                        auth.signOut().then(() => {
+                          router.push("/")
+                        })
                       } else {
                         setAuthType("login")
                         setShowAuthDialog(true)
                       }
                     }}
                   >
-                    Sign In
+                    {user ? "Sign Out" : "Sign In"}
                   </Button>
                 </>
               )}
@@ -387,23 +390,17 @@ const Navbar1 = () => {
                       className="w-full"
                       onClick={() => {
                         if (user) {
-                          router.push("/x")
+                          auth.signOut().then(() => {
+                            router.push("/")
+                          })
                         } else {
                           setAuthType("login")
                           setShowAuthDialog(true)
                         }
                       }}
                     >
-                      Sign In
+                      {user ? "Sign Out" : "Sign In"}
                     </Button>
-                    {user && (
-                      <Button
-                        className="w-full bg-[#FFD400] text-black"
-                        onClick={() => router.push("/x")}
-                      >
-                        Dashboard
-                      </Button>
-                    )}
                   </div>
                 </nav>
               </motion.div>

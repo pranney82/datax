@@ -83,12 +83,9 @@ export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }
   useEffect(() => {
     if (user && !loading) {
       onClose();
-      // Only redirect if we're not already on the home page
-      if (window.location.pathname !== '/') {
-        router.push(redirectPath);
-      }
+      // No automatic redirection - only explicit redirects from buttons
     }
-  }, [user, loading, onClose, router, redirectPath]);
+  }, [user, loading, onClose]);
 
   useEffect(() => {
     setIsSignUp(defaultView === 'signup');
