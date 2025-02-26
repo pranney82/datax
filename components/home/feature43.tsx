@@ -28,9 +28,9 @@ const reasons = [
     color: '#FBBF24',
   },
   {
-    title: 'Prebuilt Templates',
+    title: 'Community Templates',
     description:
-      "Access a growing library of industry-leading dashboards, automations, and resources designed for your JOBTREAD.",
+      "Library of free templates, including cost groups, schedules, and to-do lists, shared by other users. Contribute by uploading your own templates!",
     icon: Target,
     color: '#10B981',
   },

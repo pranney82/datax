@@ -24,6 +24,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { getFirestore, doc, setDoc, collection } from 'firebase/firestore';
+import { useAuth } from '@/lib/context/auth-context';
 
 
 const formSchema = z.object({
@@ -59,12 +60,9 @@ const notifyDiscord = async (userData: { email: string, name?: string }) => {
 
 export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }: AuthDialogProps) {
   const router = useRouter();
+  const { user, loading } = useAuth();
   const [isSignUp, setIsSignUp] = useState(defaultView === 'signup');
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    setIsSignUp(defaultView === 'signup');
-  }, [defaultView]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(
@@ -81,6 +79,21 @@ export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }
       name: '',
     },
   });
+
+  useEffect(() => {
+    if (user && !loading) {
+      onClose();
+      // No automatic redirection - only explicit redirects from buttons
+    }
+  }, [user, loading, onClose]);
+
+  useEffect(() => {
+    setIsSignUp(defaultView === 'signup');
+  }, [defaultView]);
+
+  if (loading || user) {
+    return null;
+  }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     
@@ -254,7 +267,7 @@ export function AuthDialog({ isOpen, onClose, defaultView, redirectPath = '/x' }
           <Button
             variant="link"
             className="p-0"
-            onClick={() => setIsSignUp(!isSignUp)}
+            onClick={() => isSignUp ? setIsSignUp(false) : router.push('/sign-up')}
           >
             {isSignUp ? 'Sign in' : 'Sign up'}
           </Button>

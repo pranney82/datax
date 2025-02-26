@@ -3,7 +3,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { YoutubeIcon as YouTube } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { PortalDialog } from "@/components/ui/portal-dialog"
 import { useState } from "react"
 
 import Summary from "./summary"
@@ -76,24 +76,24 @@ export default function Page() {
         </TabsContent>
       </Tabs>
 
-      <Dialog open={isTutorialOpen} onOpenChange={setIsTutorialOpen}>
-        <DialogContent className="sm:max-w-[800px] max-w-[90vw] w-full bg-white rounded-lg shadow-lg">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-semibold text-black">Dashboard Tutorial</DialogTitle>
-          </DialogHeader>
-          <div className="aspect-video">
-            <iframe
-              width="100%"
-              height="100%"
-              src="https://www.youtube.com/embed/FEptwBb7IrM"
-              title="Tutorial Video"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <PortalDialog 
+        isOpen={isTutorialOpen}
+        onClose={() => setIsTutorialOpen(false)}
+        title="Dashboard Tutorial"
+        className="sm:max-w-[800px] w-full"
+      >
+        <div className="aspect-video mt-4">
+          <iframe
+            width="100%"
+            height="100%"
+            src="https://www.youtube.com/embed/FEptwBb7IrM"
+            title="Tutorial Video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
+      </PortalDialog>
     </main>
   )
 }

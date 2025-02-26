@@ -18,11 +18,11 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { NavUser } from "./nav-user"
-import { useUserStore } from "@/lib/stores/user-store"
+import { useAuth } from "@/lib/context/auth-context"
 
 export function AppSidebar(props: React.ComponentPropsWithoutRef<typeof Sidebar>) {
   const { toggleSidebar, open } = useSidebar()
-  const { isLoading, admin } = useUserStore()
+  const { loading, userData } = useAuth()
 
   // Updated data structure
   const data = {
@@ -53,7 +53,7 @@ export function AppSidebar(props: React.ComponentPropsWithoutRef<typeof Sidebar>
             icon: BookOpen,
           },
           // Only include Admin after loading is complete
-          ...(!isLoading && admin === true ? [{
+          ...(!loading && userData?.admin === true ? [{
             title: "Admin",
             url: "/x/admin",
             icon: Landmark,

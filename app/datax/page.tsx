@@ -10,7 +10,9 @@ export default function DATAxPage() {
     <div className="flex flex-col min-h-screen w-full max-w-full overflow-x-hidden">
       <Navbar1 />
       <Datax />
-      <Pricing />
+      <div id="dataxpricing">
+        <Pricing />
+      </div>
       <Logos3 />
       <CTA />
       <Footer />

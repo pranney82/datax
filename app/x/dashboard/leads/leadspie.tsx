@@ -143,6 +143,13 @@ export default function SimpleRadarChart() {
     return `${Math.floor(smallerDimension * 0.35)}px`;
   };
 
+  const handleDialogChange = (open: boolean) => {
+    setIsCustomFieldOpen(open);
+    if (!open) {
+      setSelectedField(prev => prev);
+    }
+  };
+
   return (
     <Card className="w-full mx-auto overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -226,7 +233,10 @@ export default function SimpleRadarChart() {
         </div>
       </CardContent>
 
-      <Dialog open={isCustomFieldOpen} onOpenChange={setIsCustomFieldOpen}>
+      <Dialog 
+        open={isCustomFieldOpen} 
+        onOpenChange={handleDialogChange}
+      >
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Select Custom Field</DialogTitle>

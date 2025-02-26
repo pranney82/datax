@@ -3,8 +3,74 @@
 import Image from "next/image"
 import Link from "next/link"
 import { motion, useAnimation } from "framer-motion"
-import { Map, MapPin, ArrowRightIcon, HardHat, BotIcon as Robot } from "lucide-react"
+import { Map, MapPin, ArrowRightIcon, HardHat, BotIcon as Robot, Hammer, Ruler, Wrench, Drill } from "lucide-react"
 import { useState, useEffect } from "react"
+
+const ParticleBackground = () => {
+  const constructionIcons = [HardHat, Hammer, Ruler, Wrench, Drill];
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <style jsx>{`
+        @keyframes float {
+          0% { transform: translateY(0px) translateX(0px); }
+          50% { transform: translateY(-10px) translateX(10px); }
+          100% { transform: translateY(0px) translateX(0px); }
+        }
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 0.7; }
+        }
+        .space-background {
+          background-color: #000;
+          background-image: 
+            radial-gradient(white, rgba(255,255,255,.15) 2px, transparent 40px),
+            radial-gradient(white, rgba(255,255,255,.1) 1px, transparent 30px),
+            radial-gradient(white, rgba(255,255,255,.05) 2px, transparent 40px),
+            radial-gradient(rgba(255,255,255,.3), rgba(255,255,255,.05) 2px, transparent 30px);
+          background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px; 
+          background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
+          animation: twinkle 10s infinite;
+        }
+        .floating-icon {
+          animation: float var(--float-duration) infinite var(--float-delay) ease-in-out;
+        }
+      `}</style>
+      <div className="space-background absolute inset-0">
+        {[...Array(15)].map((_, i) => {
+          const IconComponent = constructionIcons[i % constructionIcons.length];
+          return (
+            <div
+              key={`icon-${i}`}
+              className="floating-icon absolute"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                '--float-duration': `${Math.random() * 20 + 10}s`,
+                '--float-delay': `${Math.random() * 5}s`,
+              } as React.CSSProperties}
+            >
+              <IconComponent className="text-[#ffd400] opacity-75" size={24} />
+            </div>
+          );
+        })}
+        {[...Array(50)].map((_, i) => (
+          <div
+            key={`star-${i}`}
+            className="absolute bg-white rounded-full"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              width: `${Math.random() * 2 + 1}px`,
+              height: `${Math.random() * 2 + 1}px`,
+              opacity: Math.random() * 0.3 + 0.2,
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
 
 const EpicRoadmapButton = () => {
   const [isHovered, setIsHovered] = useState(false)
@@ -76,18 +142,19 @@ const EpicRoadmapButton = () => {
 
 const About = () => {
   return (
-    <section className="py-20 w-full bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 w-full bg-black overflow-hidden relative">
+      <ParticleBackground />
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-4">
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">
             About <span className="text-[#ffd400]">DATAx</span>
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-white max-w-3xl mx-auto">
             Empowering contractors with cutting-edge automation and technology solutions.
           </p>
         </motion.div>
@@ -116,17 +183,17 @@ const About = () => {
             className="space-y-8"
           >
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4 border-b-2 border-[#ffd400] pb-2 inline-block">
+              <h2 className="text-3xl font-bold text-white mb-4 border-b-2 border-[#ffd400] pb-2 inline-block">
                 Our Story
               </h2>
-              <p className="text-lg text-gray-700 leading-relaxed">
+              <p className="text-lg text-white leading-relaxed">
                 We&apos;re <span className="font-semibold">contractors</span> (and also nerds) who are passionate about
                 helping other contractors thrive through the power of technology.
               </p>
             </div>
 
-            <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
-              <p className="text-lg text-gray-700 leading-relaxed">
+            <div className="bg-white bg-opacity-10 p-6 rounded-lg shadow-inner">
+              <p className="text-lg text-white leading-relaxed">
                 It started with creating <span className="font-semibold">automations and integrations</span> for our own
                 construction companies, solving real-world challenges to transform how we worked in JOBTREAD.
               </p>

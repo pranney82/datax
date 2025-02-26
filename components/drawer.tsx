@@ -15,10 +15,10 @@ import {
 import Link from 'next/link'
 import Image from 'next/image'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useUserStore } from "@/lib/stores/user-store"
+import { useAuth } from "@/lib/context/auth-context"
 
 export function DrawerDemo() {
-  const { name, avatar } = useUserStore()
+  const { userData } = useAuth()
 
   const drawerItems = [
     { icon: Sparkles, label: 'Upgrade to CORE', href: '/pricing' },
@@ -67,9 +67,9 @@ export function DrawerDemo() {
                       >
                         {item.isAvatar ? (
                           <Avatar className="h-8 w-8 rounded-lg mr-3">
-                            <AvatarImage src={avatar || ''} alt={name || ''} />
+                            <AvatarImage src={userData?.avatar || ''} alt={userData?.name || ''} />
                             <AvatarFallback className="rounded-lg">
-                              {name?.split(' ').map(word => word[0]).join('').toUpperCase() || 'X'}
+                              {userData?.name?.split(' ').map(word => word[0]).join('').toUpperCase() || 'X'}
                             </AvatarFallback>
                           </Avatar>
                         ) : (

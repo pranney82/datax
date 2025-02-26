@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /x/admin/
+Disallow: /x/dashboard/
+
+# Sitemaps
+Sitemap: https://winyourdata.com/sitemap.xml

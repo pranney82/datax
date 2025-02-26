@@ -1,10 +1,10 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { Zap, Sparkles, Play } from "lucide-react"
+import { Zap, Sparkles, PlayCircle } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 
 const Hero = () => {
   const [isHoveringTry, setIsHoveringTry] = useState(false)
@@ -30,11 +30,12 @@ const Hero = () => {
 
   const videoData = {
     videoId: "kZoFzQK1Scg",
+    thumbnailUrl: "/assets/thumbnails/dataxwelcome.png"
   }
 
   return (
     <>
-      <section className="relative py-24 w-full overflow-hidden bg-gradient-to-b from-[#0a0a0a] to-black">
+      <section className="relative py-16 w-full overflow-hidden bg-gradient-to-b from-[#0a0a0a] to-black">
         <div className="absolute inset-0">
           {stars.map((star, index) => (
             <motion.div
@@ -58,7 +59,7 @@ const Hero = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5 }}
         />
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-32">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-8">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <motion.div
               className="flex flex-col items-center text-center lg:items-start lg:text-left"
@@ -136,7 +137,7 @@ const Hero = () => {
               transition={{ delay: 0.6, duration: 0.8 }}
             >
               <motion.div
-                className="relative w-full pb-[56.25%] overflow-hidden rounded-2xl shadow-lg"
+                className="relative w-full pb-[56.25%] overflow-hidden rounded-lg shadow-lg"
                 onMouseEnter={() => setIsHoveringVideo(true)}
                 onMouseLeave={() => setIsHoveringVideo(false)}
                 animate={{
@@ -148,36 +149,30 @@ const Hero = () => {
                 transition={{ duration: 0.3 }}
               >
                 <motion.div
-                  className="absolute inset-0 border border-[#FFD400]/20 rounded-2xl"
+                  className="absolute inset-0 border border-[#FFD400]/20 rounded-lg"
                   animate={{
                     opacity: isHoveringVideo ? 1 : 0.5,
                   }}
                   transition={{ duration: 0.3 }}
                 />
-                <AnimatePresence>
-                  {!isVideoPlaying && (
-                    <motion.div
-                      initial={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-                    >
-                      <Button
-                        onClick={() => setIsVideoPlaying(true)}
-                        className="bg-white/10 hover:bg-white/20 text-white rounded-full p-4"
-                      >
-                        <Play className="h-12 w-12" />
-                      </Button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <img
+                  src={videoData.thumbnailUrl}
+                  alt="Video thumbnail"
+                  className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                />
                 <iframe
-                  className="absolute top-0 left-0 w-full h-full rounded-2xl"
+                  style={{ opacity: isVideoPlaying ? 1 : 0 }}
+                  className="absolute top-0 left-0 w-full h-full rounded-lg transition-opacity duration-300"
                   src={`https://www.youtube.com/embed/${videoData.videoId}?modestbranding=1&rel=0&autoplay=${isVideoPlaying ? 1 : 0}`}
                   title="YouTube video player"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 />
+                {!isVideoPlaying && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors z-10 rounded-lg cursor-pointer" onClick={() => setIsVideoPlaying(true)}>
+                    <PlayCircle className="w-16 h-16 text-white opacity-90" />
+                  </div>
+                )}
               </motion.div>
             </motion.div>
           </div>

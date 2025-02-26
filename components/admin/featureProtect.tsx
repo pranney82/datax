@@ -4,7 +4,8 @@ import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { useUserStore } from '@/lib/stores/user-store';
+import { useAuth } from '@/lib/context/auth-context';
+import Link from 'next/link';
 
 interface FeatureProtectProps {
   children: React.ReactNode;
@@ -12,10 +13,10 @@ interface FeatureProtectProps {
 }
 
 export default function FeatureProtect({ children, featureName }: FeatureProtectProps) {
-  const { uid, org, subscriptionStatus: storeSubStatus, subscriptionType: storeSubType } = useUserStore();
-  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(storeSubStatus || null);
-  const [subscriptionTier, setSubscriptionTier] = useState<string | null>(storeSubType || null);
-  const [isLoading, setIsLoading] = useState(!storeSubStatus);
+  const { userData } = useAuth();
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(userData?.subscriptionStatus || null);
+  const [subscriptionTier, setSubscriptionTier] = useState<string | null>(userData?.subscriptionType || null);
+  const [isLoading, setIsLoading] = useState(!userData?.subscriptionStatus);
   const [hasAccess, setHasAccess] = useState(false);
 
   useEffect(() => {
@@ -33,21 +34,20 @@ export default function FeatureProtect({ children, featureName }: FeatureProtect
 
   useEffect(() => {
     // If we already have subscription data in the store, don't fetch again
-    if (storeSubStatus && storeSubType) {
-      setSubscriptionStatus(storeSubStatus);
-      setSubscriptionTier(storeSubType);
+    if (userData?.subscriptionStatus && userData?.subscriptionType) {
+      setSubscriptionStatus(userData.subscriptionStatus);
+      setSubscriptionTier(userData.subscriptionType);
       setIsLoading(false);
       return;
     }
 
     const fetchSubscriptionStatus = async () => {
-      
-      if (!uid || !org) return;
+      if (!userData?.uid || !userData?.org) return;
 
       try {
         console.log("fetchSubscriptionStatus try");
         // Fetch stripeCustomerId from users collection
-        const stripeCustomerIdDoc = await getDocs(collection(db, 'users', uid));
+        const stripeCustomerIdDoc = await getDocs(collection(db, 'users', userData.uid));
         if (stripeCustomerIdDoc.empty) {
           console.error('No user document found');
           setSubscriptionStatus('free');
@@ -91,30 +91,22 @@ export default function FeatureProtect({ children, featureName }: FeatureProtect
     };
 
     fetchSubscriptionStatus();
-  }, [uid, org, storeSubStatus, storeSubType]);
+  }, [userData]);
 
-  if (hasAccess === false) {
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!hasAccess) {
     return (
-      <div className="relative min-h-full">
-        <div className="blur-sm pointer-events-none">
-          {children}
-        </div>
-
-        <div className="fixed top-64 left-0 right-0 flex justify-center">
-          <div className="text-center space-y-4 p-8 rounded-lg bg-background/95 shadow-lg max-w-md mx-auto">
-            <h2 className="text-2xl font-bold">Premium Feature</h2>
-            <p className="text-muted-foreground">
-              Sorry, but the JT Connect free trial period has ended.<br /><br />
-              {featureName} requires an active CORE subscription
-            </p>
-            <Button 
-              onClick={() => window.location.href = process.env.NEXT_PUBLIC_APP_URL + '/pricing'}
-              className="bg-primary text-primary-foreground"
-            >
-              Upgrade Now
-            </Button>
-          </div>
-        </div>
+      <div className="flex flex-col items-center justify-center p-4">
+        <h2 className="text-lg font-semibold mb-2">Feature Not Available</h2>
+        <p className="text-sm text-gray-600 mb-4">
+          This feature requires an active CORE subscription.
+        </p>
+        <Button asChild>
+          <Link href="/pricing">Upgrade Now</Link>
+        </Button>
       </div>
     );
   }

@@ -17,7 +17,7 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useAuth } from "@/lib/context/auth-context"
 import { getFirestore, doc, getDoc, addDoc, collection } from "firebase/firestore"
 import { Button } from "@/components/ui/button"
@@ -25,6 +25,8 @@ import { InspirationQuote } from "@/components/ui/InspirationQuote"
 import Link from "next/link"
 import { AuthDialog } from "@/components/home/signup1"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { useAppStore } from '@/lib/stores/app-store';
+import { useLocalStorage } from '@mantine/hooks';
 
 interface CompanyUpdate {
   id: string
@@ -33,7 +35,6 @@ interface CompanyUpdate {
   date: string
   author: {
     name: string
-    avatar: string
   }
 }
 
@@ -50,37 +51,110 @@ interface FAQItem {
 }
 
 export default function HomePage() {
-  const { user } = useAuth()
-  const [userData, setUserData] = useState<UserData | null>(null)
+  const { user, loading } = useAuth()
+  const { orgData, setOrgData, clearOrgData } = useAppStore()
+  const [userData, setUserData] = useLocalStorage<UserData | null>({
+    key: 'user-data',
+    defaultValue: null,
+  });
   const [featureRequest, setFeatureRequest] = useState("")
-  const [companyName, setCompanyName] = useState("")
-  const [isLoadingOrgs, setIsLoadingOrgs] = useState(false)
-  const [orgID, setOrgID] = useState("")
-  const [grantKey, setGrantKey] = useState("")
   const [featureTitle, setFeatureTitle] = useState("")
   const [confirmationMessage, setConfirmationMessage] = useState<string>("")
   const [playingVideo, setPlayingVideo] = useState<string | null>(null)
   const [openItem, setOpenItem] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (!user?.uid) return
+  // Use local storage to store companyName
+  const [companyName, setCompanyName] = useLocalStorage({
+    key: 'company-name',
+    defaultValue: '',
+  });
 
-      const db = getFirestore()
-      const userDoc = await getDoc(doc(db, "users", user.uid))
-      if (userDoc.exists()) {
-        setUserData(userDoc.data() as UserData)
-      }
-      const orgId = userDoc.data()?.org
-      const orgDoc = await getDoc(doc(db, "orgs", orgId))
-      if (orgDoc.exists()) {
-        setOrgID(orgDoc.data()?.orgID)
-        setGrantKey(orgDoc.data()?.grantKey)
-      }
+  const orgLookUp = async () => {
+    if (!orgData?.grantKey || !orgData?.orgID || companyName) {
+      return null
     }
 
-    fetchUserData()
-  }, [user])
+    try {
+      const response = await fetch("/api/jtfetch", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: {
+            $: { grantKey: orgData.grantKey },
+            organization: {
+              $: {
+                id: orgData.orgID,
+              },
+              id: {},
+              name: {},
+            },
+          },
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      const fetchedCompanyName = data?.organization?.name
+
+      if (fetchedCompanyName) {
+        setCompanyName(fetchedCompanyName)
+        setOrgData({
+          ...orgData,
+          lastFetched: Date.now()
+        })
+      }
+
+      return data
+    } catch (error) {
+      console.error("Error fetching query:", error)
+      return null
+    }
+  }
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!user?.uid) {
+        clearOrgData();
+        return;
+      }
+
+      const db = getFirestore();
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists()) {
+        setUserData(userDoc.data() as UserData);
+        const orgId = userDoc.data()?.org;
+
+        // Only fetch org data if we don't have it or if org ID changed
+        if (!orgData || orgData.orgID !== orgId) {
+          const orgDoc = await getDoc(doc(db, "orgs", orgId));
+          if (orgDoc.exists()) {
+            const data = orgDoc.data();
+            if (data) {
+              setOrgData({
+                orgID: data.orgID || '',
+                grantKey: data.grantKey || '',
+                companyName: companyName,
+                lastFetched: Date.now(),
+              });
+            }
+          }
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [user, clearOrgData]);
+
+  useEffect(() => {
+    if (orgData?.grantKey && orgData?.orgID && !companyName) {
+      orgLookUp()
+    }
+  }, [orgData?.orgID, orgData?.grantKey])
 
   const companyUpdates: CompanyUpdate[] = [
     {
@@ -90,8 +164,7 @@ export default function HomePage() {
         "Company dashboards, toolbox, and library are now available to all users. We're excited to see how you use them.",
       date: "Jan 7 2025",
       author: {
-        name: "Sarah Johnson",
-        avatar: "/avatars/sarah.jpg",
+        name: "Sarah Johnson"
       },
     },
     {
@@ -100,8 +173,7 @@ export default function HomePage() {
       content: "DATAx is live! Available to all JOBTREAD users starting today!",
       date: "Jan 7 2025",
       author: {
-        name: "Mike Peters",
-        avatar: "/avatars/mike.jpg",
+        name: "Mike Peters"
       },
     },
   ]
@@ -112,28 +184,28 @@ export default function HomePage() {
       answer:
         "Designed specicically for JOBTREAD users, we wanted to bridge the tech gap to bring dashboards, charts, along with specialty features, integrations, and automations to all JOBTREAD users.",
       videoUrl: "https://www.youtube.com/embed/54J9jKafVMc",
-      thumbnailUrl: "/assets/thumbnails/1.png",
+      thumbnailUrl: "/assets/thumbnails/dataxwhat.png",
     },
     {
       question: "How does it work?",
       answer:
         "Getting started is easy! Simply enter your JOBTREAD grant key, and you're all set. From there, you can explore your dashboard, enable custom integrations, and unlock a variety of powerful features!",
       videoUrl: "https://www.youtube.com/embed/FiAXjvgV0Zc",
-      thumbnailUrl: "/assets/thumbnails/2.png",
+      thumbnailUrl: "/assets/thumbnails/dataxwork.png",
     },
     {
       question: "Will DATAx mess up my JOBTREAD data?",
       answer:
         "No, your JOBTREAD data is completely safe and secure from any changes. JOBTREAD's API gives companies like ours access to view your data without altering it in any way.",
       videoUrl: "https://www.youtube.com/embed/yKPzpIU3sys",
-      thumbnailUrl: "/assets/thumbnails/3.png",
+      thumbnailUrl: "/assets/thumbnails/dataxmess.png",
     },
     {
       question: "Won't JOBTREAD develop these features?",
       answer:
         "JOBTREAD is laser-focused on building the ultimate construction management platform. We are here to supplement that with specialized features and dashboards.",
       videoUrl: "https://www.youtube.com/embed/Qcm4wsAnfwY",
-      thumbnailUrl: "/assets/thumbnails/4.png",
+      thumbnailUrl: "/assets/thumbnails/dataxjtdevelop.png",
     },
   ]
 
@@ -185,55 +257,6 @@ export default function HomePage() {
     }
   }
 
-  const orgLookUp = async () => {
-    if (!grantKey) {
-      console.error("Missing grantKey")
-      return null
-    }
-
-    setIsLoadingOrgs(true)
-    try {
-      const response = await fetch("/api/jtfetch", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: {
-            $: { grantKey: grantKey },
-            organization: {
-              $: {
-                id: orgID,
-              },
-              id: {},
-              name: {},
-            },
-          },
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      const org = data?.organization?.name
-
-      setCompanyName(org)
-
-      return data
-    } catch (error) {
-      console.error("Error fetching query:", error)
-      return null
-    } finally {
-      setIsLoadingOrgs(false)
-    }
-  }
-
-  useEffect(() => {
-    orgLookUp()
-  }, [orgID, grantKey])
-
   const greeting =
     userData?.name || user?.displayName
       ? `Welcome, ${userData?.name || user?.displayName}!`
@@ -255,13 +278,15 @@ export default function HomePage() {
 
   return (
     <main className="flex-grow container mx-auto py-8 relative">
-      {!user && <AuthDialog isOpen={true} onClose={() => {}} defaultView="login" redirectPath="/x" />}
+      {!loading && !user && <AuthDialog isOpen={true} onClose={() => {}} defaultView="login" redirectPath="/x" />}
 
-      <div className={!user ? "filter blur-sm pointer-events-none" : ""}>
+      <div className={!loading && !user ? "filter blur-sm pointer-events-none" : ""}>
         <div className="flex flex-1 flex-col gap-4 p-6 pt-4 animate-fadeIn">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-[#333]">{isLoadingOrgs ? "Loading..." : companyName}</h1>
+              <h1 className="text-3xl font-bold text-[#333]">
+                {companyName}
+              </h1>
               <p className="text-lg text-[#555]">{greeting}</p>
             </div>
           </div>
@@ -381,8 +406,7 @@ export default function HomePage() {
                       key={update.id}
                       className="flex gap-4 items-start hover:bg-[#f0f0f0] p-2 rounded-lg transition-colors duration-200"
                     >
-                      <Avatar className="border-2 border-[#e0e0e0]">
-                        <AvatarImage src={update.author.avatar} alt={`Avatar of ${update.author.name}`} />
+                      <Avatar className="border-2 border-[#e0e0e0]">                        
                         <AvatarFallback className="bg-[#ffd400] text-[#333]">
                           <Rocket className="w-4 h-4" />
                         </AvatarFallback>

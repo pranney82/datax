@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Check, Zap, Rocket, Star, Sparkles } from "lucide-react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { AuthDialog } from "@/components/home/signup1"
 import { useAuth } from "@/lib/context/auth-context"
@@ -76,6 +77,21 @@ const Pricing = () => {
     className,
     disabled = false,
   }: { plan: (typeof plans)[0]; className?: string; disabled?: boolean }) => {
+    // For FREE and CORE plans, link to /sign-up with billing period
+    if (plan.name === "FREE" || plan.name === "CORE") {
+      return (
+        <Link href={`/sign-up?billing=${isAnnually ? 'annual' : 'monthly'}`}>
+          <Button
+            className={`w-full py-4 text-lg font-bold rounded-full bg-black text-white hover:bg-[#FFD400] hover:text-black transition-all duration-300 transform hover:scale-105 ${className}`}
+          >
+            <Sparkles className="w-5 h-5 mr-2" />
+            <span>Get Started</span>
+          </Button>
+        </Link>
+      )
+    }
+
+    // For PRO plan and other cases, keep existing logic
     if (plan.price === 0) {
       return (
         <Button
@@ -152,10 +168,13 @@ const Pricing = () => {
               <button
                 className={`flex-1 text-sm font-bold ${
                   isAnnually ? "text-black" : "text-gray-600"
-                } transition-colors duration-300`}
+                } transition-colors duration-300 relative`}
                 onClick={() => setIsAnnually(true)}
               >
-                Annually
+                <span>Annually</span>
+                <span className="absolute -top-2 -right-2 bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded-full whitespace-nowrap">
+                  2 months free
+                </span>
               </button>
             </div>
           </div>
@@ -177,17 +196,34 @@ const Pricing = () => {
                   Most Popular
                 </div>
               )}
+              {plan.name === "FREE" && (
+                <div className="bg-black text-[#FFD400] text-center py-2 text-sm font-bold uppercase tracking-wide">
+                  Free Forever
+                </div>
+              )}
               <div className="p-8 flex-grow flex flex-col">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-2xl font-bold">{plan.name}</h3>
                   {plan.icon}
                 </div>
                 <div className="mb-6">
-                  <span className="text-5xl font-extrabold">${plan.price}</span>
-                  <span className="text-xl">/{isAnnually ? "year" : "month"}</span>
-                  {isAnnually && plan.price > 0 && (
-                    <div className="mt-2 bg-green-100 text-green-800 text-sm font-medium px-2.5 py-0.5 rounded-full inline-block">
-                      Save ${(plan.monthlyPrice * 12 - plan.price).toFixed(0)} per year
+                  {isAnnually && plan.price > 0 ? (
+                    <>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-2xl line-through text-gray-500">${plan.monthlyPrice * 12}</span>
+                        <span className="bg-green-100 text-green-800 text-sm font-medium px-2.5 py-0.5 rounded-full">
+                          Save ${(plan.monthlyPrice * 12 - plan.price).toFixed(0)}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-5xl font-extrabold">${plan.price}</span>
+                        <span className="text-xl">/year</span>
+                      </div>
+                    </>
+                  ) : (
+                    <div>
+                      <span className="text-5xl font-extrabold">${plan.price}</span>
+                      <span className="text-xl">/{isAnnually ? "year" : "month"}</span>
                     </div>
                   )}
                 </div>
